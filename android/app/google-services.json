@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "689966179325",
+    "project_id": "huistaak-b26cd",
+    "storage_bucket": "huistaak-b26cd.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:689966179325:android:d37707eae7d5964ce3ef94",
+        "android_client_info": {
+          "package_name": "com.huistaak.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAMsxuIZUGSa9DQXCy5SmuD8Wqo1PMPkTQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
