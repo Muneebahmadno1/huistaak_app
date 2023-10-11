@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../models/user_model.dart';
 
 ///---------App Colors
 
@@ -36,3 +39,38 @@ TextStyle title =
     const TextStyle(fontSize: 12, color: Colors.black12, fontFamily: 'Inter');
 TextStyle hintText =
     const TextStyle(fontSize: 12, color: Colors.black12, fontFamily: 'Inter');
+
+///----------App variables
+
+final userDocId = ValueNotifier("");
+
+UserModel userData = UserModel(
+  postalCode: '',
+  phoneNumber: '',
+  userID: "",
+  displayName: "",
+  email: "",
+  imageUrl: "",
+);
+
+void setUserLoggedIn(bool key) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  prefs.setBool("isLoggedIn", key);
+}
+
+Future getUserLoggedIn() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  var log = prefs.getBool("isLoggedIn") ?? false;
+  return log;
+}
+
+void saveUserData({@required userID}) async {
+  SharedPreferences pref = await SharedPreferences.getInstance();
+  await pref.setString("userID", userID);
+}
+
+Future getUserData() async {
+  SharedPreferences pref = await SharedPreferences.getInstance();
+  String? result = pref.getString("userID");
+  return result;
+}

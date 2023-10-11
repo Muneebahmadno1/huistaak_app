@@ -4,7 +4,9 @@ import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import '../constants/custom_validators.dart';
 
 class CountryCodePicker extends StatefulWidget {
-  const CountryCodePicker({super.key});
+  final TextEditingController? controller;
+
+  const CountryCodePicker({super.key, this.controller});
 
   @override
   State<CountryCodePicker> createState() => _CountryCodePickerState();
@@ -14,7 +16,7 @@ class _CountryCodePickerState extends State<CountryCodePicker> {
   String _countryCode = '';
   String initialCountry = 'PK';
   PhoneNumber number = PhoneNumber(isoCode: 'PK');
-  final TextEditingController _phoneController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Theme(
@@ -45,10 +47,10 @@ class _CountryCodePickerState extends State<CountryCodePicker> {
         onInputChanged: (PhoneNumber number) {
           print(number.phoneNumber);
           print(number);
-          if (_phoneController.text.isNotEmpty &&
-              _phoneController.text.startsWith('0')) {
-            print('_PHONECONTROLLER: ${_phoneController.text}');
-            _phoneController.clear();
+          if (widget.controller!.text.isNotEmpty &&
+              widget.controller!.text.startsWith('0')) {
+            print('_PHONECONTROLLER: ${widget.controller!.text}');
+            widget.controller!.clear();
             setState(() {});
             return;
           }
@@ -82,7 +84,7 @@ class _CountryCodePickerState extends State<CountryCodePicker> {
         cursorColor: Colors.black,
         spaceBetweenSelectorAndTextField: 0,
         validator: (String? value) => CustomValidator.number(value),
-        textFieldController: _phoneController,
+        textFieldController: widget.controller,
         formatInput: true,
         keyboardType: const TextInputType.numberWithOptions(
             signed: false, decimal: false),

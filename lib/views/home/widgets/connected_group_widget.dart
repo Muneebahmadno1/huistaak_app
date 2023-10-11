@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:huistaak/views/home/group_detail.dart';
+import 'package:intl/intl.dart';
 
 import '../../../constants/global_variables.dart';
 
@@ -8,14 +9,16 @@ class ConnectedGroupList extends StatefulWidget {
   final String name;
   final String desc;
   final String imageUrl;
-  final String time;
-  final bool isOpened;
+  final DateTime time;
+  final String groupID;
+
   ConnectedGroupList(
       {required this.name,
       required this.desc,
       required this.imageUrl,
       required this.time,
-      required this.isOpened});
+      required this.groupID});
+
   @override
   _ConnectedGroupListState createState() => _ConnectedGroupListState();
 }
@@ -25,7 +28,10 @@ class _ConnectedGroupListState extends State<ConnectedGroupList> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Get.to(() => GroupDetail());
+        Get.to(() => GroupDetail(
+              groupID: widget.groupID,
+              groupTitle: widget.name,
+            ));
       },
       child: Container(
         padding: EdgeInsets.only(top: 10, bottom: 10),
@@ -59,13 +65,9 @@ class _ConnectedGroupListState extends State<ConnectedGroupList> {
                           Text(
                             widget.desc,
                             style: bodyNormal.copyWith(
-                                fontFamily: widget.isOpened
-                                    ? "MontserratRegular"
-                                    : "MontserratSemiBold",
+                                fontFamily: "MontserratRegular",
                                 fontSize: 12,
-                                color: widget.isOpened
-                                    ? Colors.black54
-                                    : Colors.black),
+                                color: Colors.black54),
                           ),
                         ],
                       ),
@@ -79,29 +81,15 @@ class _ConnectedGroupListState extends State<ConnectedGroupList> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  Container(
-                    height: 20,
-                    width: 20,
-                    decoration: BoxDecoration(
-                        color: AppColors.buttonColor, shape: BoxShape.circle),
-                    child: Center(
-                      child: Text(
-                        "1",
-                        style: bodySmall.copyWith(color: Colors.white),
-                      ),
-                    ),
-                  ),
                   SizedBox(
                     height: 6,
                   ),
                   Text(
-                    widget.time,
+                    DateFormat('dd-MM-yyyy').format(widget.time),
                     style: bodySmall.copyWith(
-                        fontFamily: widget.isOpened
-                            ? "MontserratRegular"
-                            : "MontserratSemiBold",
+                        fontFamily: "MontserratRegular",
                         fontSize: 12,
-                        color: widget.isOpened ? Colors.black54 : Colors.black),
+                        color: Colors.black54),
                   ),
                 ],
               ),

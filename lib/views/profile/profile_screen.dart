@@ -1,4 +1,5 @@
 import 'package:delayed_display/delayed_display.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:huistaak/views/profile/change_password.dart';
@@ -10,6 +11,8 @@ import 'package:zoom_tap_animation/zoom_tap_animation.dart';
 
 import '../../constants/app_images.dart';
 import '../../constants/global_variables.dart';
+import '../../helper/page_navigation.dart';
+import '../auth/login_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -79,7 +82,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                "Cameron Williamson",
+                                userData.displayName,
                                 style: bodyNormal.copyWith(
                                   fontFamily: "MontserratBold",
                                 ),
@@ -205,7 +208,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     delay: Duration(milliseconds: 900),
                     slidingBeginOffset: Offset(0, 0),
                     child: CustomCard(
-                      onTap: () {},
+                      onTap: () {
+                        setUserLoggedIn(false);
+                        FirebaseAuth.instance.signOut();
+                        PageTransition.pageProperNavigation(
+                            page: const LoginScreen());
+                      },
                       suffixIcon: Icon(
                         Icons.logout,
                         color: AppColors.buttonColor,

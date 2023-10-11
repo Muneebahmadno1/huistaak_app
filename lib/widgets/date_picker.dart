@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
 import '../constants/global_variables.dart';
+import '../helper/data_helper.dart';
 
 class DatePickerWidget extends StatefulWidget {
   @override
@@ -9,8 +11,7 @@ class DatePickerWidget extends StatefulWidget {
 }
 
 class _DatePickerWidgetState extends State<DatePickerWidget> {
-  DateTime? selectedDate;
-
+  final DataHelper _dataController = Get.find<DataHelper>();
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -27,9 +28,9 @@ class _DatePickerWidgetState extends State<DatePickerWidget> {
           color: Colors.black26,
         ), // Add a calendar icon in the leading position
         title: Text(
-          selectedDate == null
+          _dataController.selectedDate == null
               ? 'Select Date'
-              : '${DateFormat.yMMMd().format(selectedDate!)}',
+              : '${DateFormat.yMMMd().format(_dataController.selectedDate!)}',
           style: bodyNormal,
         ), // Format the date
         trailing: Icon(Icons.arrow_drop_down, color: Colors.black),
@@ -43,8 +44,8 @@ class _DatePickerWidgetState extends State<DatePickerWidget> {
   Future<void> _showDatePicker(BuildContext context) async {
     final DateTime? pickedDate = await showDatePicker(
       context: context,
-      initialDate: selectedDate ?? DateTime.now(),
-      firstDate: DateTime(1950),
+      initialDate: _dataController.selectedDate ?? DateTime.now(),
+      firstDate: DateTime(1900),
       lastDate: DateTime(2101),
       builder: (BuildContext context, Widget? child) {
         return Theme(
@@ -62,9 +63,9 @@ class _DatePickerWidgetState extends State<DatePickerWidget> {
       },
     );
 
-    if (pickedDate != null && pickedDate != selectedDate) {
+    if (pickedDate != null && pickedDate != _dataController.selectedDate) {
       setState(() {
-        selectedDate = pickedDate;
+        _dataController.selectedDate = pickedDate;
       });
     }
   }

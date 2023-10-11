@@ -34,7 +34,7 @@ class _ResetPasswordState extends State<ResetPassword> {
         title: CustomAppBar(
           pageTitle: "",
           onTap: () {
-            Get.off(() => LoginScreen(controller: TextEditingController()));
+            Get.off(() => LoginScreen());
           },
           leadingButton: Icon(
             Icons.arrow_back_ios,
@@ -194,8 +194,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                         // if (!key.currentState!.validate()) {
                         //   return;
                         // }
-                        Get.offAll(() =>
-                            LoginScreen(controller: TextEditingController()));
+                        Get.offAll(() => LoginScreen());
                       },
                     ),
                   ),

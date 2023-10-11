@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:sizer/sizer.dart';
 import 'package:zoom_tap_animation/zoom_tap_animation.dart';
 
 import '../constants/global_variables.dart';
+import '../helper/page_navigation.dart';
 
 class CustomButton extends StatefulWidget {
   final String? buttonText;
@@ -99,4 +101,146 @@ class _CustomAppBarState extends State<CustomAppBar> {
       ),
     );
   }
+}
+
+successPopUp(BuildContext context, page, message) {
+  // set up the AlertDialog
+  return showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        return StatefulBuilder(builder: (context, setState) {
+          return AlertDialog(
+            backgroundColor: Colors.white,
+            elevation: 0,
+            contentPadding: EdgeInsets.zero,
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(13)),
+            // title: Text("Notice"),
+            // content: Text("Launching this missile will destroy the entire universe. Is this what you intended to do?"),
+            actions: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                      decoration: const BoxDecoration(
+                        color: Colors.white,
+                      ),
+                      alignment: Alignment.center,
+                      child: Padding(
+                        padding: const EdgeInsets.all(18.0),
+                        child: Column(
+                          children: [
+                            Icon(
+                              Icons.account_tree_rounded,
+                              color: AppColors.buttonColor,
+                              size: 5.h,
+                            ),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(left: 15.0, right: 15.0),
+                              child: Text(
+                                message.toString(),
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  height: 1.4,
+                                  fontWeight: FontWeight.w600,
+                                  fontFamily: 'Poppins',
+                                  color: Colors.black,
+                                  fontSize: 17,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            CustomButton(
+                              buttonText: 'Done',
+                              onTap: () {
+                                Navigator.pop(context);
+                                PageTransition.pageProperNavigation(page: page);
+                              },
+                            )
+                          ],
+                        ),
+                      )),
+                ],
+              ),
+            ],
+          );
+        });
+      });
+}
+
+errorPopUp(BuildContext context, String message) {
+  // set up the AlertDialog
+  return showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        return StatefulBuilder(builder: (context, setState) {
+          return AlertDialog(
+            backgroundColor: Colors.white,
+            elevation: 0,
+            contentPadding: EdgeInsets.zero,
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(13)),
+            // title: Text("Notice"),
+            // content: Text("Launching this missile will destroy the entire universe. Is this what you intended to do?"),
+            actions: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                      decoration: const BoxDecoration(
+                        color: Colors.white,
+                      ),
+                      alignment: Alignment.center,
+                      child: Padding(
+                        padding: const EdgeInsets.all(18.0),
+                        child: Column(
+                          children: [
+                            Icon(
+                              Icons.error_outline,
+                              color: AppColors.buttonColor,
+                              size: 5.h,
+                            ),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(left: 15.0, right: 15.0),
+                              child: Text(
+                                message.toString(),
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  height: 1.4,
+                                  fontWeight: FontWeight.w600,
+                                  fontFamily: 'Poppins',
+                                  color: Colors.black,
+                                  fontSize: 17,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            CustomButton(
+                              buttonText: 'Done',
+                              onTap: () {
+                                Navigator.pop(context);
+                                // PageTransition.pageNavigation(page: page);
+                              },
+                            )
+                          ],
+                        ),
+                      )),
+                ],
+              ),
+            ],
+          );
+        });
+      });
 }

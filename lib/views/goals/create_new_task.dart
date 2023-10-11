@@ -153,7 +153,9 @@ class CreateNewTask extends StatelessWidget {
                   ),
                   ZoomTapAnimation(
                     onTap: () {
-                      Get.to(() => AddMember());
+                      Get.to(() => AddMember(
+                            from: 'groupGoal',
+                          ));
                     },
                     child: Container(
                         height: 56,
