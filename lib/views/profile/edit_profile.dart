@@ -1,13 +1,19 @@
+import 'dart:io';
+
 import 'package:delayed_display/delayed_display.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:huistaak/views/home/bottom_nav_bar.dart';
 import 'package:huistaak/widgets/country_picker_widget.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:path/path.dart' as path;
 import 'package:zoom_tap_animation/zoom_tap_animation.dart';
 
 import '../../constants/app_images.dart';
 import '../../constants/custom_validators.dart';
 import '../../constants/global_variables.dart';
+import '../../helper/data_helper.dart';
 import '../../widgets/custom_widgets.dart';
 import '../../widgets/text_form_fields.dart';
 
@@ -19,25 +25,36 @@ class EditProfile extends StatefulWidget {
 }
 
 class _EditProfileState extends State<EditProfile> {
-  bool _obscureText = true;
-  bool _obscureTextConfirm = true;
+  final DataHelper _dataController = Get.find<DataHelper>();
   final GlobalKey<FormState> key = GlobalKey<FormState>();
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController postalCodeController = TextEditingController();
+  final TextEditingController phoneController = TextEditingController();
 
-  DateTime selectedDate = DateTime.now();
+  bool loader = false;
+  late PickedFile pickedFile;
+  String? imageUrl;
+  File? imageFile;
+  final picker = ImagePicker();
+  bool processingStatus = false;
+  FirebaseStorage storage = FirebaseStorage.instance;
+  XFile? pickedImage;
+  final GlobalKey<FormState> profileField = GlobalKey();
 
-  Future<void> _selectDate(BuildContext context) async {
-    final DateTime? picked = await showDatePicker(
-      fieldHintText: "DD/MM/YYYY",
-      context: context,
-      initialDate: selectedDate,
-      firstDate: DateTime(1900),
-      lastDate: DateTime(2101),
-    );
-    if (picked != null && picked != selectedDate) {
-      setState(() {
-        selectedDate = picked;
-      });
-    }
+  getData() {
+    setState(() {
+      nameController.text = userData.displayName ?? "";
+      postalCodeController.text = userData.postalCode;
+      phoneController.text = userData.phoneNumber;
+      imageUrl = userData.imageUrl;
+    });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getData();
   }
 
   @override
@@ -60,182 +77,285 @@ class _EditProfileState extends State<EditProfile> {
           ),
         ),
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 22.0),
-          child: Column(
-            children: [
-              SizedBox(
-                height: 30,
-              ),
-              DelayedDisplay(
-                delay: Duration(milliseconds: 400),
-                slidingBeginOffset: Offset(0, 0),
-                child: Stack(
-                  children: [
-                    CircleAvatar(
-                      radius: 60,
-                      backgroundColor: AppColors.buttonColor,
-                      child: CircleAvatar(
-                        radius: 58,
-                        backgroundImage: AssetImage(AppImages.profileImage),
-                      ),
-                    ),
-                    Positioned(
-                      right: 0,
-                      bottom: 10,
-                      child: ZoomTapAnimation(
-                        onTap: () {},
-                        onLongTap: () {},
-                        enableLongTapRepeatEvent: false,
-                        longTapRepeatDuration:
-                            const Duration(milliseconds: 100),
-                        begin: 1.0,
-                        end: 0.93,
-                        beginDuration: const Duration(milliseconds: 20),
-                        endDuration: const Duration(milliseconds: 120),
-                        beginCurve: Curves.decelerate,
-                        endCurve: Curves.fastOutSlowIn,
+      body: Form(
+        key: key,
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 22.0),
+            child: Column(
+              children: [
+                SizedBox(
+                  height: 30,
+                ),
+                DelayedDisplay(
+                  delay: Duration(milliseconds: 400),
+                  slidingBeginOffset: Offset(0, 0),
+                  child: Stack(
+                    children: [
+                      CircleAvatar(
+                        radius: 60,
+                        backgroundColor: AppColors.buttonColor,
                         child: CircleAvatar(
-                            radius: 16,
-                            backgroundColor: AppColors.buttonColor,
-                            child: Icon(
-                              Icons.camera_alt,
-                              color: Colors.white,
-                              size: 16,
-                            )),
+                          radius: 58,
+                          backgroundImage: imageFile != null
+                              ? FileImage(imageFile!) as ImageProvider
+                              : (userData.imageUrl != "" &&
+                                      userData.imageUrl != null)
+                                  ? NetworkImage(userData.imageUrl)
+                                      as ImageProvider
+                                  : AssetImage(
+                                      AppImages.profileImage,
+                                    ),
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(
-                height: 30,
-              ),
-              DelayedDisplay(
-                delay: Duration(milliseconds: 500),
-                slidingBeginOffset: Offset(0, -1),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Full Name:",
-                      style: bodyNormal.copyWith(
-                          color: Colors.black87,
-                          fontFamily: "MontserratSemiBold"),
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    CustomTextField(
-                      validator: (value) =>
-                          CustomValidator.isEmptyUserName(value),
-                      hintText: "Robert Fox",
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 20),
-              DelayedDisplay(
-                delay: Duration(milliseconds: 700),
-                slidingBeginOffset: Offset(0, -1),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Email address:",
-                      style: bodyNormal.copyWith(
-                          color: Colors.black87,
-                          fontFamily: "MontserratSemiBold"),
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    CustomTextField(
-                      validator: (value) => CustomValidator.email(value),
-                      hintText: "robert123@gmail.com",
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 20),
-              DelayedDisplay(
-                delay: Duration(milliseconds: 700),
-                slidingBeginOffset: Offset(0, -1),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Phone Number:",
-                      style: bodyNormal.copyWith(
-                          color: Colors.black87,
-                          fontFamily: "MontserratSemiBold"),
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Container(
-                      height: 56,
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(40),
-                          border: Border.all(
-                              color: AppColors.buttonColor, width: 0.7)),
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 26.0, right: 12),
-                        child: CountryCodePicker(),
+                      Positioned(
+                        right: 0,
+                        bottom: 10,
+                        child: ZoomTapAnimation(
+                          onTap: () {
+                            _upload("gallery");
+                          },
+                          onLongTap: () {},
+                          enableLongTapRepeatEvent: false,
+                          longTapRepeatDuration:
+                              const Duration(milliseconds: 100),
+                          begin: 1.0,
+                          end: 0.93,
+                          beginDuration: const Duration(milliseconds: 20),
+                          endDuration: const Duration(milliseconds: 120),
+                          beginCurve: Curves.decelerate,
+                          endCurve: Curves.fastOutSlowIn,
+                          child: CircleAvatar(
+                              radius: 16,
+                              backgroundColor: AppColors.buttonColor,
+                              child: Icon(
+                                Icons.camera_alt,
+                                color: Colors.white,
+                                size: 16,
+                              )),
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 20),
-              DelayedDisplay(
-                delay: Duration(milliseconds: 700),
-                slidingBeginOffset: Offset(0, -1),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Postal Code of House:",
-                      style: bodyNormal.copyWith(
-                          color: Colors.black87,
-                          fontFamily: "MontserratSemiBold"),
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    CustomTextField(
-                      validator: (value) => CustomValidator.email(value),
-                      hintText: "Postal Code",
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              DelayedDisplay(
-                delay: Duration(milliseconds: 1000),
-                slidingBeginOffset: Offset(0, 0),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8),
-                  child: CustomButton(
-                    buttonText: "Save Changes",
-                    onTap: () {
-                      Get.offAll(() => CustomBottomNavBar());
-                    },
+                    ],
                   ),
                 ),
-              ),
-              SizedBox(
-                height: 20,
-              ),
-            ],
+                SizedBox(
+                  height: 30,
+                ),
+                DelayedDisplay(
+                  delay: Duration(milliseconds: 500),
+                  slidingBeginOffset: Offset(0, -1),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Full Name:",
+                        style: bodyNormal.copyWith(
+                            color: Colors.black87,
+                            fontFamily: "MontserratSemiBold"),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      CustomTextField(
+                        controller: nameController,
+                        validator: (value) =>
+                            CustomValidator.isEmptyUserName(value),
+                        hintText: "Robert Fox",
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 20),
+                DelayedDisplay(
+                  delay: Duration(milliseconds: 700),
+                  slidingBeginOffset: Offset(0, -1),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Email address:",
+                        style: bodyNormal.copyWith(
+                            color: Colors.black87,
+                            fontFamily: "MontserratSemiBold"),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      CustomTextField(
+                        hintText: userData.email,
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 20),
+                DelayedDisplay(
+                  delay: Duration(milliseconds: 700),
+                  slidingBeginOffset: Offset(0, -1),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Phone Number:",
+                        style: bodyNormal.copyWith(
+                            color: Colors.black87,
+                            fontFamily: "MontserratSemiBold"),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Container(
+                        height: 56,
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(40),
+                            border: Border.all(
+                                color: AppColors.buttonColor, width: 0.7)),
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 26.0, right: 12),
+                          child: CountryCodePicker(
+                            controller: phoneController,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 20),
+                DelayedDisplay(
+                  delay: Duration(milliseconds: 700),
+                  slidingBeginOffset: Offset(0, -1),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Postal Code of House:",
+                        style: bodyNormal.copyWith(
+                            color: Colors.black87,
+                            fontFamily: "MontserratSemiBold"),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      CustomTextField(
+                        controller: postalCodeController,
+                        validator: (value) => CustomValidator.isEmpty(value),
+                        hintText: "Postal Code",
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                DelayedDisplay(
+                  delay: Duration(milliseconds: 1000),
+                  slidingBeginOffset: Offset(0, 0),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    child: CustomButton(
+                      buttonText: "Save Changes",
+                      onTap: () async {
+                        if (key.currentState!.validate()) {
+                          Get.defaultDialog(
+                              barrierDismissible: false,
+                              title: "Huistaak",
+                              titleStyle: const TextStyle(
+                                color: AppColors.buttonColor,
+                                fontSize: 18,
+                                fontWeight: FontWeight.w500,
+                                fontFamily: 'Poppins',
+                              ),
+                              middleText: "",
+                              content: const Column(
+                                children: [
+                                  Center(
+                                      child: CircularProgressIndicator(
+                                    color: AppColors.buttonColor,
+                                  ))
+                                ],
+                              ));
+
+                          await _dataController.editProfile(
+                              nameController.text,
+                              imageUrl,
+                              postalCodeController.text,
+                              phoneController.text);
+                          setState(() {});
+                          Get.back();
+                        }
+                      },
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+              ],
+            ),
           ),
         ),
       ),
     );
+  }
+
+  Future<void> _upload(String inputSource) async {
+    Get.defaultDialog(
+        barrierDismissible: false,
+        title: "Huistaak",
+        titleStyle: const TextStyle(
+          color: AppColors.buttonColor,
+          fontSize: 18,
+          fontWeight: FontWeight.w500,
+          fontFamily: 'Poppins',
+        ),
+        middleText: "",
+        content: const Column(
+          children: [
+            Center(
+                child: CircularProgressIndicator(
+              color: AppColors.buttonColor,
+            ))
+          ],
+        ));
+    try {
+      pickedImage = await picker.pickImage(
+          source: inputSource == 'camera'
+              ? ImageSource.camera
+              : ImageSource.gallery,
+          maxWidth: 1920);
+      setState(() {
+        processingStatus = true;
+      });
+      final String fileName = path.basename(pickedImage!.path);
+      try {
+        // Uploading the selected image with some custom meta data
+        {
+          imageFile = File(pickedImage!.path);
+          await storage.ref(fileName).putFile(imageFile!).then((p0) async {
+            imageUrl = await p0.ref.getDownloadURL();
+            setState(() {});
+            if (p0.state == TaskState.success) {
+              setState(() {
+                processingStatus = false;
+              });
+            }
+          });
+        }
+        // Refresh the UI
+        Get.back();
+        setState(() {});
+      } on FirebaseException catch (error) {
+        Get.back();
+        if (kDebugMode) {
+          print(error);
+        }
+      }
+    } catch (err) {
+      Get.back();
+      if (kDebugMode) {
+        print(err);
+      }
+    }
   }
 }

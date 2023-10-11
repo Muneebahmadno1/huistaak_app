@@ -1,12 +1,18 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:huistaak/controllers/general_controller.dart';
 import 'package:huistaak/splash_screen.dart';
 import 'package:sizer/sizer.dart';
 
-void main() {
-  runApp(const MyApp());
+import 'helper/data_helper.dart';
+
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+
+  Get.put(DataHelper());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {

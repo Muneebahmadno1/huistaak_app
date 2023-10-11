@@ -34,7 +34,12 @@ dependencies:
   water_drop_nav_bar: ^2.2.0+5
   percent_indicator: ^4.2.3
   flutter_slidable: ^3.0.0
-
+  firebase_core: ^2.10.0
+  firebase_auth: ^4.4.2
+  firebase_storage: ^11.2.0
+  cloud_firestore: ^4.8.0
+  shared_preferences:
+  image_picker: ^1.0.4
 
 dev_dependencies:
   flutter_test:

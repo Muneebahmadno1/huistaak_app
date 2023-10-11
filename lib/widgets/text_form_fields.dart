@@ -10,10 +10,13 @@ class AuthTextField extends StatefulWidget {
   final Widget? suffixIcon;
   final String? prefixIcon;
   final bool? isObscure;
+  final TextEditingController? controller;
   final FormFieldValidator<String>? validator;
+
   const AuthTextField(
       {Key? key,
       required this.hintText,
+      this.controller,
       this.suffixIcon,
       this.isObscure,
       this.prefixIcon,
@@ -25,60 +28,83 @@ class AuthTextField extends StatefulWidget {
 }
 
 class _AuthTextFieldState extends State<AuthTextField> {
-  final TextEditingController _textEditingController = TextEditingController();
-
   @override
   void dispose() {
-    _textEditingController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 100.w,
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(50),
-          color: Colors.transparent,
-          border: Border.all(color: Colors.black26)),
-      child: Center(
-        child: TextFormField(
-          validator: widget.validator,
-          obscureText: widget.isObscure ?? false,
-          controller: _textEditingController,
-          cursorColor: Colors.black,
-          style: bodyNormal.copyWith(fontFamily: "MontserratSemiBold"),
-          decoration: InputDecoration(
-              contentPadding:
-                  const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-              border: InputBorder.none,
-              focusedBorder: InputBorder.none,
-              enabledBorder: InputBorder.none,
-              hintText: widget.hintText,
-              hintStyle: bodyNormal.copyWith(
-                  color: Colors.black54, fontFamily: "MontserratSemiBold"),
-              suffixIcon: widget.suffixIcon,
-              suffixIconColor: Colors.black,
-              prefixIcon: widget.prefixIcon == null
-                  ? Padding(
-                      padding: EdgeInsets.only(left: 26.0),
-                      child: SizedBox(),
-                    )
-                  : Padding(
-                      padding: EdgeInsets.only(left: 26.0, right: 10),
-                      child: SizedBox(
-                        width: 16,
-                        child: Image.asset(
-                          widget.prefixIcon!,
-                        ),
+    return Center(
+      child: TextFormField(
+        validator: widget.validator,
+        obscureText: widget.isObscure ?? false,
+        controller: widget.controller,
+        cursorColor: Colors.black,
+        style: bodyNormal.copyWith(fontFamily: "MontserratSemiBold"),
+        decoration: InputDecoration(
+            contentPadding:
+                const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+            border: InputBorder.none,
+            disabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(50),
+              borderSide: BorderSide(
+                color: Colors.black26, // Make the border transparent
+                width: 1, // Set the width to 0 to make it disappear
+              ),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(50),
+              borderSide: BorderSide(
+                color: Colors.black26, // Make the border transparent
+                width: 1, // Set the width to 0 to make it disappear
+              ),
+            ),
+            errorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(50),
+              borderSide: BorderSide(
+                color: Colors.black26, // Make the border transparent
+                width: 1, // Set the width to 0 to make it disappear
+              ),
+            ),
+            focusedErrorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(50),
+              borderSide: BorderSide(
+                color: Colors.black26, // Make the border transparent
+                width: 1, // Set the width to 0 to make it disappear
+              ),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(50),
+              borderSide: BorderSide(
+                color: Colors.black26, // Make the border transparent
+                width: 1, // Set the width to 0 to make it disappear
+              ),
+            ),
+            hintText: widget.hintText,
+            hintStyle: bodyNormal.copyWith(
+                color: Colors.black54, fontFamily: "MontserratSemiBold"),
+            suffixIcon: widget.suffixIcon,
+            suffixIconColor: Colors.black,
+            prefixIcon: widget.prefixIcon == null
+                ? Padding(
+                    padding: EdgeInsets.only(left: 26.0),
+                    child: SizedBox(),
+                  )
+                : Padding(
+                    padding: EdgeInsets.only(left: 26.0, right: 10),
+                    child: SizedBox(
+                      width: 16,
+                      child: Image.asset(
+                        widget.prefixIcon!,
                       ),
                     ),
-              prefixIconColor: Colors.white,
-              prefixIconConstraints: const BoxConstraints(
-                maxHeight: 30,
-                minHeight: 30,
-              )),
-        ),
+                  ),
+            prefixIconColor: Colors.white,
+            prefixIconConstraints: const BoxConstraints(
+              maxHeight: 30,
+              minHeight: 30,
+            )),
       ),
     );
   }
@@ -96,6 +122,7 @@ class CustomTextField extends StatefulWidget {
   final onChanged;
   final String? suffixText;
   final String? prefixText;
+
   const CustomTextField(
       {Key? key,
       required this.hintText,

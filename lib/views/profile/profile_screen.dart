@@ -79,7 +79,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                "Cameron Williamson",
+                                userData.displayName,
                                 style: bodyNormal.copyWith(
                                   fontFamily: "MontserratBold",
                                 ),

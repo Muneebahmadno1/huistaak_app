@@ -30,7 +30,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
         title: CustomAppBar(
           pageTitle: "",
           onTap: () {
-            Get.off(() => LoginScreen(controller: TextEditingController()));
+            Get.off(() => LoginScreen());
           },
           leadingButton: Icon(
             Icons.arrow_back_ios,
