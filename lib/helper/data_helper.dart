@@ -28,6 +28,7 @@ class DataHelper extends GetxController {
           .createUserWithEmailAndPassword(email: emails, password: pass);
       await FirebaseAuth.instance.currentUser
           ?.updateDisplayName(map['displayName']);
+
       FirebaseFirestore.instance.collection('users').doc(user.user!.uid).set({
         "userID": user.user!.uid,
         "displayName": map['displayName'].toString(),
@@ -36,6 +37,10 @@ class DataHelper extends GetxController {
         "phoneNumber": map['phoneNumber'].toString(),
         "postalCode": map['postalCode'].toString(),
       });
+      FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.user!.uid)
+          .set(map);
       FirebaseAuth.instance.currentUser?.sendEmailVerification();
       Get.back();
       //setState(() {});

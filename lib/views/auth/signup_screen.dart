@@ -349,6 +349,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             "displayName":
                                 nameEditingController.text.toString(),
                             "email": emailEditingController.text.toString(),
+                            "password":
+                                passwordEditingController.text.toString(),
                             "imageUrl": "",
                             "phoneNumber":
                                 phoneEditingController.text.toString(),
