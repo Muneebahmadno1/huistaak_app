@@ -1,47 +1,42 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:huistaak/constants/global_variables.dart';
 import 'package:huistaak/views/home/widgets/add_members_widget.dart';
 import 'package:sizer/sizer.dart';
 
 import '../../../helper/data_helper.dart';
 import '../../../widgets/custom_widgets.dart';
 
-class AddMember extends StatefulWidget {
+class AssignMember extends StatefulWidget {
   final String from;
+  final groupID;
 
-  const AddMember({super.key, required this.from});
+  const AssignMember({super.key, required this.from, required this.groupID});
 
   @override
-  State<AddMember> createState() => _AddMemberState();
+  State<AssignMember> createState() => _AssignMemberState();
 }
 
-class _AddMemberState extends State<AddMember> {
+class _AssignMemberState extends State<AssignMember> {
   List<int> selectedIndex = [];
-  List<dynamic> userList = [];
   final DataHelper _dataController = Get.find<DataHelper>();
 
+  List<Map<String, dynamic>> userList = [];
   bool isLoading = false;
 
   getData() async {
     setState(() {
       isLoading = true;
     });
-    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
-        .collection('users')
-        .where("userID", isNotEqualTo: userData.userID)
+    var querySnapshot = await FirebaseFirestore.instance
+        .collection('groups')
+        .doc(widget.groupID)
         .get();
-    for (int i = 0; i < querySnapshot.docs.length; i++) {
-      var a = querySnapshot.docs[i].data() as Map;
-      setState(() {
-        userList.add({
-          "displayName": a['displayName'],
-          "imageUrl": a['imageUrl'],
-          "userID": a['userID'],
-        });
+    setState(() {
+      userList.add({
+        "membersList": List.from(querySnapshot['membersList']),
       });
-    }
+    });
     setState(() {
       isLoading = false;
     });
@@ -91,7 +86,7 @@ class _AddMemberState extends State<AddMember> {
                         child: Padding(
                           padding: EdgeInsets.only(top: 25.h),
                           child: Container(
-                            child: Text("No User Available"),
+                            child: Text("No member Available"),
                           ),
                         ),
                       )
@@ -102,52 +97,63 @@ class _AddMemberState extends State<AddMember> {
                               return InkWell(
                                 onTap: () {
                                   if (selectedIndex.contains(i) &&
-                                      (widget.from == "member"
-                                          ? _dataController.groupMembers.any(
-                                              (map) =>
+                                      (widget.from == "groupTask"
+                                          ? _dataController.assignTaskMember
+                                              .any((map) =>
                                                   map['userID'] ==
-                                                  userList[i]['userID'])
-                                          : _dataController.groupAdmins.any(
-                                              (map) =>
+                                                  userList[0]['membersList'][i]
+                                                      ['userID'])
+                                          : _dataController.assignGoalMember
+                                              .any((map) =>
                                                   map['userID'] ==
-                                                  userList[i]['userID']))) {
+                                                  userList[0]['membersList'][i]
+                                                      ['userID']))) {
                                     selectedIndex.remove(i);
-                                    widget.from == "member"
-                                        ? _dataController.groupMembers
+                                    widget.from == "groupTask"
+                                        ? _dataController.assignTaskMember
                                             .removeWhere((map) =>
                                                 map['userID'] ==
-                                                userList[i]['userID'])
-                                        : _dataController.groupAdmins
+                                                userList[0]['membersList'][i]
+                                                    ['userID'])
+                                        : _dataController.assignGoalMember
                                             .removeWhere((map) =>
                                                 map['userID'] ==
-                                                userList[i]['userID']);
+                                                userList[0]['membersList'][i]
+                                                    ['userID']);
                                   } else {
                                     selectedIndex.add(i);
-                                    widget.from == "member"
-                                        ? _dataController.groupMembers.add({
-                                            'userID': userList[i]['userID'],
-                                            'displayName': userList[i]
+                                    widget.from == "groupTask"
+                                        ? _dataController.assignTaskMember.add({
+                                            'userID': userList[0]['membersList']
+                                                [i]['userID'],
+                                            'displayName': userList[0]
+                                                    ['membersList'][i]
                                                 ['displayName'],
-                                            'imageUrl': userList[i]['imageUrl']
+                                            'imageUrl': userList[0]
+                                                ['membersList'][i]['imageUrl']
                                           })
-                                        : _dataController.groupAdmins.add({
-                                            'userID': userList[i]['userID'],
-                                            'displayName': userList[i]
+                                        : _dataController.assignGoalMember.add({
+                                            'userID': userList[0]['membersList']
+                                                [i]['userID'],
+                                            'displayName': userList[0]
+                                                    ['membersList'][i]
                                                 ['displayName'],
-                                            'imageUrl': userList[i]['imageUrl']
+                                            'imageUrl': userList[0]
+                                                ['membersList'][i]['imageUrl']
                                           });
                                   }
                                   setState(() {
                                     print(selectedIndex);
-                                    print(widget.from == "member"
-                                        ? _dataController.groupMembers
-                                        : _dataController.groupAdmins);
+                                    print(widget.from == "groupTask"
+                                        ? _dataController.assignTaskMember
+                                        : _dataController.assignGoalMember);
                                   });
                                 },
                                 child: AddMemberWidget(
                                   suffixIcon: "assets/images/man1.jpg",
                                   isActive: selectedIndex.contains(i),
-                                  title: userList[i]['displayName'],
+                                  title: userList[0]['membersList'][i]
+                                      ['displayName'],
                                 ),
                               );
                             }),

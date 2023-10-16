@@ -1,3 +1,4 @@
+import 'package:delayed_display/delayed_display.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:huistaak/widgets/custom_widgets.dart';
@@ -6,6 +7,7 @@ import 'package:zoom_tap_animation/zoom_tap_animation.dart';
 import '../../constants/global_variables.dart';
 import '../../widgets/text_form_fields.dart';
 import '../notification/notifications.dart';
+import 'group/create_new_group.dart';
 
 class ConnectNewGroup extends StatelessWidget {
   const ConnectNewGroup({super.key});
@@ -51,7 +53,7 @@ class ConnectNewGroup extends StatelessWidget {
                         width: 10,
                       ),
                       Text(
-                        "Leslie Alexander",
+                        userData.displayName,
                         style: headingMedium,
                       ),
                     ],
@@ -122,6 +124,64 @@ class ConnectNewGroup extends StatelessWidget {
               ),
               SizedBox(
                 height: 6,
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              DelayedDisplay(
+                delay: Duration(milliseconds: 600),
+                slidingBeginOffset: Offset(0, 0),
+                child: ZoomTapAnimation(
+                  onTap: () {
+                    // Get.to(() => CreateNewGroupTask());
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    width: double.infinity,
+                    height: 60,
+                    decoration: BoxDecoration(
+                        color: AppColors.buttonColor,
+                        borderRadius: BorderRadius.circular(40)),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          "Join Now",
+                          style: headingSmall.copyWith(color: Colors.white),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              DelayedDisplay(
+                delay: Duration(milliseconds: 600),
+                slidingBeginOffset: Offset(0, 0),
+                child: ZoomTapAnimation(
+                  onTap: () {
+                    Get.to(() => CreateNewGroup());
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    width: double.infinity,
+                    height: 60,
+                    decoration: BoxDecoration(
+                        color: AppColors.buttonColor,
+                        borderRadius: BorderRadius.circular(40)),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          "Create Group",
+                          style: headingSmall.copyWith(color: Colors.white),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
               ),
             ],
           ),

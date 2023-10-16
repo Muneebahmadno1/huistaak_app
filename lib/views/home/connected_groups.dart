@@ -1,13 +1,14 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:delayed_display/delayed_display.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:huistaak/views/home/connect_new_group.dart';
 import 'package:huistaak/views/home/widgets/connected_group_widget.dart';
 import 'package:huistaak/views/notification/notifications.dart';
+import 'package:sizer/sizer.dart';
 import 'package:zoom_tap_animation/zoom_tap_animation.dart';
 
 import '../../constants/global_variables.dart';
-import '../../models/connected_group_model.dart';
 import '../../widgets/text_form_fields.dart';
 
 class ConnectedGroupScreen extends StatefulWidget {
@@ -16,18 +17,42 @@ class ConnectedGroupScreen extends StatefulWidget {
 }
 
 class _ConnectedGroupScreenState extends State<ConnectedGroupScreen> {
-  List<ConnectedGroup> chatUsers = [
-    ConnectedGroup(
-        name: "Household tasks",
-        desc: "James posted a new task",
-        imageURL: "assets/images/man1.jpg",
-        time: "06:00 PM"),
-    ConnectedGroup(
-        name: "Daily tasks",
-        desc: "Leslie posted a new task",
-        imageURL: "assets/images/man1.jpg",
-        time: "04:40 PM"),
-  ];
+  List<dynamic> chatUsers = [];
+  bool isLoading = false;
+
+  getData() async {
+    setState(() {
+      isLoading = true;
+    });
+    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(userDocId.value)
+        .collection("myGroups")
+        .get();
+
+    for (int i = 0; i < querySnapshot.docs.length; i++) {
+      var a = querySnapshot.docs[i].data() as Map;
+      setState(() {
+        chatUsers.add({
+          "groupImage": a['groupImage'],
+          "groupName": a['groupName'],
+          "id": a['groupID'],
+        });
+      });
+    }
+
+    setState(() {
+      isLoading = false;
+    });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getData();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -58,7 +83,7 @@ class _ConnectedGroupScreenState extends State<ConnectedGroupScreen> {
                         width: 10,
                       ),
                       Text(
-                        "Leslie Alexander",
+                        userData.displayName,
                         style: headingMedium,
                       ),
                     ],
@@ -119,27 +144,43 @@ class _ConnectedGroupScreenState extends State<ConnectedGroupScreen> {
             SizedBox(
               height: 6,
             ),
-            Expanded(
-              child: ListView.builder(
-                itemCount: chatUsers.length,
-                shrinkWrap: true,
-                padding: EdgeInsets.only(top: 16),
-                physics: BouncingScrollPhysics(),
-                itemBuilder: (context, index) {
-                  return DelayedDisplay(
-                    delay: Duration(milliseconds: 400),
-                    slidingBeginOffset: Offset(0, -1),
-                    child: ConnectedGroupList(
-                      name: chatUsers[index].name,
-                      desc: chatUsers[index].desc,
-                      imageUrl: chatUsers[index].imageURL,
-                      time: chatUsers[index].time,
-                      isOpened: (index == 0 || index == 3) ? true : false,
-                    ),
-                  );
-                },
-              ),
-            ),
+            isLoading
+                ? Center(
+                    child: Padding(
+                    padding: EdgeInsets.only(top: 25.h),
+                    child: CircularProgressIndicator(),
+                  ))
+                : chatUsers.isEmpty
+                    ? Center(
+                        child: Padding(
+                          padding: EdgeInsets.only(top: 25.h),
+                          child: Container(
+                            child: Text("No Connected Group"),
+                          ),
+                        ),
+                      )
+                    : Expanded(
+                        child: ListView.builder(
+                          itemCount: chatUsers.length,
+                          shrinkWrap: true,
+                          padding: EdgeInsets.only(top: 16),
+                          physics: BouncingScrollPhysics(),
+                          itemBuilder: (context, index) {
+                            return DelayedDisplay(
+                              delay: Duration(milliseconds: 400),
+                              slidingBeginOffset: Offset(0, -1),
+                              child: ConnectedGroupList(
+                                name: chatUsers[index]['groupName'],
+                                desc: chatUsers[index]['groupName'],
+                                imageUrl: chatUsers[index]['groupImage'] ??
+                                    "assets/images/man1.jpg",
+                                time: DateTime.now(),
+                                groupID: chatUsers[index]['id'],
+                              ),
+                            );
+                          },
+                        ),
+                      ),
           ],
         ),
       ),

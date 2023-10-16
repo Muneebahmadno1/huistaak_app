@@ -96,10 +96,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                     padding: const EdgeInsets.symmetric(vertical: 4),
                     child: ZoomTapAnimation(
                       onTap: () {
-                        Get.to(
-                            () => LoginScreen(
-                                  controller: TextEditingController(),
-                                ),
+                        Get.to(() => LoginScreen(),
                             transition: Transition.rightToLeft);
                       },
                       child: Container(
