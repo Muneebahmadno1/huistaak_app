@@ -5,12 +5,14 @@ import 'package:get/get.dart';
 import 'package:huistaak/constants/global_variables.dart';
 import 'package:huistaak/views/home/group_task_list.dart';
 import 'package:sizer/sizer.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:zoom_tap_animation/zoom_tap_animation.dart';
 
 import '../../widgets/custom_widgets.dart';
 
 class GroupSetting extends StatefulWidget {
   final groupID;
+
   const GroupSetting({super.key, required this.groupID});
 
   @override
@@ -20,6 +22,7 @@ class GroupSetting extends StatefulWidget {
 class _GroupSettingState extends State<GroupSetting> {
   List<Map<String, dynamic>> groupInfo = [];
   bool isLoading = false;
+  bool Loading = false;
 
   getData() async {
     setState(() {
@@ -46,6 +49,7 @@ class _GroupSettingState extends State<GroupSetting> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    print(widget.groupID);
     getData();
   }
 
@@ -63,7 +67,7 @@ class _GroupSettingState extends State<GroupSetting> {
           },
           leadingButton: Icon(
             Icons.arrow_back_ios_new,
-            color: Colors.black,
+            color: AppColors.buttonColor,
           ),
         ),
       ),
@@ -88,7 +92,8 @@ class _GroupSettingState extends State<GroupSetting> {
                           alignment: Alignment.centerLeft,
                           child: Text(
                             "Group Photo:",
-                            style: headingSmall,
+                            style: headingSmall.copyWith(
+                                color: AppColors.buttonColor),
                           )),
                     ),
                     SizedBox(
@@ -112,7 +117,8 @@ class _GroupSettingState extends State<GroupSetting> {
                           alignment: Alignment.centerLeft,
                           child: Text(
                             "Group Name:",
-                            style: headingSmall,
+                            style: headingSmall.copyWith(
+                                color: AppColors.buttonColor),
                           )),
                     ),
                     SizedBox(
@@ -236,7 +242,8 @@ class _GroupSettingState extends State<GroupSetting> {
                           alignment: Alignment.centerLeft,
                           child: Text(
                             "Group Admins:",
-                            style: headingSmall,
+                            style: headingSmall.copyWith(
+                                color: AppColors.buttonColor),
                           )),
                     ),
                     SizedBox(
@@ -294,7 +301,8 @@ class _GroupSettingState extends State<GroupSetting> {
                           alignment: Alignment.centerLeft,
                           child: Text(
                             "Group Members:",
-                            style: headingSmall,
+                            style: headingSmall.copyWith(
+                                color: AppColors.buttonColor),
                           )),
                     ),
                     SizedBox(
@@ -370,7 +378,87 @@ class _GroupSettingState extends State<GroupSetting> {
                       delay: Duration(milliseconds: 1200),
                       slidingBeginOffset: Offset(0, 0),
                       child: ZoomTapAnimation(
-                        onTap: () {},
+                        onTap: () async {
+                          setState(() {
+                            Loading = true;
+                          });
+                          if (groupInfo[0]['membersList'].isNotEmpty) {
+                            groupInfo[0]['membersList'].removeWhere((map) =>
+                                map['userID'] == userData.userID.toString());
+
+                            if (groupInfo[0]['membersList'].isNotEmpty) {
+                              FirebaseFirestore.instance
+                                  .collection('groups')
+                                  .doc(widget.groupID.toString())
+                                  .update({
+                                'membersList': groupInfo[0]['membersList']
+                              });
+                              setState(() {});
+                            } else {
+                              FirebaseFirestore.instance
+                                  .collection('groups')
+                                  .doc(widget.groupID.toString())
+                                  .delete();
+                              setState(() {});
+                            }
+                          }
+                          if (groupInfo[0]['adminsList'].isNotEmpty) {
+                            groupInfo[0]['adminsList'].removeWhere((map) =>
+                                map['userID'] == userData.userID.toString());
+                            QuerySnapshot querySnapshot =
+                                await FirebaseFirestore.instance
+                                    .collection("users")
+                                    .doc(userData.userID)
+                                    .collection("myGroups")
+                                    .where("groupID",
+                                        isEqualTo: widget.groupID.toString())
+                                    .get();
+                            if (querySnapshot.docs.isNotEmpty) {
+                              for (QueryDocumentSnapshot document
+                                  in querySnapshot.docs) {
+                                await document.reference.delete();
+                              }
+                            }
+
+                            if (groupInfo[0]['adminsList'].isNotEmpty) {
+                              FirebaseFirestore.instance
+                                  .collection('groups')
+                                  .doc(widget.groupID.toString())
+                                  .update({
+                                'adminsList': groupInfo[0]['adminsList']
+                              });
+                              setState(() {});
+                            } else if (groupInfo[0]['membersList'].isNotEmpty) {
+                              // Remove the first element from membersList and store it in a variable.
+                              Map<String, dynamic> removedMember =
+                                  groupInfo[0]['membersList'].removeAt(0);
+
+                              // Add the removed member to adminsList.
+                              groupInfo[0]['adminsList'].add(removedMember);
+
+                              // Now you can update the Firestore document with the modified groupInfo.
+                              FirebaseFirestore.instance
+                                  .collection('groups')
+                                  .doc(widget.groupID.toString())
+                                  .update({
+                                'membersList': groupInfo[0]['membersList'],
+                                'adminsList': groupInfo[0]['adminsList'],
+                              });
+                              setState(() {});
+                            } else if (groupInfo[0]['adminsList'].isEmpty) {
+                              FirebaseFirestore.instance
+                                  .collection('groups')
+                                  .doc(widget.groupID.toString())
+                                  .update({
+                                'adminsList': groupInfo[0]['adminsList']
+                              });
+                              setState(() {});
+                            }
+                          }
+                          setState(() {
+                            Loading = false;
+                          });
+                        },
                         child: Container(
                           padding: const EdgeInsets.symmetric(horizontal: 20),
                           width: double.infinity,
@@ -380,10 +468,13 @@ class _GroupSettingState extends State<GroupSetting> {
                             borderRadius: BorderRadius.circular(50),
                           ),
                           child: Center(
-                            child: Text(
-                              "Leave this group",
-                              style: headingSmall.copyWith(color: Colors.white),
-                            ),
+                            child: Loading
+                                ? Center(child: CircularProgressIndicator())
+                                : Text(
+                                    "Leave this group",
+                                    style: headingSmall.copyWith(
+                                        color: Colors.white),
+                                  ),
                           ),
                         ),
                       ),
@@ -395,7 +486,9 @@ class _GroupSettingState extends State<GroupSetting> {
                       delay: Duration(milliseconds: 1200),
                       slidingBeginOffset: Offset(0, 0),
                       child: ZoomTapAnimation(
-                        onTap: () {},
+                        onTap: () async {
+                          openWhatsApp(widget.groupID.toString());
+                        },
                         child: Container(
                           padding: const EdgeInsets.symmetric(horizontal: 20),
                           width: double.infinity,
@@ -406,7 +499,7 @@ class _GroupSettingState extends State<GroupSetting> {
                           ),
                           child: Center(
                             child: Text(
-                              "Share Link",
+                              "Share Group Code",
                               style: headingSmall.copyWith(color: Colors.white),
                             ),
                           ),
@@ -421,6 +514,20 @@ class _GroupSettingState extends State<GroupSetting> {
         ),
       ),
     );
+  }
+
+  void openWhatsApp(message) async {
+    String encodedMessage = Uri.encodeComponent(message);
+    var whatsappAndroid = Uri.parse("whatsapp://send?text=$encodedMessage");
+    if (await canLaunchUrl(whatsappAndroid)) {
+      await launchUrl(whatsappAndroid);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("WhatsApp is not installed on the device"),
+        ),
+      );
+    }
   }
 
   void _showPopup(BuildContext context) {

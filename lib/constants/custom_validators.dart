@@ -54,7 +54,7 @@ class CustomValidator {
 
   static String? isEmptyUserName(String? value) {
     if (value!.isEmpty) {
-      return ' Username is required';
+      return ' Name is required';
     }
     return null;
   }

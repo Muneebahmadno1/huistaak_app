@@ -49,8 +49,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       alignment: Alignment.centerLeft,
                       child: Text(
                         "My Profile",
-                        style:
-                            headingLarge.copyWith(fontWeight: FontWeight.w600),
+                        style: headingLarge.copyWith(
+                            fontWeight: FontWeight.w600,
+                            color: AppColors.buttonColor),
                       ),
                     ),
                   ),
@@ -67,7 +68,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           backgroundColor: Colors.black,
                           child: CircleAvatar(
                             radius: 36,
-                            backgroundImage: AssetImage(AppImages.profileImage),
+                            backgroundImage: userData.imageUrl == ""
+                                ? AssetImage(
+                                    AppImages.profileImage,
+                                  )
+                                : NetworkImage(
+                                    userData.imageUrl,
+                                  ) as ImageProvider,
                           ),
                         ),
                       ),
@@ -91,7 +98,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 height: 6,
                               ),
                               Text(
-                                "150 points",
+                                "0 points",
                                 style: bodySmall.copyWith(
                                     color: AppColors.buttonColor, fontSize: 12),
                               ),
@@ -182,6 +189,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       cardText: "Edit Profile",
                       leadingIcon: Icon(
                         Icons.navigate_next,
+                        color: AppColors.buttonColor,
                         size: 36,
                       ),
                     ),

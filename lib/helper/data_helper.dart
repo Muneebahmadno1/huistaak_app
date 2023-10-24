@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:huistaak/helper/page_navigation.dart';
 
 import '../constants/global_variables.dart';
+import '../controllers/general_controller.dart';
 import '../models/user_model.dart';
 import '../views/auth/login_screen.dart';
 import '../views/home/bottom_nav_bar.dart';
@@ -12,6 +13,7 @@ import '../widgets/custom_widgets.dart';
 
 class DataHelper extends GetxController {
   DateTime? selectedDate = DateTime.now();
+  DateTime? goalSelectedDate = DateTime.now();
   TimeOfDay? startTime;
   TimeOfDay? endTime;
   bool isEmailVerified = false;
@@ -34,13 +36,8 @@ class DataHelper extends GetxController {
         "displayName": map['displayName'].toString(),
         "email": emails,
         "imageUrl": "",
-        "phoneNumber": map['phoneNumber'].toString(),
         "postalCode": map['postalCode'].toString(),
       });
-      FirebaseFirestore.instance
-          .collection('users')
-          .doc(user.user!.uid)
-          .set(map);
       FirebaseAuth.instance.currentUser?.sendEmailVerification();
       Get.back();
       //setState(() {});
@@ -76,6 +73,7 @@ class DataHelper extends GetxController {
           setUserLoggedIn(true);
           loggedInGlobal.value = true;
           Get.back();
+          Get.find<GeneralController>().onBottomBarTapped(0);
           PageTransition.pageProperNavigation(page: CustomBottomNavBar());
         });
       } else {
@@ -169,15 +167,21 @@ class DataHelper extends GetxController {
       "groupName": groupName,
       "groupImage": groupImage,
     });
-    // await FirebaseFirestore.instance
-    //     .collection('users')
-    //     .doc(userDocId.value)
-    //     .collection("notifications")
-    //     .doc()
-    //     .set({
-    //   "notification": "You have been added to " + groupName + " group",
-    // });
 
+    return;
+  }
+
+  joinGroup(groupID) async {
+    final newMap = {
+      'displayName': userData.displayName.toString(),
+      'imageUrl': userData.imageUrl.toString(),
+      'userID': userData.userID.toString(),
+    };
+    print("newMap");
+    print(newMap);
+    await FirebaseFirestore.instance.collection('groups').doc(groupID).update({
+      "membersList": FieldValue.arrayUnion([newMap])
+    });
     return;
   }
 
@@ -203,16 +207,22 @@ class DataHelper extends GetxController {
       "assignMembers": assignMembers,
       "id": docId,
     });
+    return;
+  }
 
-    // await FirebaseFirestore.instance
-    //     .collection('users')
-    //     .doc(userDocId.value)
-    //     .collection("notifications")
-    //     .doc()
-    //     .set({
-    //   "notification": "You have been added to " + groupName + " group",
-    // });
-
+  addGroupGoal(goalTitle, goalDate, time, goalMembers) async {
+    var doc = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(userDocId.value)
+        .collection("myGoals")
+        .doc();
+    doc.set({
+      "goalID": doc.id,
+      "goalTitle": goalTitle,
+      "goalDate": goalDate,
+      "goalTime": time,
+      "goalMembers": goalMembers,
+    });
     return;
   }
 }

@@ -35,8 +35,6 @@ class _CreateNewGroupTaskState extends State<CreateNewGroupTask> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    print("_dataController.assignTaskMember.length");
-    print(_dataController.assignTaskMember.length);
   }
 
   @override
@@ -53,7 +51,7 @@ class _CreateNewGroupTaskState extends State<CreateNewGroupTask> {
           },
           leadingButton: Icon(
             Icons.arrow_back_ios_new,
-            color: Colors.black,
+            color: AppColors.buttonColor,
           ),
         ),
       ),
@@ -74,7 +72,8 @@ class _CreateNewGroupTaskState extends State<CreateNewGroupTask> {
                     alignment: Alignment.centerLeft,
                     child: Text(
                       "Task Title",
-                      style: headingSmall,
+                      style:
+                          headingSmall.copyWith(color: AppColors.buttonColor),
                     ),
                   ),
                 ),
@@ -97,7 +96,8 @@ class _CreateNewGroupTaskState extends State<CreateNewGroupTask> {
                     alignment: Alignment.centerLeft,
                     child: Text(
                       "Date for task",
-                      style: headingSmall,
+                      style:
+                          headingSmall.copyWith(color: AppColors.buttonColor),
                     ),
                   ),
                 ),
@@ -105,7 +105,9 @@ class _CreateNewGroupTaskState extends State<CreateNewGroupTask> {
                 DelayedDisplay(
                     delay: Duration(milliseconds: 600),
                     slidingBeginOffset: Offset(0, 0),
-                    child: DatePickerWidget()),
+                    child: DatePickerWidget(
+                      from: 'task',
+                    )),
                 const SizedBox(height: 20),
                 DelayedDisplay(
                   delay: Duration(milliseconds: 700),
@@ -114,7 +116,8 @@ class _CreateNewGroupTaskState extends State<CreateNewGroupTask> {
                     alignment: Alignment.centerLeft,
                     child: Text(
                       "Time for task",
-                      style: headingSmall,
+                      style:
+                          headingSmall.copyWith(color: AppColors.buttonColor),
                     ),
                   ),
                 ),
@@ -150,7 +153,8 @@ class _CreateNewGroupTaskState extends State<CreateNewGroupTask> {
                     alignment: Alignment.centerLeft,
                     child: Text(
                       "Task Score",
-                      style: headingSmall,
+                      style:
+                          headingSmall.copyWith(color: AppColors.buttonColor),
                     ),
                   ),
                 ),
@@ -165,9 +169,9 @@ class _CreateNewGroupTaskState extends State<CreateNewGroupTask> {
                     width: double.infinity,
                     height: 60,
                     decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(50),
-                        color: Colors.transparent,
-                        border: Border.all(color: Colors.black26)),
+                      borderRadius: BorderRadius.circular(50),
+                      color: AppColors.buttonColor.withOpacity(0.2),
+                    ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -300,6 +304,7 @@ class _CreateNewGroupTaskState extends State<CreateNewGroupTask> {
                             _dataController.endTime.toString(),
                             points.toString(),
                             _dataController.assignTaskMember);
+                        _dataController.assignTaskMember.clear();
                         PageTransition.pageBackNavigation(
                             page: GroupDetail(
                           groupTitle: widget.groupTitle,

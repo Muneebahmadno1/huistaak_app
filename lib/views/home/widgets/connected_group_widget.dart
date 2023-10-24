@@ -57,7 +57,9 @@ class _ConnectedGroupListState extends State<ConnectedGroupList> {
                           Text(
                             widget.name,
                             style: bodyNormal.copyWith(
-                                fontFamily: "MontserratSemiBold", fontSize: 16),
+                                color: AppColors.buttonColor,
+                                fontFamily: "MontserratSemiBold",
+                                fontSize: 16),
                           ),
                           SizedBox(
                             height: 6,

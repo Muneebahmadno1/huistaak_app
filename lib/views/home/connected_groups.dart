@@ -8,8 +8,8 @@ import 'package:huistaak/views/notification/notifications.dart';
 import 'package:sizer/sizer.dart';
 import 'package:zoom_tap_animation/zoom_tap_animation.dart';
 
+import '../../constants/app_images.dart';
 import '../../constants/global_variables.dart';
-import '../../widgets/text_form_fields.dart';
 
 class ConnectedGroupScreen extends StatefulWidget {
   @override
@@ -24,23 +24,34 @@ class _ConnectedGroupScreenState extends State<ConnectedGroupScreen> {
     setState(() {
       isLoading = true;
     });
-    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
-        .collection('users')
-        .doc(userDocId.value)
-        .collection("myGroups")
-        .get();
-
-    for (int i = 0; i < querySnapshot.docs.length; i++) {
-      var a = querySnapshot.docs[i].data() as Map;
-      setState(() {
-        chatUsers.add({
-          "groupImage": a['groupImage'],
-          "groupName": a['groupName'],
-          "id": a['groupID'],
-        });
-      });
+    QuerySnapshot querySnapshot =
+        await FirebaseFirestore.instance.collection('groups').get();
+    for (QueryDocumentSnapshot documentSnapshot in querySnapshot.docs) {
+      Map<String, dynamic> groupsData =
+          documentSnapshot.data() as Map<String, dynamic>;
+      List<dynamic> mamberArray = groupsData['membersList'];
+      List<dynamic> adminArray = groupsData['adminsList'];
+      for (var userMap in adminArray)
+        if (userMap['userID'] == userData.userID) {
+          setState(() {
+            chatUsers.add({
+              "groupImage": groupsData['groupImage'],
+              "groupName": groupsData['groupName'],
+              "id": documentSnapshot.id,
+            });
+          });
+        }
+      for (var userMap in mamberArray)
+        if (userMap['userID'] == userData.userID) {
+          setState(() {
+            chatUsers.add({
+              "groupImage": groupsData['groupImage'],
+              "groupName": groupsData['groupName'],
+              "id": documentSnapshot.id,
+            });
+          });
+        }
     }
-
     setState(() {
       isLoading = false;
     });
@@ -77,14 +88,24 @@ class _ConnectedGroupScreenState extends State<ConnectedGroupScreen> {
                     children: [
                       CircleAvatar(
                         radius: 20,
-                        backgroundImage: AssetImage("assets/images/man1.jpg"),
+                        backgroundImage: userData.imageUrl == ""
+                            ? AssetImage(
+                                AppImages.profileImage,
+                              )
+                            : NetworkImage(
+                                userData.imageUrl,
+                              ) as ImageProvider,
+                        // AssetImage("assets/images/man1.jpg"),
                       ),
                       SizedBox(
                         width: 10,
                       ),
                       Text(
                         userData.displayName,
-                        style: headingMedium,
+                        style: bodyNormal.copyWith(
+                            color: Colors.black87,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: "MontserratSemiBold"),
                       ),
                     ],
                   ),
@@ -119,17 +140,17 @@ class _ConnectedGroupScreenState extends State<ConnectedGroupScreen> {
             SizedBox(
               height: 30,
             ),
-            DelayedDisplay(
-              delay: Duration(milliseconds: 300),
-              slidingBeginOffset: Offset(0, 0),
-              child: AuthTextField(
-                hintText: "Search your chats",
-                prefixIcon: "assets/icons/home/search.png",
-              ),
-            ),
-            SizedBox(
-              height: 30,
-            ),
+            // DelayedDisplay(
+            //   delay: Duration(milliseconds: 300),
+            //   slidingBeginOffset: Offset(0, 0),
+            //   child: AuthTextField(
+            //     hintText: "Search your chats",
+            //     prefixIcon: "assets/icons/home/search.png",
+            //   ),
+            // ),
+            // SizedBox(
+            //   height: 30,
+            // ),
             DelayedDisplay(
               delay: Duration(milliseconds: 400),
               slidingBeginOffset: Offset(0, -1),
@@ -137,7 +158,7 @@ class _ConnectedGroupScreenState extends State<ConnectedGroupScreen> {
                 alignment: Alignment.centerLeft,
                 child: Text(
                   "Your Connected Groups",
-                  style: bodyNormal,
+                  style: bodyNormal.copyWith(color: AppColors.buttonColor),
                 ),
               ),
             ),

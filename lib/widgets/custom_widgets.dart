@@ -92,7 +92,8 @@ class _CustomAppBarState extends State<CustomAppBar> {
           ),
           Text(
             widget.pageTitle,
-            style: headingMedium.copyWith(fontFamily: "MontserratBold"),
+            style: headingMedium.copyWith(
+                fontFamily: "MontserratBold", color: AppColors.buttonColor),
           ),
           SizedBox(
             width: 40,
@@ -159,6 +160,7 @@ successPopUp(BuildContext context, page, message) {
                             CustomButton(
                               buttonText: 'Done',
                               onTap: () {
+                                setState(() {});
                                 Navigator.pop(context);
                                 PageTransition.pageProperNavigation(page: page);
                               },

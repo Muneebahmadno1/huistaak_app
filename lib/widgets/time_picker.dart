@@ -32,9 +32,9 @@ class _TimePickerWidgetState extends State<TimePickerWidget> {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-          color: Colors.transparent,
-          borderRadius: BorderRadius.circular(30.0),
-          border: Border.all(color: Colors.black12)),
+        color: AppColors.buttonColor.withOpacity(0.2),
+        borderRadius: BorderRadius.circular(30.0),
+      ),
       child: ListTile(
         horizontalTitleGap: 0,
         contentPadding: EdgeInsets.symmetric(horizontal: 16.0),
@@ -42,7 +42,7 @@ class _TimePickerWidgetState extends State<TimePickerWidget> {
 
         leading: Icon(
           Icons.access_time,
-          color: Colors.black26,
+          color: AppColors.buttonColor,
         ),
         // Add a clock icon in the leading position
         title: Text(
