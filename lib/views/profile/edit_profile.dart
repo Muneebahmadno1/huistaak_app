@@ -5,7 +5,6 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:huistaak/widgets/country_picker_widget.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart' as path;
 import 'package:zoom_tap_animation/zoom_tap_animation.dart';
@@ -14,8 +13,10 @@ import '../../constants/app_images.dart';
 import '../../constants/custom_validators.dart';
 import '../../constants/global_variables.dart';
 import '../../helper/data_helper.dart';
+import '../../helper/page_navigation.dart';
 import '../../widgets/custom_widgets.dart';
 import '../../widgets/text_form_fields.dart';
+import '../home/bottom_nav_bar.dart';
 
 class EditProfile extends StatefulWidget {
   const EditProfile({super.key});
@@ -45,7 +46,6 @@ class _EditProfileState extends State<EditProfile> {
     setState(() {
       nameController.text = userData.displayName ?? "";
       postalCodeController.text = userData.postalCode;
-      phoneController.text = userData.phoneNumber;
       imageUrl = userData.imageUrl;
     });
   }
@@ -72,7 +72,7 @@ class _EditProfileState extends State<EditProfile> {
           },
           leadingButton: Icon(
             Icons.arrow_back_ios,
-            color: Colors.black,
+            color: AppColors.buttonColor,
             size: 20,
           ),
         ),
@@ -150,7 +150,7 @@ class _EditProfileState extends State<EditProfile> {
                       Text(
                         "Full Name:",
                         style: bodyNormal.copyWith(
-                            color: Colors.black87,
+                            color: AppColors.buttonColor,
                             fontFamily: "MontserratSemiBold"),
                       ),
                       SizedBox(
@@ -175,48 +175,15 @@ class _EditProfileState extends State<EditProfile> {
                       Text(
                         "Email address:",
                         style: bodyNormal.copyWith(
-                            color: Colors.black87,
+                            color: AppColors.buttonColor,
                             fontFamily: "MontserratSemiBold"),
                       ),
                       SizedBox(
                         height: 10,
                       ),
                       CustomTextField(
+                        readonly: true,
                         hintText: userData.email,
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 20),
-                DelayedDisplay(
-                  delay: Duration(milliseconds: 700),
-                  slidingBeginOffset: Offset(0, -1),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Phone Number:",
-                        style: bodyNormal.copyWith(
-                            color: Colors.black87,
-                            fontFamily: "MontserratSemiBold"),
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Container(
-                        height: 56,
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(40),
-                            border: Border.all(
-                                color: AppColors.buttonColor, width: 0.7)),
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 26.0, right: 12),
-                          child: CountryCodePicker(
-                            controller: phoneController,
-                          ),
-                        ),
                       ),
                     ],
                   ),
@@ -231,7 +198,7 @@ class _EditProfileState extends State<EditProfile> {
                       Text(
                         "Postal Code of House:",
                         style: bodyNormal.copyWith(
-                            color: Colors.black87,
+                            color: AppColors.buttonColor,
                             fontFamily: "MontserratSemiBold"),
                       ),
                       SizedBox(
@@ -282,7 +249,10 @@ class _EditProfileState extends State<EditProfile> {
                               postalCodeController.text,
                               phoneController.text);
                           setState(() {});
-                          Get.back();
+                          PageTransition.pageBackNavigation(
+                              page: CustomBottomNavBar(
+                            pageIndex: 2,
+                          ));
                         }
                       },
                     ),

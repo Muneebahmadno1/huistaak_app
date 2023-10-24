@@ -68,7 +68,8 @@ class _LoginScreenState extends State<LoginScreen> {
                       child: FittedBox(
                         child: Text(
                           "Welcome Back ",
-                          style: headingLarge,
+                          style: headingLarge.copyWith(
+                              color: AppColors.buttonColor),
                         ),
                       ),
                     ),
@@ -106,7 +107,10 @@ class _LoginScreenState extends State<LoginScreen> {
                           alignment: Alignment.centerLeft,
                           child: Text(
                             "Email Address",
-                            style: headingSmall,
+                            style: bodyNormal.copyWith(
+                                color: Colors.black87,
+                                fontWeight: FontWeight.bold,
+                                fontFamily: "MontserratSemiBold"),
                           ),
                         ),
                       ),
@@ -135,7 +139,10 @@ class _LoginScreenState extends State<LoginScreen> {
                           alignment: Alignment.centerLeft,
                           child: Text(
                             "Password",
-                            style: headingSmall,
+                            style: bodyNormal.copyWith(
+                                color: Colors.black87,
+                                fontWeight: FontWeight.bold,
+                                fontFamily: "MontserratSemiBold"),
                           ),
                         ),
                       ),
@@ -163,7 +170,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 !_obscureText
                                     ? Icons.visibility
                                     : Icons.visibility_off,
-                                color: Colors.black54,
+                                color: AppColors.buttonColor,
                               ),
                             ),
                           ),
@@ -188,7 +195,8 @@ class _LoginScreenState extends State<LoginScreen> {
                         child: Text(
                           "Forgot Password?",
                           style: headingSmall.copyWith(
-                              color: AppColors.buttonColor),
+                              color: AppColors.buttonColor,
+                              fontWeight: FontWeight.bold),
                           textAlign: TextAlign.center,
                         ),
                       ),

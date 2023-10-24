@@ -30,7 +30,7 @@ class _NotificationsState extends State<Notifications> {
           },
           leadingButton: Icon(
             Icons.arrow_back_ios,
-            color: Colors.black,
+            color: AppColors.buttonColor,
             size: 20,
           ),
         ),

@@ -42,7 +42,7 @@ class _ChangePasswordState extends State<ChangePassword> {
           },
           leadingButton: Icon(
             Icons.arrow_back_ios_new,
-            color: Colors.black,
+            color: AppColors.buttonColor,
             size: 20,
           ),
         ),
@@ -84,7 +84,8 @@ class _ChangePasswordState extends State<ChangePassword> {
                         alignment: Alignment.centerLeft,
                         child: Text(
                           "Current Password",
-                          style: headingSmall,
+                          style: headingSmall.copyWith(
+                              color: AppColors.buttonColor),
                         ),
                       ),
                     ),
@@ -129,7 +130,8 @@ class _ChangePasswordState extends State<ChangePassword> {
                         alignment: Alignment.centerLeft,
                         child: Text(
                           "New Password",
-                          style: headingSmall,
+                          style: headingSmall.copyWith(
+                              color: AppColors.buttonColor),
                         ),
                       ),
                     ),

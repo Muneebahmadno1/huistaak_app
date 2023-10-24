@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:huistaak/constants/global_variables.dart';
 import 'package:huistaak/controllers/general_controller.dart';
 import 'package:huistaak/views/goals/new_goals_screen.dart';
 import 'package:huistaak/views/home/connected_groups.dart';
@@ -7,7 +8,8 @@ import 'package:huistaak/views/profile/profile_screen.dart';
 import 'package:water_drop_nav_bar/water_drop_nav_bar.dart';
 
 class CustomBottomNavBar extends StatefulWidget {
-  CustomBottomNavBar({Key? key}) : super(key: key);
+  final pageIndex;
+  CustomBottomNavBar({Key? key, this.pageIndex = 0}) : super(key: key);
 
   @override
   State<CustomBottomNavBar> createState() => _CustomBottomNavBarState();
@@ -22,6 +24,12 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
     NewGoalsScreen(),
     ProfileScreen(),
   ];
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    selectedIndex = widget.pageIndex;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,6 +38,7 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
         body: _pages[_generalController.currentIndex],
         bottomNavigationBar: WaterDropNavBar(
           backgroundColor: Colors.white,
+          waterDropColor: AppColors.buttonColor,
           onItemSelected: (int index) {
             _generalController.onBottomBarTapped(index);
             setState(() {

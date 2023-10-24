@@ -42,49 +42,51 @@ class _AuthTextFieldState extends State<AuthTextField> {
         cursorColor: Colors.black,
         style: bodyNormal.copyWith(fontFamily: "MontserratSemiBold"),
         decoration: InputDecoration(
+            fillColor: AppColors.buttonColor.withOpacity(0.2),
+            filled: true,
             contentPadding:
                 const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
             border: InputBorder.none,
             disabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(50),
               borderSide: BorderSide(
-                color: Colors.black26, // Make the border transparent
-                width: 1, // Set the width to 0 to make it disappear
+                color: Colors.transparent, // Make the border transparent
+                width: 0, // Set the width to 0 to make it disappear
               ),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(50),
               borderSide: BorderSide(
-                color: Colors.black26, // Make the border transparent
-                width: 1, // Set the width to 0 to make it disappear
+                color: Colors.transparent, // Make the border transparent
+                width: 0, // Set the width to 0 to make it disappear
               ),
             ),
             errorBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(50),
               borderSide: BorderSide(
-                color: Colors.black26, // Make the border transparent
-                width: 1, // Set the width to 0 to make it disappear
+                color: Colors.transparent, // Make the border transparent
+                width: 0, // Set the width to 0 to make it disappear
               ),
             ),
             focusedErrorBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(50),
               borderSide: BorderSide(
-                color: Colors.black26, // Make the border transparent
-                width: 1, // Set the width to 0 to make it disappear
+                color: Colors.transparent, // Make the border transparent
+                width: 0, // Set the width to 0 to make it disappear
               ),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(50),
               borderSide: BorderSide(
-                color: Colors.black26, // Make the border transparent
-                width: 1, // Set the width to 0 to make it disappear
+                color: Colors.transparent, // Make the border transparent
+                width: 0, // Set the width to 0 to make it disappear
               ),
             ),
             hintText: widget.hintText,
             hintStyle: bodyNormal.copyWith(
                 color: Colors.black54, fontFamily: "MontserratSemiBold"),
             suffixIcon: widget.suffixIcon,
-            suffixIconColor: Colors.black,
+            suffixIconColor: AppColors.buttonColor,
             prefixIcon: widget.prefixIcon == null
                 ? Padding(
                     padding: EdgeInsets.only(left: 26.0),
@@ -99,7 +101,7 @@ class _AuthTextFieldState extends State<AuthTextField> {
                       ),
                     ),
                   ),
-            prefixIconColor: Colors.white,
+            prefixIconColor: AppColors.buttonColor,
             prefixIconConstraints: const BoxConstraints(
               maxHeight: 30,
               minHeight: 30,
@@ -115,15 +117,18 @@ class CustomTextField extends StatefulWidget {
   final Widget? suffixIcon;
   final String? prefixIcon;
   final bool? isObscure;
+
   final TextEditingController? controller;
   final TextInputType? keyboardType;
   final FormFieldValidator<String>? validator;
   final onChanged;
+  final bool readonly;
   final String? suffixText;
   final String? prefixText;
 
   const CustomTextField(
       {Key? key,
+      this.readonly = false,
       required this.hintText,
       this.suffixIcon,
       this.isObscure,
@@ -150,9 +155,12 @@ class _CustomTextFieldState extends State<CustomTextField> {
         obscureText: widget.isObscure ?? false,
         controller: widget.controller ?? null,
         cursorColor: Colors.black,
+        readOnly: widget.readonly ? true : false,
         onChanged: widget.onChanged ?? null,
         style: bodyNormal.copyWith(fontFamily: "MontserratSemiBold"),
         decoration: InputDecoration(
+            fillColor: AppColors.buttonColor.withOpacity(0.2),
+            filled: true,
             suffixText: widget.suffixText ?? '',
             prefixText: widget.prefixText ?? '',
             contentPadding:
@@ -160,36 +168,36 @@ class _CustomTextFieldState extends State<CustomTextField> {
             disabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(50),
               borderSide: BorderSide(
-                color: Colors.black26, // Make the border transparent
-                width: 1, // Set the width to 0 to make it disappear
+                color: Colors.transparent, // Make the border transparent
+                width: 0, // Set the width to 0 to make it disappear
               ),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(50),
               borderSide: BorderSide(
-                color: Colors.black26, // Make the border transparent
-                width: 1, // Set the width to 0 to make it disappear
+                color: Colors.transparent, // Make the border transparent
+                width: 0, // Set the width to 0 to make it disappear
               ),
             ),
             errorBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(50),
               borderSide: BorderSide(
-                color: Colors.black26, // Make the border transparent
-                width: 1, // Set the width to 0 to make it disappear
+                color: Colors.transparent, // Make the border transparent
+                width: 0, // Set the width to 0 to make it disappear
               ),
             ),
             focusedErrorBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(50),
               borderSide: BorderSide(
-                color: Colors.black26, // Make the border transparent
-                width: 1, // Set the width to 0 to make it disappear
+                color: Colors.transparent, // Make the border transparent
+                width: 0, // Set the width to 0 to make it disappear
               ),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(50),
               borderSide: BorderSide(
-                color: Colors.black26, // Make the border transparent
-                width: 1, // Set the width to 0 to make it disappear
+                color: Colors.transparent, // Make the border transparent
+                width: 0, // Set the width to 0 to make it disappear
               ),
             ),
             hintText: widget.hintText,

@@ -81,7 +81,7 @@ class _AssignMemberState extends State<AssignMember> {
                     padding: EdgeInsets.only(top: 25.h),
                     child: CircularProgressIndicator(),
                   ))
-                : userList.isEmpty
+                : userList[0]['membersList'].isEmpty
                     ? Center(
                         child: Padding(
                           padding: EdgeInsets.only(top: 25.h),
@@ -92,7 +92,7 @@ class _AssignMemberState extends State<AssignMember> {
                       )
                     : Expanded(
                         child: ListView.builder(
-                            itemCount: userList.length,
+                            itemCount: userList[0]['membersList'].length,
                             itemBuilder: (c, i) {
                               return InkWell(
                                 onTap: () {

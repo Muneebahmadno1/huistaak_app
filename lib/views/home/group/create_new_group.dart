@@ -43,6 +43,7 @@ class _CreateNewGroupState extends State<CreateNewGroup> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    _dataController.groupAdmins.clear();
     _dataController.groupAdmins.add({
       'userID': userData.userID,
       'displayName': userData.displayName,
@@ -65,7 +66,7 @@ class _CreateNewGroupState extends State<CreateNewGroup> {
           },
           leadingButton: Icon(
             Icons.arrow_back_ios_new,
-            color: Colors.black,
+            color: AppColors.buttonColor,
           ),
         ),
       ),
@@ -86,7 +87,8 @@ class _CreateNewGroupState extends State<CreateNewGroup> {
                       alignment: Alignment.centerLeft,
                       child: Text(
                         "Group Photo:",
-                        style: headingSmall,
+                        style:
+                            headingSmall.copyWith(color: AppColors.buttonColor),
                       )),
                 ),
                 SizedBox(
@@ -150,7 +152,7 @@ class _CreateNewGroupState extends State<CreateNewGroup> {
                     child: Text(
                       "Group Name:",
                       style: bodyNormal.copyWith(
-                          color: Colors.black87,
+                          color: AppColors.buttonColor,
                           fontFamily: "MontserratSemiBold"),
                     ),
                   ),
@@ -210,9 +212,9 @@ class _CreateNewGroupState extends State<CreateNewGroup> {
                   child: Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      "Group Admins:",
+                      "Group Admin:",
                       style: bodyNormal.copyWith(
-                          color: Colors.black87,
+                          color: AppColors.buttonColor,
                           fontFamily: "MontserratSemiBold"),
                     ),
                   ),
@@ -239,24 +241,24 @@ class _CreateNewGroupState extends State<CreateNewGroup> {
                                   AssetImage("assets/images/man1.jpg"),
                             ),
                           ),
-                        ZoomTapAnimation(
-                          onTap: () {
-                            Get.to(() => AddMember(from: 'admin'));
-                          },
-                          child: Container(
-                              height: 40,
-                              width: 40,
-                              decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  shape: BoxShape.circle,
-                                  image: DecorationImage(
-                                      image: AssetImage(
-                                          "assets/images/dotted_border.png"))),
-                              child: Icon(
-                                Icons.add,
-                                color: AppColors.buttonColor,
-                              )),
-                        ),
+                        // ZoomTapAnimation(
+                        //   onTap: () {
+                        //     Get.to(() => AddMember(from: 'admin'));
+                        //   },
+                        //   child: Container(
+                        //       height: 40,
+                        //       width: 40,
+                        //       decoration: BoxDecoration(
+                        //           color: Colors.white,
+                        //           shape: BoxShape.circle,
+                        //           image: DecorationImage(
+                        //               image: AssetImage(
+                        //                   "assets/images/dotted_border.png"))),
+                        //       child: Icon(
+                        //         Icons.add,
+                        //         color: AppColors.buttonColor,
+                        //       )),
+                        // ),
                       ],
                     ),
                   ),
@@ -273,7 +275,7 @@ class _CreateNewGroupState extends State<CreateNewGroup> {
                     child: Text(
                       "Add Group Members:",
                       style: bodyNormal.copyWith(
-                          color: Colors.black87,
+                          color: AppColors.buttonColor,
                           fontFamily: "MontserratSemiBold"),
                     ),
                   ),

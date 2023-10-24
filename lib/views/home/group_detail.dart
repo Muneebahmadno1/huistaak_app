@@ -11,6 +11,9 @@ import 'package:sizer/sizer.dart';
 import 'package:zoom_tap_animation/zoom_tap_animation.dart';
 
 import '../../constants/global_variables.dart';
+import '../../controllers/general_controller.dart';
+import '../../helper/page_navigation.dart';
+import 'bottom_nav_bar.dart';
 import 'group/create_new_group_task.dart';
 
 class GroupDetail extends StatefulWidget {
@@ -68,18 +71,20 @@ class _GroupDetailState extends State<GroupDetail> {
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: Colors.transparent,
+        backgroundColor: AppColors.buttonColor,
         automaticallyImplyLeading: false,
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 22.0),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              DelayedDisplay(
-                delay: Duration(milliseconds: 300),
-                slidingBeginOffset: Offset(0, -1),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Container(
+            color: AppColors.buttonColor,
+            child: DelayedDisplay(
+              delay: Duration(milliseconds: 300),
+              slidingBeginOffset: Offset(0, -1),
+              child: Padding(
+                padding: const EdgeInsets.only(
+                    bottom: 18.0, left: 15.0, right: 15.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -88,11 +93,15 @@ class _GroupDetailState extends State<GroupDetail> {
                       children: [
                         ZoomTapAnimation(
                           onTap: () {
-                            Get.back();
+                            Get.find<GeneralController>().onBottomBarTapped(0);
+                            PageTransition.pageProperNavigation(
+                                page: CustomBottomNavBar(
+                              pageIndex: 0,
+                            ));
                           },
                           child: Icon(
                             Icons.arrow_back_ios_new,
-                            color: Colors.black,
+                            color: Colors.white,
                           ),
                         ),
                         SizedBox(
@@ -110,7 +119,8 @@ class _GroupDetailState extends State<GroupDetail> {
                           children: [
                             Text(
                               widget.groupTitle,
-                              style: headingMedium,
+                              style:
+                                  headingMedium.copyWith(color: Colors.white),
                             ),
                             SizedBox(
                               height: 4,
@@ -119,7 +129,8 @@ class _GroupDetailState extends State<GroupDetail> {
                               width: 150,
                               child: Text(
                                 "You, James, Robert, Lucy",
-                                style: bodySmall,
+                                style: bodySmall.copyWith(color: Colors.white),
+                                maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                               ),
                             ),
@@ -136,273 +147,312 @@ class _GroupDetailState extends State<GroupDetail> {
                       child: SizedBox(
                           height: 20,
                           width: 20,
-                          child: Image.asset("assets/icons/home/setting.png")),
+                          child: Image.asset(
+                            "assets/icons/home/setting.png",
+                            color: Colors.white,
+                          )),
                     )
                   ],
                 ),
               ),
-              SizedBox(
-                height: 30,
-              ),
-              DelayedDisplay(
-                delay: Duration(milliseconds: 400),
-                slidingBeginOffset: Offset(0, 0),
-                child: Align(
-                  alignment: Alignment.center,
-                  child: Text(
-                    "Today's Task",
-                    style: bodyNormal.copyWith(color: Colors.black54),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 22.0),
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  SizedBox(
+                    height: 20,
                   ),
-                ),
-              ),
-              SizedBox(
-                height: 6,
-              ),
-              isLoading
-                  ? Center(
-                      child: Padding(
-                      padding: EdgeInsets.only(top: 25.h),
-                      child: CircularProgressIndicator(),
-                    ))
-                  : taskList.isEmpty
+                  DelayedDisplay(
+                    delay: Duration(milliseconds: 400),
+                    slidingBeginOffset: Offset(0, 0),
+                    child: Align(
+                      alignment: Alignment.center,
+                      child: Text(
+                        "Today's Task",
+                        style: bodyNormal.copyWith(color: Colors.black54),
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 6,
+                  ),
+                  isLoading
                       ? Center(
                           child: Padding(
-                            padding: EdgeInsets.only(top: 25.h),
-                            child: Container(
-                              child: Text("No tasks for now"),
-                            ),
-                          ),
-                        )
-                      : ListView.builder(
-                          itemCount: taskList.length,
-                          shrinkWrap: true,
-                          padding: EdgeInsets.only(top: 16),
-                          physics: BouncingScrollPhysics(),
-                          itemBuilder: (context, index) {
-                            return Padding(
-                              padding: EdgeInsets.only(bottom: 15.0),
-                              child: DelayedDisplay(
-                                delay: Duration(milliseconds: 400),
-                                slidingBeginOffset: Offset(0, 0),
+                          padding: EdgeInsets.only(top: 25.h),
+                          child: CircularProgressIndicator(),
+                        ))
+                      : taskList.isEmpty
+                          ? Center(
+                              child: Padding(
+                                padding: EdgeInsets.only(top: 25.h),
                                 child: Container(
-                                  padding: EdgeInsets.all(20),
-                                  width: double.infinity,
-                                  decoration: BoxDecoration(
-                                    color: AppColors.buttonColor,
-                                    borderRadius: BorderRadius.circular(20),
-                                  ),
+                                  child: Text("No tasks for now"),
+                                ),
+                              ),
+                            )
+                          : ListView.builder(
+                              itemCount: taskList.length,
+                              shrinkWrap: true,
+                              padding: EdgeInsets.only(top: 16),
+                              physics: BouncingScrollPhysics(),
+                              itemBuilder: (context, index) {
+                                return Padding(
+                                  padding: EdgeInsets.only(bottom: 15.0),
                                   child: DelayedDisplay(
-                                    delay: Duration(milliseconds: 600),
-                                    slidingBeginOffset: Offset(0, -1),
-                                    child: Column(
-                                      children: [
-                                        Align(
-                                          alignment: Alignment.centerLeft,
-                                          child: Text(
-                                            taskList[index]['taskTitle'],
-                                            style: headingLarge.copyWith(
-                                                color: Colors.white),
-                                          ),
-                                        ),
-                                        SizedBox(
-                                          height: 10,
-                                        ),
-                                        TaskDetailWidget(
-                                            icon: "assets/icons/home/date.png",
-                                            title: "Date",
-                                            data: DateFormat('yyyy-MM-dd')
-                                                .format(taskList[index]
-                                                        ['taskDate']
-                                                    .toDate())),
-                                        SizedBox(
-                                          height: 10,
-                                        ),
-                                        TaskDetailWidget(
-                                            icon: "assets/icons/home/time.png",
-                                            title: "Time",
-                                            data: "10 am to 05 pm"),
-                                        SizedBox(
-                                          height: 10,
-                                        ),
-                                        TaskDetailWidget(
-                                            icon:
-                                                "assets/icons/home/duration.png",
-                                            title: "Task Duration",
-                                            data: "08 hours"),
-                                        SizedBox(
-                                          height: 10,
-                                        ),
-                                        TaskDetailWidget(
-                                            icon:
-                                                "assets/icons/home/points.png",
-                                            title: "Task Score Points",
-                                            data: taskList[index]['taskScore']),
-                                        SizedBox(
-                                          height: 20,
-                                        ),
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
+                                    delay: Duration(milliseconds: 400),
+                                    slidingBeginOffset: Offset(0, 0),
+                                    child: Container(
+                                      padding: EdgeInsets.all(20),
+                                      width: double.infinity,
+                                      decoration: BoxDecoration(
+                                        color: AppColors.buttonColor,
+                                        borderRadius: BorderRadius.circular(20),
+                                      ),
+                                      child: DelayedDisplay(
+                                        delay: Duration(milliseconds: 600),
+                                        slidingBeginOffset: Offset(0, -1),
+                                        child: Column(
                                           children: [
-                                            taskList[index]['assignMembers']
-                                                        .length >
-                                                    0
-                                                ? Text(
-                                                    "Task assigned to:",
-                                                    style:
-                                                        headingSmall.copyWith(
-                                                            color:
-                                                                Colors.white),
-                                                  )
-                                                : SizedBox.shrink(),
-                                            taskList[index]['assignMembers']
-                                                        .length >
-                                                    0
-                                                ? SizedBox(
-                                                    width: 74,
-                                                    child: AvatarStack(
-                                                      height: 34,
-                                                      avatars: [
-                                                        for (var n = 0;
-                                                            n <
-                                                                taskList[index][
-                                                                        'assignMembers']
-                                                                    .length;
-                                                            n++)
-                                                          AssetImage(
-                                                              "assets/images/man1.jpg"),
-                                                      ],
-                                                    ),
-                                                  )
-                                                : SizedBox.shrink(),
-                                          ],
-                                        ),
-                                        for (var n = 0;
-                                            n <
-                                                taskList[index]['assignMembers']
-                                                    .length;
-                                            n++)
-                                          LikeBarWidget(
-                                              image: "assets/images/man1.jpg",
-                                              count: "5/15",
-                                              percent: 0.6),
-                                        SizedBox(
-                                          height: 10,
-                                        ),
-                                        Row(
-                                          children: [
-                                            Expanded(
-                                              child: Padding(
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                        vertical: 8),
-                                                child: ZoomTapAnimation(
-                                                  onTap: () {},
-                                                  onLongTap: () {},
-                                                  enableLongTapRepeatEvent:
-                                                      false,
-                                                  longTapRepeatDuration:
-                                                      const Duration(
-                                                          milliseconds: 100),
-                                                  begin: 1.0,
-                                                  end: 0.93,
-                                                  beginDuration: const Duration(
-                                                      milliseconds: 20),
-                                                  endDuration: const Duration(
-                                                      milliseconds: 120),
-                                                  beginCurve: Curves.decelerate,
-                                                  endCurve:
-                                                      Curves.fastOutSlowIn,
-                                                  child: Container(
-                                                      padding: const EdgeInsets
-                                                          .symmetric(
-                                                          horizontal: 20),
-                                                      width: double.infinity,
-                                                      height: 50,
-                                                      decoration: BoxDecoration(
-                                                        color: Colors.white,
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(50),
-                                                      ),
-                                                      child: Center(
-                                                        child: Text("Start",
-                                                            style: bodyLarge.copyWith(
-                                                                color: AppColors
-                                                                    .buttonColor,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold)),
-                                                      )),
-                                                ),
+                                            Align(
+                                              alignment: Alignment.centerLeft,
+                                              child: Text(
+                                                taskList[index]['taskTitle'],
+                                                style: headingLarge.copyWith(
+                                                    color: Colors.white),
                                               ),
                                             ),
                                             SizedBox(
-                                              width: 10,
+                                              height: 10,
                                             ),
-                                            Expanded(
-                                              child: Padding(
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                        vertical: 8),
-                                                child: ZoomTapAnimation(
-                                                  onTap: () {},
-                                                  onLongTap: () {},
-                                                  enableLongTapRepeatEvent:
-                                                      false,
-                                                  longTapRepeatDuration:
-                                                      const Duration(
-                                                          milliseconds: 100),
-                                                  begin: 1.0,
-                                                  end: 0.93,
-                                                  beginDuration: const Duration(
-                                                      milliseconds: 20),
-                                                  endDuration: const Duration(
-                                                      milliseconds: 120),
-                                                  beginCurve: Curves.decelerate,
-                                                  endCurve:
-                                                      Curves.fastOutSlowIn,
-                                                  child: Container(
-                                                      padding: const EdgeInsets
-                                                          .symmetric(
-                                                          horizontal: 20),
-                                                      width: double.infinity,
-                                                      height: 50,
-                                                      decoration: BoxDecoration(
-                                                        color: Colors.white
-                                                            .withOpacity(0.5),
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(50),
-                                                      ),
-                                                      child: Center(
-                                                        child: Text("Finish",
-                                                            style: bodyLarge.copyWith(
+                                            TaskDetailWidget(
+                                                icon:
+                                                    "assets/icons/home/date.png",
+                                                title: "Date",
+                                                data: DateFormat('yyyy-MM-dd')
+                                                    .format(taskList[index]
+                                                            ['taskDate']
+                                                        .toDate())),
+                                            SizedBox(
+                                              height: 10,
+                                            ),
+                                            TaskDetailWidget(
+                                                icon:
+                                                    "assets/icons/home/time.png",
+                                                title: "Time",
+                                                data: "10 am to 05 pm"),
+                                            SizedBox(
+                                              height: 10,
+                                            ),
+                                            TaskDetailWidget(
+                                                icon:
+                                                    "assets/icons/home/duration.png",
+                                                title: "Task Duration",
+                                                data: "08 hours"),
+                                            SizedBox(
+                                              height: 10,
+                                            ),
+                                            TaskDetailWidget(
+                                                icon:
+                                                    "assets/icons/home/points.png",
+                                                title: "Task Score Points",
+                                                data: taskList[index]
+                                                    ['taskScore']),
+                                            SizedBox(
+                                              height: 20,
+                                            ),
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                taskList[index]['assignMembers']
+                                                            .length >
+                                                        0
+                                                    ? Text(
+                                                        "Task assigned to:",
+                                                        style: headingSmall
+                                                            .copyWith(
                                                                 color: Colors
-                                                                    .white,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold)),
-                                                      )),
+                                                                    .white),
+                                                      )
+                                                    : SizedBox.shrink(),
+                                                taskList[index]['assignMembers']
+                                                            .length >
+                                                        0
+                                                    ? SizedBox(
+                                                        width: 74,
+                                                        child: AvatarStack(
+                                                          height: 34,
+                                                          avatars: [
+                                                            for (var n = 0;
+                                                                n <
+                                                                    taskList[index]
+                                                                            [
+                                                                            'assignMembers']
+                                                                        .length;
+                                                                n++)
+                                                              AssetImage(
+                                                                  "assets/images/man1.jpg"),
+                                                          ],
+                                                        ),
+                                                      )
+                                                    : SizedBox.shrink(),
+                                              ],
+                                            ),
+                                            for (var n = 0;
+                                                n <
+                                                    taskList[index]
+                                                            ['assignMembers']
+                                                        .length;
+                                                n++)
+                                              LikeBarWidget(
+                                                  image:
+                                                      "assets/images/man1.jpg",
+                                                  count: "5/15",
+                                                  percent: 0.6),
+                                            SizedBox(
+                                              height: 10,
+                                            ),
+                                            Row(
+                                              children: [
+                                                Expanded(
+                                                  child: Padding(
+                                                    padding: const EdgeInsets
+                                                        .symmetric(vertical: 8),
+                                                    child: ZoomTapAnimation(
+                                                      onTap: () {},
+                                                      onLongTap: () {},
+                                                      enableLongTapRepeatEvent:
+                                                          false,
+                                                      longTapRepeatDuration:
+                                                          const Duration(
+                                                              milliseconds:
+                                                                  100),
+                                                      begin: 1.0,
+                                                      end: 0.93,
+                                                      beginDuration:
+                                                          const Duration(
+                                                              milliseconds: 20),
+                                                      endDuration:
+                                                          const Duration(
+                                                              milliseconds:
+                                                                  120),
+                                                      beginCurve:
+                                                          Curves.decelerate,
+                                                      endCurve:
+                                                          Curves.fastOutSlowIn,
+                                                      child: Container(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .symmetric(
+                                                                  horizontal:
+                                                                      20),
+                                                          width:
+                                                              double.infinity,
+                                                          height: 50,
+                                                          decoration:
+                                                              BoxDecoration(
+                                                            color: Colors.white,
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        50),
+                                                          ),
+                                                          child: Center(
+                                                            child: Text("Start",
+                                                                style: bodyLarge.copyWith(
+                                                                    color: AppColors
+                                                                        .buttonColor,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold)),
+                                                          )),
+                                                    ),
+                                                  ),
                                                 ),
-                                              ),
+                                                SizedBox(
+                                                  width: 10,
+                                                ),
+                                                Expanded(
+                                                  child: Padding(
+                                                    padding: const EdgeInsets
+                                                        .symmetric(vertical: 8),
+                                                    child: ZoomTapAnimation(
+                                                      onTap: () {},
+                                                      onLongTap: () {},
+                                                      enableLongTapRepeatEvent:
+                                                          false,
+                                                      longTapRepeatDuration:
+                                                          const Duration(
+                                                              milliseconds:
+                                                                  100),
+                                                      begin: 1.0,
+                                                      end: 0.93,
+                                                      beginDuration:
+                                                          const Duration(
+                                                              milliseconds: 20),
+                                                      endDuration:
+                                                          const Duration(
+                                                              milliseconds:
+                                                                  120),
+                                                      beginCurve:
+                                                          Curves.decelerate,
+                                                      endCurve:
+                                                          Curves.fastOutSlowIn,
+                                                      child: Container(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .symmetric(
+                                                                  horizontal:
+                                                                      20),
+                                                          width:
+                                                              double.infinity,
+                                                          height: 50,
+                                                          decoration:
+                                                              BoxDecoration(
+                                                            color: Colors.white
+                                                                .withOpacity(
+                                                                    0.5),
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        50),
+                                                          ),
+                                                          child: Center(
+                                                            child: Text(
+                                                                "Finish",
+                                                                style: bodyLarge.copyWith(
+                                                                    color: Colors
+                                                                        .white,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold)),
+                                                          )),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
                                             ),
                                           ],
                                         ),
-                                      ],
+                                      ),
                                     ),
                                   ),
-                                ),
-                              ),
-                            );
-                          },
-                        ),
-              SizedBox(
-                height: 15,
+                                );
+                              },
+                            ),
+                  SizedBox(
+                    height: 15,
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
-        ),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: AppColors.buttonColor,

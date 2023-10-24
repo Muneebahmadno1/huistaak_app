@@ -70,7 +70,8 @@ class _CustomCardState extends State<CustomCard> {
                       Text(
                         widget.cardText,
                         style: bodyNormal.copyWith(
-                            fontFamily: "MontserratSemiBold"),
+                            fontFamily: "MontserratSemiBold",
+                            color: AppColors.buttonColor),
                       ),
                     ],
                   ),

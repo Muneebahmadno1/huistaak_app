@@ -4,13 +4,27 @@ import 'package:get/get.dart';
 import 'package:huistaak/widgets/custom_widgets.dart';
 import 'package:zoom_tap_animation/zoom_tap_animation.dart';
 
+import '../../constants/custom_validators.dart';
 import '../../constants/global_variables.dart';
+import '../../controllers/general_controller.dart';
+import '../../helper/data_helper.dart';
+import '../../helper/page_navigation.dart';
 import '../../widgets/text_form_fields.dart';
 import '../notification/notifications.dart';
+import 'bottom_nav_bar.dart';
 import 'group/create_new_group.dart';
 
-class ConnectNewGroup extends StatelessWidget {
+class ConnectNewGroup extends StatefulWidget {
   const ConnectNewGroup({super.key});
+
+  @override
+  State<ConnectNewGroup> createState() => _ConnectNewGroupState();
+}
+
+class _ConnectNewGroupState extends State<ConnectNewGroup> {
+  final DataHelper _dataController = Get.find<DataHelper>();
+  TextEditingController codeController = TextEditingController();
+  final GlobalKey<FormState> key = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -92,7 +106,7 @@ class ConnectNewGroup extends StatelessWidget {
                 alignment: Alignment.centerLeft,
                 child: Text(
                   "Connect Group",
-                  style: headingLarge,
+                  style: headingLarge.copyWith(color: AppColors.buttonColor),
                 ),
               ),
               SizedBox(
@@ -112,15 +126,23 @@ class ConnectNewGroup extends StatelessWidget {
                 alignment: Alignment.centerLeft,
                 child: Text(
                   "Join Group",
-                  style: headingSmall,
+                  style: bodyNormal.copyWith(
+                      color: Colors.black87,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: "MontserratSemiBold"),
                 ),
               ),
               SizedBox(
                 height: 6,
               ),
-              AuthTextField(
-                hintText: "Enter Group Code",
-                prefixIcon: "assets/icons/home/add_group.png",
+              Form(
+                key: key,
+                child: AuthTextField(
+                  validator: (value) => CustomValidator.isEmpty(value),
+                  controller: codeController,
+                  hintText: "Enter Group Code",
+                  prefixIcon: "assets/icons/home/add_group.png",
+                ),
               ),
               SizedBox(
                 height: 6,
@@ -132,8 +154,14 @@ class ConnectNewGroup extends StatelessWidget {
                 delay: Duration(milliseconds: 600),
                 slidingBeginOffset: Offset(0, 0),
                 child: ZoomTapAnimation(
-                  onTap: () {
-                    // Get.to(() => CreateNewGroupTask());
+                  onTap: () async {
+                    if (key.currentState!.validate()) {
+                      await _dataController
+                          .joinGroup(codeController.text.toString());
+                      Get.find<GeneralController>().onBottomBarTapped(0);
+                      PageTransition.pageProperNavigation(
+                          page: CustomBottomNavBar());
+                    }
                   },
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 24),

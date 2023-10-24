@@ -1,7 +1,7 @@
 import 'package:delayed_display/delayed_display.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:huistaak/widgets/country_picker_widget.dart';
+import 'package:huistaak/views/auth/welcome_screen.dart';
 
 import '../../constants/app_images.dart';
 import '../../constants/custom_validators.dart';
@@ -46,7 +46,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         title: CustomAppBar(
           pageTitle: "",
           onTap: () {
-            Get.back();
+            Get.off(() => WelcomeScreen());
           },
           leadingButton: Icon(
             Icons.arrow_back_ios,
@@ -76,7 +76,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       child: FittedBox(
                         child: Text(
                           "Setup New Profile",
-                          style: headingLarge,
+                          style: headingLarge.copyWith(
+                              color: AppColors.buttonColor),
                         ),
                       ),
                     ),
@@ -112,7 +113,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       alignment: Alignment.centerLeft,
                       child: Text(
                         "Full Name",
-                        style: headingSmall,
+                        style: bodyNormal.copyWith(
+                            color: Colors.black87,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: "MontserratSemiBold"),
                       ),
                     ),
                   ),
@@ -142,7 +146,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       alignment: Alignment.centerLeft,
                       child: Text(
                         "Email Address",
-                        style: headingSmall,
+                        style: bodyNormal.copyWith(
+                            color: Colors.black87,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: "MontserratSemiBold"),
                       ),
                     ),
                   ),
@@ -162,38 +169,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 ),
                 const SizedBox(height: 15),
                 DelayedDisplay(
-                  delay: Duration(milliseconds: 900),
-                  slidingBeginOffset: Offset(0, -1),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 18.0, vertical: 6),
-                    child: Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        "Phone Number (Household Member)",
-                        style: headingSmall,
-                      ),
-                    ),
-                  ),
-                ),
-                DelayedDisplay(
-                  delay: Duration(milliseconds: 1000),
-                  slidingBeginOffset: Offset(0, 0),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 18),
-                    child: Container(
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(50),
-                            color: Colors.transparent,
-                            border: Border.all(color: Colors.black26)),
-                        child: CountryCodePicker(
-                            controller: phoneEditingController)),
-                  ),
-                ),
-                const SizedBox(height: 15),
-                DelayedDisplay(
                   delay: Duration(milliseconds: 1100),
                   slidingBeginOffset: Offset(0, -1),
                   child: Padding(
@@ -203,7 +178,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       alignment: Alignment.centerLeft,
                       child: Text(
                         "Postal Code Of House",
-                        style: headingSmall,
+                        style: bodyNormal.copyWith(
+                            color: Colors.black87,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: "MontserratSemiBold"),
                       ),
                     ),
                   ),
@@ -232,7 +210,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       alignment: Alignment.centerLeft,
                       child: Text(
                         "Password",
-                        style: headingSmall,
+                        style: bodyNormal.copyWith(
+                            color: Colors.black87,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: "MontserratSemiBold"),
                       ),
                     ),
                   ),
@@ -278,7 +259,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       alignment: Alignment.centerLeft,
                       child: Text(
                         "Confirm Password",
-                        style: headingSmall,
+                        style: bodyNormal.copyWith(
+                            color: Colors.black87,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: "MontserratSemiBold"),
                       ),
                     ),
                   ),
@@ -352,8 +336,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             "password":
                                 passwordEditingController.text.toString(),
                             "imageUrl": "",
-                            "phoneNumber":
-                                phoneEditingController.text.toString(),
                             "postalCode":
                                 postalCodeEditingController.text.toString(),
                           };
