@@ -17,6 +17,7 @@ class DataHelper extends GetxController {
   TimeOfDay? startTime;
   TimeOfDay? endTime;
   bool isEmailVerified = false;
+  List<Map<String, dynamic>> adminList = [];
   RxList<Map<String, dynamic>> groupAdmins = <Map<String, dynamic>>[].obs;
   RxList<Map<String, dynamic>> groupMembers = <Map<String, dynamic>>[].obs;
   RxList<Map<String, dynamic>> assignTaskMember = <Map<String, dynamic>>[].obs;
@@ -177,12 +178,49 @@ class DataHelper extends GetxController {
       'imageUrl': userData.imageUrl.toString(),
       'userID': userData.userID.toString(),
     };
-    print("newMap");
-    print(newMap);
-    await FirebaseFirestore.instance.collection('groups').doc(groupID).update({
-      "membersList": FieldValue.arrayUnion([newMap])
+
+    var querySnapshot2 = await FirebaseFirestore.instance
+        .collection('groups')
+        .doc(groupID.toString())
+        .get();
+    adminList.add({
+      "adminsList": List.from(querySnapshot2['adminsList']),
+      "membersList": List.from(querySnapshot2['membersList']),
     });
+
+    var notiID = FirebaseFirestore.instance
+        .collection("users")
+        .doc(adminList[0]['adminsList'][0]['userID'])
+        .collection("notifications")
+        .doc();
+    notiID.set({
+      "notificationType": 1,
+      "notification":
+          userData.displayName.toString() + "requested to join group",
+      "userToJoin": FieldValue.arrayUnion([newMap]),
+      "Time": DateTime.now(),
+      "notiID": notiID,
+    });
+
+    // await FirebaseFirestore.instance.collection('groups').doc(groupID).update({
+    //   "membersList": FieldValue.arrayUnion([newMap])
+    // });
     return;
+  }
+
+  sendNotification(docID) {
+    var notiID = FirebaseFirestore.instance
+        .collection("users")
+        .doc(docID.toString())
+        .collection("notifications")
+        .doc();
+    notiID.set({
+      "notificationType": 2,
+      "notification": userData.displayName.toString() + " assigned you a task ",
+      "userToJoin": FieldValue.arrayUnion([]),
+      "Time": DateTime.now(),
+      "notiID": notiID,
+    });
   }
 
   addGroupTask(groupID, taskTitle, taskDate, startTime, endTime, taskScore,

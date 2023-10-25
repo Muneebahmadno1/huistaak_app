@@ -304,6 +304,14 @@ class _CreateNewGroupTaskState extends State<CreateNewGroupTask> {
                             _dataController.endTime.toString(),
                             points.toString(),
                             _dataController.assignTaskMember);
+                        for (int i = 0;
+                            i < _dataController.assignTaskMember.length;
+                            i++) {
+                          await _dataController.sendNotification(_dataController
+                              .assignTaskMember[i]['userID']
+                              .toString());
+                        }
+
                         _dataController.assignTaskMember.clear();
                         PageTransition.pageBackNavigation(
                             page: GroupDetail(
