@@ -10,7 +10,6 @@ import '../../../constants/global_variables.dart';
 import '../../../helper/data_helper.dart';
 import '../../../widgets/date_picker.dart';
 import '../../../widgets/text_form_fields.dart';
-import '../../../widgets/time_picker.dart';
 import '../group_detail.dart';
 import 'assign_task_member.dart';
 
@@ -128,19 +127,39 @@ class _CreateNewGroupTaskState extends State<CreateNewGroupTask> {
                   child: Row(
                     children: [
                       Expanded(
-                        child: TimePickerWidget(
-                          index: 1,
-                          title: 'Start Time',
+                        child: Container(
+                          height: 56,
+                          decoration: BoxDecoration(
+                            color: AppColors.buttonColor.withOpacity(0.2),
+                            borderRadius: BorderRadius.circular(40),
+                          ),
+                          child: CustomDropDown(
+                            dropDownTitle: "Start Time",
+                          ),
                         ),
+                        // TimePickerWidget(
+                        //   index: 1,
+                        //   title: 'Start Time',
+                        // ),
                       ),
                       SizedBox(
                         width: 10,
                       ),
                       Expanded(
-                        child: TimePickerWidget(
-                          index: 2,
-                          title: 'End Time',
+                        child: Container(
+                          height: 56,
+                          decoration: BoxDecoration(
+                            color: AppColors.buttonColor.withOpacity(0.2),
+                            borderRadius: BorderRadius.circular(40),
+                          ),
+                          child: CustomDropDown(
+                            dropDownTitle: "End Time",
+                          ),
                         ),
+                        // TimePickerWidget(
+                        //   index: 2,
+                        //   title: 'End Time',
+                        // ),
                       ),
                     ],
                   ),

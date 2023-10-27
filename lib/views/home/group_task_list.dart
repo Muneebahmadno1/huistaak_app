@@ -202,23 +202,29 @@ class _GroupTaskListState extends State<GroupTaskList> {
                                         ],
                                       ),
                                       LikeBarWidget(
-                                          image: "assets/images/man1.jpg",
-                                          count: "5/15",
-                                          percent: 0.6),
+                                        image: "assets/images/man1.jpg",
+                                        count: "10",
+                                        percent: 0.8,
+                                        TotalCount: "15",
+                                      ),
                                       SizedBox(
                                         height: 10,
                                       ),
                                       LikeBarWidget(
-                                          image: "assets/images/man1.jpg",
-                                          count: "10/15",
-                                          percent: 0.8),
+                                        image: "assets/images/man1.jpg",
+                                        count: "10",
+                                        percent: 0.8,
+                                        TotalCount: "15",
+                                      ),
                                       SizedBox(
                                         height: 10,
                                       ),
                                       LikeBarWidget(
-                                          image: "assets/images/man1.jpg",
-                                          count: "3/15",
-                                          percent: 0.3),
+                                        image: "assets/images/man1.jpg",
+                                        count: "10",
+                                        percent: 0.8,
+                                        TotalCount: "15",
+                                      ),
                                       SizedBox(
                                         height: 20,
                                       ),

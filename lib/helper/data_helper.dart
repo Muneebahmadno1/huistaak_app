@@ -3,19 +3,21 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:huistaak/helper/page_navigation.dart';
+import 'package:intl/intl.dart';
 
 import '../constants/global_variables.dart';
 import '../controllers/general_controller.dart';
 import '../models/user_model.dart';
 import '../views/auth/login_screen.dart';
 import '../views/home/bottom_nav_bar.dart';
+import '../views/home/connected_groups.dart';
 import '../widgets/custom_widgets.dart';
 
 class DataHelper extends GetxController {
   DateTime? selectedDate = DateTime.now();
   DateTime? goalSelectedDate = DateTime.now();
-  TimeOfDay? startTime;
-  TimeOfDay? endTime;
+  RxString startTime = '09:00 AM'.obs;
+  RxString endTime = '10:00 AM'.obs;
   bool isEmailVerified = false;
   List<Map<String, dynamic>> adminList = [];
   RxList<Map<String, dynamic>> groupAdmins = <Map<String, dynamic>>[].obs;
@@ -172,7 +174,7 @@ class DataHelper extends GetxController {
     return;
   }
 
-  joinGroup(groupID) async {
+  joinGroupRequest(groupID) async {
     final newMap = {
       'displayName': userData.displayName.toString(),
       'imageUrl': userData.imageUrl.toString(),
@@ -196,16 +198,31 @@ class DataHelper extends GetxController {
     notiID.set({
       "notificationType": 1,
       "notification":
-          userData.displayName.toString() + "requested to join group",
+          userData.displayName.toString() + " requested to join group",
       "userToJoin": FieldValue.arrayUnion([newMap]),
+      "groupToJoinID": groupID,
       "Time": DateTime.now(),
-      "notiID": notiID,
+      "notiID": notiID.id,
     });
-
-    // await FirebaseFirestore.instance.collection('groups').doc(groupID).update({
-    //   "membersList": FieldValue.arrayUnion([newMap])
-    // });
     return;
+  }
+
+  joinGroup(groupID, Map<String, dynamic> newMap) async {
+    print("groupIDdd");
+    print(groupID);
+    print(newMap);
+    await FirebaseFirestore.instance.collection('groups').doc(groupID).update({
+      "membersList": FieldValue.arrayUnion([newMap])
+    });
+  }
+
+  deleteNotification(notiID) async {
+    await FirebaseFirestore.instance
+        .collection("users")
+        .doc(userData.userID.toString())
+        .collection("notifications")
+        .doc(notiID)
+        .delete();
   }
 
   sendNotification(docID) {
@@ -223,8 +240,23 @@ class DataHelper extends GetxController {
     });
   }
 
-  addGroupTask(groupID, taskTitle, taskDate, startTime, endTime, taskScore,
-      assignMembers) async {
+  addGroupTask(groupID, taskTitle, taskDate, String startTimeT, String endTimeT,
+      taskScore, assignMembers) async {
+    final DateFormat format = DateFormat('hh:mm a');
+
+    // Parse the time strings into DateTime objects
+    DateTime startTime = format.parse(startTimeT);
+    DateTime endTime = format.parse(endTimeT);
+
+    // Check if end time is before start time (i.e., end time is on the next day)
+    if (endTime.isBefore(startTime)) {
+      endTime = endTime.add(Duration(days: 1));
+    }
+
+    // Calculate the time difference in hours
+    Duration difference = endTime.difference(startTime);
+    double hours = difference.inMinutes / 60;
+
     CollectionReference ref = await FirebaseFirestore.instance
         .collection('groups')
         .doc(groupID)
@@ -239,13 +271,131 @@ class DataHelper extends GetxController {
         .set({
       "taskTitle": taskTitle,
       "taskDate": taskDate,
-      "startTime": startTime,
-      "endTime": endTime,
+      "startTime": startTimeT,
+      "endTime": endTimeT,
+      "Duration": hours < 0 ? (-hours).toString() : (hours).toString(),
       "taskScore": taskScore,
       "assignMembers": assignMembers,
       "id": docId,
     });
     return;
+  }
+
+  startTask(groupID, taskID, groupTitle) {
+    final DocumentReference documentReference = FirebaseFirestore.instance
+        .collection("groups")
+        .doc(groupID)
+        .collection("tasks")
+        .doc(taskID);
+
+    Map<String, dynamic> newVariable = {
+      'startTask': DateTime.now(), // Add the 4th variable here
+    };
+
+// Fetch the existing data from the document
+    documentReference.get().then((documentSnapshot) {
+      if (documentSnapshot.exists) {
+        dynamic data = documentSnapshot.data();
+        List<Map<String, dynamic>> existingArray =
+            List<Map<String, dynamic>>.from(data['assignMembers'] ?? []);
+
+        // Find the index of the map with a matching userID
+        int index = existingArray
+            .indexWhere((map) => map['userID'] == userData.userID.toString());
+
+        if (index != -1) {
+          // If a match is found, add the new variable to that map
+          existingArray[index]['startTask'] = newVariable['startTask'];
+
+          // Update the document with the modified array
+          documentReference.update({
+            'assignMembers': existingArray,
+          }).then((_) {
+            print('Document updated successfully');
+          }).catchError((error) {
+            print('Error updating document: $error');
+          });
+        } else {
+          print('No matching userID found.');
+        }
+        Get.off(() => ConnectedGroupScreen(
+            // groupID: groupID,
+            // groupTitle: groupTitle,
+            ));
+      }
+    }).catchError((error) {
+      print('Error fetching document: $error');
+    });
+  }
+
+  endTask(groupID, taskID, DateTime StartTime, taskDurationInMin, points,
+      groupTitle) {
+    final DocumentReference documentReference = FirebaseFirestore.instance
+        .collection("groups")
+        .doc(groupID)
+        .collection("tasks")
+        .doc(taskID);
+
+// Fetch the existing data from the document
+    documentReference.get().then((documentSnapshot) {
+      if (documentSnapshot.exists) {
+        dynamic data = documentSnapshot.data();
+        List<Map<String, dynamic>> existingArray =
+            List<Map<String, dynamic>>.from(data['assignMembers'] ?? []);
+
+        // Find the index of the map with a matching userID
+        int index = existingArray
+            .indexWhere((map) => map['userID'] == userData.userID.toString());
+        bool containsStartTask =
+            existingArray.any((map) => map['startTask'] != null);
+
+        if (index != -1 && containsStartTask == true) {
+          // If a match is found, add the new variable to that map
+          int differenceInMinutes =
+              DateTime.now().difference(StartTime).inMinutes;
+          print("differenceInMinutes");
+          print(differenceInMinutes);
+          var pointPerMinute = taskDurationInMin / double.parse(points);
+          print("pointPerMinute");
+          print(pointPerMinute);
+          var userPoint;
+          for (int i = 0; i < int.parse(points); i++) {
+            if (differenceInMinutes < pointPerMinute * (i + 1)) {
+              print("dd");
+              userPoint = double.parse(points) - double.parse(i.toString());
+              break;
+            }
+          }
+          print("userPoint");
+          print(userPoint);
+          print(userPoint.ceil());
+          Map<String, dynamic> newVariable = {
+            'endTask': DateTime.now(),
+            'pointsEarned':
+                userPoint.ceil().toString(), // Add the 4th variable here
+          };
+
+          existingArray[index]['endTask'] = newVariable['endTask'];
+          existingArray[index]['pointsEarned'] = newVariable['pointsEarned'];
+          // Update the document with the modified array
+          documentReference.update({
+            'assignMembers': existingArray,
+          }).then((_) {
+            print('Document updated successfully');
+          }).catchError((error) {
+            print('Error updating document: $error');
+          });
+        } else {
+          print("Task haven't started yet");
+        }
+        Get.off(() => ConnectedGroupScreen(
+            // groupID: groupID,
+            // groupTitle: groupTitle,
+            ));
+      }
+    }).catchError((error) {
+      print('Error fetching document: $error');
+    });
   }
 
   addGroupGoal(goalTitle, goalDate, time, goalMembers) async {
