@@ -4,11 +4,13 @@ import 'package:percent_indicator/linear_percent_indicator.dart';
 import '../constants/global_variables.dart';
 
 class LikeBarWidget extends StatefulWidget {
+  String TotalCount;
   String image;
   String count;
   double percent;
   LikeBarWidget(
       {super.key,
+      required this.TotalCount,
       required this.image,
       required this.count,
       required this.percent});
@@ -48,7 +50,7 @@ class _LikeBarWidgetState extends State<LikeBarWidget> {
           width: 10,
         ),
         Text(
-          widget.count,
+          widget.count + "/" + widget.TotalCount,
           style: headingSmall.copyWith(color: Colors.white),
         ),
       ],

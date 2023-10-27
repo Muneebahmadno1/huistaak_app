@@ -1,8 +1,11 @@
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
 import 'package:zoom_tap_animation/zoom_tap_animation.dart';
 
 import '../constants/global_variables.dart';
+import '../helper/data_helper.dart';
 import '../helper/page_navigation.dart';
 
 class CustomButton extends StatefulWidget {
@@ -99,6 +102,133 @@ class _CustomAppBarState extends State<CustomAppBar> {
             width: 40,
           ),
         ],
+      ),
+    );
+  }
+}
+
+class CustomDropDown extends StatefulWidget {
+  final String dropDownTitle;
+  const CustomDropDown({Key? key, required this.dropDownTitle})
+      : super(key: key);
+
+  @override
+  State<CustomDropDown> createState() => _CustomDropDownState();
+}
+
+class _CustomDropDownState extends State<CustomDropDown> {
+  final DataHelper _dataController = Get.find<DataHelper>();
+  final List<String> items = [
+    '09:00 AM',
+    '10:00 AM',
+    '11:00 AM',
+    '12:00 PM',
+    '01:00 PM',
+    '02:00 PM',
+    '03:00 PM',
+    '04:00 PM',
+    '05:00 PM',
+    '06:00 PM',
+    '07:00 PM',
+    '08:00 PM',
+    '09:00 PM',
+    '10:00 PM',
+    '11:00 PM',
+    '12:00 AM',
+    '01:00 AM',
+    '02:00 AM',
+    '03:00 AM',
+    '04:00 AM',
+    '05:00 AM',
+    '06:00 AM',
+    '07:00 AM',
+    '08:00 AM',
+  ];
+  String? selectedValue;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    selectedValue =
+        widget.dropDownTitle == 'Start Time' ? "09:00 AM" : "10:00 AM";
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 50,
+      child: DropdownButtonHideUnderline(
+        child: DropdownButton2(
+          isExpanded: true,
+          hint: Row(
+            children: [
+              Icon(Icons.access_time_outlined),
+              SizedBox(
+                width: 8,
+              ),
+              Text(widget.dropDownTitle,
+                  style: bodyNormal.copyWith(fontSize: 12)),
+            ],
+          ),
+          items: items
+              .map((item) => DropdownMenuItem<String>(
+                    value: item,
+                    child: Center(
+                      child: Text(
+                        item,
+                        style: bodyNormal,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ))
+              .toList(),
+          value: selectedValue,
+          onChanged: (value) {
+            setState(() {
+              if (widget.dropDownTitle == 'Start Time') {
+                _dataController.startTime.value = value!;
+              } else {
+                _dataController.endTime.value = value!;
+              }
+              selectedValue = value as String;
+            });
+          },
+          iconStyleData: IconStyleData(
+            icon: const Icon(
+              Icons.keyboard_arrow_down_sharp,
+              color: Colors.black,
+            ),
+          ),
+          buttonStyleData: const ButtonStyleData(
+            padding: EdgeInsets.only(left: 5, right: 10),
+            elevation: 2,
+          ),
+          dropdownStyleData: DropdownStyleData(
+            padding: null,
+            decoration: BoxDecoration(
+                borderRadius: const BorderRadius.only(
+                    bottomLeft: Radius.circular(12),
+                    bottomRight: Radius.circular(12)),
+                color: Colors.white,
+                border: Border.all(width: 2, color: Colors.white24)),
+            maxHeight: 135,
+            elevation: 8,
+            offset: const Offset(-1, -3),
+            scrollbarTheme: ScrollbarThemeData(
+              radius: const Radius.circular(40),
+              thickness: MaterialStateProperty.all<double>(6),
+              thumbVisibility: MaterialStateProperty.all<bool>(true),
+            ),
+          ),
+          style: TextStyle(
+              fontSize: 14,
+              color: Colors.black,
+              fontFamily: 'MontserratRegular'),
+          menuItemStyleData: const MenuItemStyleData(
+            padding: EdgeInsets.symmetric(horizontal: 8.0),
+          ),
+        ),
       ),
     );
   }

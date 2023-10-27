@@ -157,7 +157,7 @@ class _ConnectNewGroupState extends State<ConnectNewGroup> {
                   onTap: () async {
                     if (key.currentState!.validate()) {
                       await _dataController
-                          .joinGroup(codeController.text.toString());
+                          .joinGroupRequest(codeController.text.toString());
                       Get.find<GeneralController>().onBottomBarTapped(0);
                       PageTransition.pageProperNavigation(
                           page: CustomBottomNavBar());
