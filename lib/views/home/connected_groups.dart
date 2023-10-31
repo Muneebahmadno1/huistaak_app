@@ -18,7 +18,7 @@ class ConnectedGroupScreen extends StatefulWidget {
 
 class _ConnectedGroupScreenState extends State<ConnectedGroupScreen> {
   bool isLoading = false;
-  final DataController _dataController = Get.find<DataController>();
+  final HomeController _dataController = Get.find<HomeController>();
 
   getData() async {
     setState(() {

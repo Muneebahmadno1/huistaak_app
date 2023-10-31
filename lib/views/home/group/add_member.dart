@@ -23,7 +23,7 @@ class _AddMemberState extends State<AddMember> {
   List<dynamic> userList = [];
   List<dynamic> groupList = [];
   List<dynamic> groupMemberList = [];
-  final DataController _dataController = Get.find<DataController>();
+  final HomeController _dataController = Get.find<HomeController>();
   late String _dropDownValue;
   bool isLoading = false;
 

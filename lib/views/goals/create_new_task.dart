@@ -25,7 +25,7 @@ class CreateNewTask extends StatefulWidget {
 
 class _CreateNewTaskState extends State<CreateNewTask> {
   final GoalController _goalController = Get.find<GoalController>();
-  final DataController _dataController = Get.find<DataController>();
+  final HomeController _dataController = Get.find<HomeController>();
   TextEditingController goalNameEditingController = TextEditingController();
   final GlobalKey<FormState> goalFormField = GlobalKey();
   List<dynamic> groupList = [];

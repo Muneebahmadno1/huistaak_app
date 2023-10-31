@@ -117,7 +117,7 @@ class CustomDropDown extends StatefulWidget {
 }
 
 class _CustomDropDownState extends State<CustomDropDown> {
-  final DataController _dataController = Get.find<DataController>();
+  final HomeController _dataController = Get.find<HomeController>();
   final List<String> items = [
     '09:00 AM',
     '10:00 AM',

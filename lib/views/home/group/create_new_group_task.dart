@@ -8,6 +8,8 @@ import 'package:zoom_tap_animation/zoom_tap_animation.dart';
 import '../../../constants/custom_validators.dart';
 import '../../../constants/global_variables.dart';
 import '../../../controllers/data_controller.dart';
+import '../../../controllers/group_controller.dart';
+import '../../../controllers/notification_controller.dart';
 import '../../../widgets/date_picker.dart';
 import '../../../widgets/text_form_fields.dart';
 import '../group_detail.dart';
@@ -25,7 +27,10 @@ class CreateNewGroupTask extends StatefulWidget {
 }
 
 class _CreateNewGroupTaskState extends State<CreateNewGroupTask> {
-  final DataController _dataController = Get.find<DataController>();
+  final GroupController _groupController = Get.find<GroupController>();
+  final HomeController _dataController = Get.find<HomeController>();
+  final NotificationController _notiController =
+      Get.find<NotificationController>();
   TextEditingController taskNameEditingController = TextEditingController();
   int points = 1;
   final GlobalKey<FormState> taskFormField = GlobalKey();
@@ -315,7 +320,7 @@ class _CreateNewGroupTaskState extends State<CreateNewGroupTask> {
                   child: CustomButton(
                     onTap: () async {
                       if (taskFormField.currentState!.validate()) {
-                        await _dataController.addGroupTask(
+                        await _groupController.addGroupTask(
                             widget.groupID,
                             taskNameEditingController.text,
                             _dataController.selectedDate,
@@ -326,7 +331,7 @@ class _CreateNewGroupTaskState extends State<CreateNewGroupTask> {
                         for (int i = 0;
                             i < _dataController.assignTaskMember.length;
                             i++) {
-                          await _dataController.sendNotification(_dataController
+                          await _notiController.sendNotification(_dataController
                               .assignTaskMember[i]['userID']
                               .toString());
                         }
