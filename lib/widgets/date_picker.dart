@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
 import '../constants/global_variables.dart';
-import '../helper/data_helper.dart';
+import '../controllers/data_controller.dart';
 
 class DatePickerWidget extends StatefulWidget {
   final from;
@@ -15,7 +15,7 @@ class DatePickerWidget extends StatefulWidget {
 }
 
 class _DatePickerWidgetState extends State<DatePickerWidget> {
-  final DataHelper _dataController = Get.find<DataHelper>();
+  final DataController _dataController = Get.find<DataController>();
   @override
   Widget build(BuildContext context) {
     return Container(

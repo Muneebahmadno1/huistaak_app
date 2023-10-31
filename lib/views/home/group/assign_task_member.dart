@@ -1,10 +1,10 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:huistaak/views/home/widgets/add_members_widget.dart';
 import 'package:sizer/sizer.dart';
 
-import '../../../helper/data_helper.dart';
+import '../../../controllers/data_controller.dart';
+import '../../../helper/collections.dart';
 import '../../../widgets/custom_widgets.dart';
 
 class AssignMember extends StatefulWidget {
@@ -19,7 +19,7 @@ class AssignMember extends StatefulWidget {
 
 class _AssignMemberState extends State<AssignMember> {
   List<int> selectedIndex = [];
-  final DataHelper _dataController = Get.find<DataHelper>();
+  final DataController _dataController = Get.find<DataController>();
 
   List<Map<String, dynamic>> userList = [];
   bool isLoading = false;
@@ -28,10 +28,7 @@ class _AssignMemberState extends State<AssignMember> {
     setState(() {
       isLoading = true;
     });
-    var querySnapshot = await FirebaseFirestore.instance
-        .collection('groups')
-        .doc(widget.groupID)
-        .get();
+    var querySnapshot = await Collections.GROUPS.doc(widget.groupID).get();
     setState(() {
       userList.add({
         "membersList": List.from(querySnapshot['membersList']),

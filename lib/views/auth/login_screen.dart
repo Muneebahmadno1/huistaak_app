@@ -7,7 +7,7 @@ import 'package:huistaak/views/auth/welcome_screen.dart';
 import '../../constants/app_images.dart';
 import '../../constants/custom_validators.dart';
 import '../../constants/global_variables.dart';
-import '../../helper/data_helper.dart';
+import '../../controllers/auth_controller.dart';
 import '../../widgets/custom_widgets.dart';
 import '../../widgets/text_form_fields.dart';
 import 'forgot_password.dart';
@@ -21,7 +21,7 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   bool _obscureText = true;
-  final DataHelper _dataController = Get.find<DataHelper>();
+  final AuthController _authController = Get.find<AuthController>();
   final TextEditingController emailEditingController = TextEditingController();
   final TextEditingController passwordEditingController =
       TextEditingController();
@@ -234,7 +234,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   ))
                                 ],
                               ));
-                          await _dataController.validateUser(
+                          await _authController.validateUser(
                               context,
                               emailEditingController.text.removeAllWhitespace
                                   .toLowerCase(),

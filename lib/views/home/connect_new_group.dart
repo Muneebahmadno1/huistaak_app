@@ -6,8 +6,8 @@ import 'package:zoom_tap_animation/zoom_tap_animation.dart';
 
 import '../../constants/custom_validators.dart';
 import '../../constants/global_variables.dart';
+import '../../controllers/data_controller.dart';
 import '../../controllers/general_controller.dart';
-import '../../helper/data_helper.dart';
 import '../../helper/page_navigation.dart';
 import '../../widgets/text_form_fields.dart';
 import '../notification/notifications.dart';
@@ -22,7 +22,7 @@ class ConnectNewGroup extends StatefulWidget {
 }
 
 class _ConnectNewGroupState extends State<ConnectNewGroup> {
-  final DataHelper _dataController = Get.find<DataHelper>();
+  final DataController _dataController = Get.find<DataController>();
   TextEditingController codeController = TextEditingController();
   final GlobalKey<FormState> key = GlobalKey<FormState>();
 

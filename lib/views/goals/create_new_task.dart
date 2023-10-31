@@ -7,8 +7,10 @@ import 'package:sizer/sizer.dart';
 
 import '../../constants/custom_validators.dart';
 import '../../constants/global_variables.dart';
+import '../../controllers/data_controller.dart';
 import '../../controllers/general_controller.dart';
-import '../../helper/data_helper.dart';
+import '../../controllers/goal_controller.dart';
+import '../../helper/collections.dart';
 import '../../helper/page_navigation.dart';
 import '../../widgets/date_picker.dart';
 import '../../widgets/text_form_fields.dart';
@@ -22,7 +24,8 @@ class CreateNewTask extends StatefulWidget {
 }
 
 class _CreateNewTaskState extends State<CreateNewTask> {
-  final DataHelper _dataController = Get.find<DataHelper>();
+  final GoalController _goalController = Get.find<GoalController>();
+  final DataController _dataController = Get.find<DataController>();
   TextEditingController goalNameEditingController = TextEditingController();
   final GlobalKey<FormState> goalFormField = GlobalKey();
   List<dynamic> groupList = [];
@@ -33,10 +36,9 @@ class _CreateNewTaskState extends State<CreateNewTask> {
     setState(() {
       isLoading = true;
     });
-    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
-        .collection('users')
+    QuerySnapshot querySnapshot = await Collections.USERS
         .doc(userData.userID)
-        .collection("myGroups")
+        .collection(Collections.MYGROUPS)
         .get();
     for (int i = 0; i < querySnapshot.docs.length; i++) {
       var a = querySnapshot.docs[i].data() as Map;
@@ -302,7 +304,7 @@ class _CreateNewTaskState extends State<CreateNewTask> {
                         child: CustomButton(
                           onTap: () async {
                             if (goalFormField.currentState!.validate()) {
-                              await _dataController.addGroupGoal(
+                              await _goalController.addGroupGoal(
                                   _dropDownValue.toString(),
                                   goalNameEditingController.text,
                                   _dataController.selectedDate,

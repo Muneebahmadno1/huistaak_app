@@ -6,7 +6,7 @@ import 'package:get/get.dart';
 import '../../constants/app_images.dart';
 import '../../constants/custom_validators.dart';
 import '../../constants/global_variables.dart';
-import '../../helper/data_helper.dart';
+import '../../controllers/data_controller.dart';
 import '../../widgets/custom_widgets.dart';
 import '../../widgets/text_form_fields.dart';
 import 'login_screen.dart';
@@ -20,7 +20,7 @@ class ForgotPassword extends StatefulWidget {
 }
 
 class _ForgotPasswordState extends State<ForgotPassword> {
-  final DataHelper _dataController = Get.find<DataHelper>();
+  final DataController _dataController = Get.find<DataController>();
   final GlobalKey<FormState> key = GlobalKey<FormState>();
   TextEditingController emailEditingController = TextEditingController();
   bool isLoading = false;

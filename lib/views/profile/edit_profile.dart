@@ -12,7 +12,7 @@ import 'package:zoom_tap_animation/zoom_tap_animation.dart';
 import '../../constants/app_images.dart';
 import '../../constants/custom_validators.dart';
 import '../../constants/global_variables.dart';
-import '../../helper/data_helper.dart';
+import '../../controllers/auth_controller.dart';
 import '../../helper/page_navigation.dart';
 import '../../widgets/custom_widgets.dart';
 import '../../widgets/text_form_fields.dart';
@@ -26,7 +26,7 @@ class EditProfile extends StatefulWidget {
 }
 
 class _EditProfileState extends State<EditProfile> {
-  final DataHelper _dataController = Get.find<DataHelper>();
+  final AuthController _authController = Get.find<AuthController>();
   final GlobalKey<FormState> key = GlobalKey<FormState>();
   final TextEditingController nameController = TextEditingController();
   final TextEditingController postalCodeController = TextEditingController();
@@ -243,7 +243,7 @@ class _EditProfileState extends State<EditProfile> {
                                 ],
                               ));
 
-                          await _dataController.editProfile(
+                          await _authController.editProfile(
                               nameController.text,
                               imageUrl,
                               postalCodeController.text,

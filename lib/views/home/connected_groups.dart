@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:delayed_display/delayed_display.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -10,6 +9,7 @@ import 'package:zoom_tap_animation/zoom_tap_animation.dart';
 
 import '../../constants/app_images.dart';
 import '../../constants/global_variables.dart';
+import '../../controllers/data_controller.dart';
 
 class ConnectedGroupScreen extends StatefulWidget {
   @override
@@ -17,41 +17,14 @@ class ConnectedGroupScreen extends StatefulWidget {
 }
 
 class _ConnectedGroupScreenState extends State<ConnectedGroupScreen> {
-  List<dynamic> chatUsers = [];
   bool isLoading = false;
+  final DataController _dataController = Get.find<DataController>();
 
   getData() async {
     setState(() {
       isLoading = true;
     });
-    QuerySnapshot querySnapshot =
-        await FirebaseFirestore.instance.collection('groups').get();
-    for (QueryDocumentSnapshot documentSnapshot in querySnapshot.docs) {
-      Map<String, dynamic> groupsData =
-          documentSnapshot.data() as Map<String, dynamic>;
-      List<dynamic> mamberArray = groupsData['membersList'];
-      List<dynamic> adminArray = groupsData['adminsList'];
-      for (var userMap in adminArray)
-        if (userMap['userID'] == userData.userID) {
-          setState(() {
-            chatUsers.add({
-              "groupImage": groupsData['groupImage'],
-              "groupName": groupsData['groupName'],
-              "id": documentSnapshot.id,
-            });
-          });
-        }
-      for (var userMap in mamberArray)
-        if (userMap['userID'] == userData.userID) {
-          setState(() {
-            chatUsers.add({
-              "groupImage": groupsData['groupImage'],
-              "groupName": groupsData['groupName'],
-              "id": documentSnapshot.id,
-            });
-          });
-        }
-    }
+    await _dataController.getAllUserGroups();
     setState(() {
       isLoading = false;
     });
@@ -171,7 +144,7 @@ class _ConnectedGroupScreenState extends State<ConnectedGroupScreen> {
                     padding: EdgeInsets.only(top: 25.h),
                     child: CircularProgressIndicator(),
                   ))
-                : chatUsers.isEmpty
+                : _dataController.chatUsers.isEmpty
                     ? Center(
                         child: Padding(
                           padding: EdgeInsets.only(top: 25.h),
@@ -182,7 +155,7 @@ class _ConnectedGroupScreenState extends State<ConnectedGroupScreen> {
                       )
                     : Expanded(
                         child: ListView.builder(
-                          itemCount: chatUsers.length,
+                          itemCount: _dataController.chatUsers.length,
                           shrinkWrap: true,
                           padding: EdgeInsets.only(top: 16),
                           physics: BouncingScrollPhysics(),
@@ -191,12 +164,15 @@ class _ConnectedGroupScreenState extends State<ConnectedGroupScreen> {
                               delay: Duration(milliseconds: 400),
                               slidingBeginOffset: Offset(0, -1),
                               child: ConnectedGroupList(
-                                name: chatUsers[index]['groupName'],
-                                desc: chatUsers[index]['groupName'],
-                                imageUrl: chatUsers[index]['groupImage'] ??
+                                name: _dataController.chatUsers[index]
+                                    ['groupName'],
+                                desc: _dataController.chatUsers[index]
+                                    ['groupName'],
+                                imageUrl: _dataController.chatUsers[index]
+                                        ['groupImage'] ??
                                     "assets/images/man1.jpg",
                                 time: DateTime.now(),
-                                groupID: chatUsers[index]['id'],
+                                groupID: _dataController.chatUsers[index]['id'],
                               ),
                             );
                           },

@@ -5,7 +5,7 @@ import 'package:sizer/sizer.dart';
 import 'package:zoom_tap_animation/zoom_tap_animation.dart';
 
 import '../constants/global_variables.dart';
-import '../helper/data_helper.dart';
+import '../controllers/data_controller.dart';
 import '../helper/page_navigation.dart';
 
 class CustomButton extends StatefulWidget {
@@ -117,7 +117,7 @@ class CustomDropDown extends StatefulWidget {
 }
 
 class _CustomDropDownState extends State<CustomDropDown> {
-  final DataHelper _dataController = Get.find<DataHelper>();
+  final DataController _dataController = Get.find<DataController>();
   final List<String> items = [
     '09:00 AM',
     '10:00 AM',

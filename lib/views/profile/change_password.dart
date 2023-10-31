@@ -6,7 +6,7 @@ import 'package:sizer/sizer.dart';
 import '../../constants/app_images.dart';
 import '../../constants/custom_validators.dart';
 import '../../constants/global_variables.dart';
-import '../../helper/data_helper.dart';
+import '../../controllers/auth_controller.dart';
 import '../../widgets/custom_widgets.dart';
 import '../../widgets/text_form_fields.dart';
 
@@ -20,7 +20,7 @@ class ChangePassword extends StatefulWidget {
 class _ChangePasswordState extends State<ChangePassword> {
   bool _obscureText = true;
   bool _obscureTextConfirm = true;
-  final DataHelper _dataController = Get.find<DataHelper>();
+  final AuthController _authController = Get.find<AuthController>();
   final TextEditingController passwordEditingController =
       TextEditingController();
   final TextEditingController confirmPasswordEditingController =
@@ -194,7 +194,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                                     ))
                                   ],
                                 ));
-                            _dataController.changePassword(
+                            _authController.changePassword(
                                 context,
                                 passwordEditingController.text,
                                 confirmPasswordEditingController.text);

@@ -7,7 +7,7 @@ import 'package:zoom_tap_animation/zoom_tap_animation.dart';
 
 import '../../../constants/custom_validators.dart';
 import '../../../constants/global_variables.dart';
-import '../../../helper/data_helper.dart';
+import '../../../controllers/data_controller.dart';
 import '../../../widgets/date_picker.dart';
 import '../../../widgets/text_form_fields.dart';
 import '../group_detail.dart';
@@ -25,7 +25,7 @@ class CreateNewGroupTask extends StatefulWidget {
 }
 
 class _CreateNewGroupTaskState extends State<CreateNewGroupTask> {
-  final DataHelper _dataController = Get.find<DataHelper>();
+  final DataController _dataController = Get.find<DataController>();
   TextEditingController taskNameEditingController = TextEditingController();
   int points = 1;
   final GlobalKey<FormState> taskFormField = GlobalKey();

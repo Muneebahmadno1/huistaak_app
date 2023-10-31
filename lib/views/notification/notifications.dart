@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:delayed_display/delayed_display.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -7,7 +6,8 @@ import 'package:sizer/sizer.dart';
 
 import '../../constants/app_images.dart';
 import '../../constants/global_variables.dart';
-import '../../helper/data_helper.dart';
+import '../../controllers/data_controller.dart';
+import '../../controllers/notification_controller.dart';
 import '../../widgets/custom_widgets.dart';
 
 class Notifications extends StatefulWidget {
@@ -18,33 +18,17 @@ class Notifications extends StatefulWidget {
 }
 
 class _NotificationsState extends State<Notifications> {
-  final DataHelper _dataController = Get.find<DataHelper>();
-  List<Map<String, dynamic>> notificationList = [];
+  final NotificationController _notiController =
+      Get.find<NotificationController>();
+  final DataController _dataController = Get.find<DataController>();
+
   bool isLoading = false;
 
   getData() async {
     setState(() {
       isLoading = true;
     });
-    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
-        .collection('users')
-        .doc(userData.userID)
-        .collection("notifications")
-        .get();
-    for (int i = 0; i < querySnapshot.docs.length; i++) {
-      var a = querySnapshot.docs[i].data() as Map;
-      setState(() {
-        notificationList.add({
-          "notification": a['notification'],
-          "notificationType": a['notificationType'],
-          "notiID": a['notiID'],
-          "groupToJoinID": a['groupToJoinID'],
-          "Time": a['Time'],
-          "userToJoin": List.from(a['userToJoin']),
-        });
-      });
-    }
-
+    await _notiController.getNotifications();
     setState(() {
       isLoading = false;
     });
@@ -78,7 +62,7 @@ class _NotificationsState extends State<Notifications> {
       ),
       body: isLoading
           ? Center(child: CircularProgressIndicator())
-          : notificationList.isEmpty
+          : _notiController.notificationList.isEmpty
               ? Center(child: Text("No notification for now"))
               : Column(
                   children: [
@@ -91,7 +75,7 @@ class _NotificationsState extends State<Notifications> {
                           padding: EdgeInsets.zero,
                           physics: const BouncingScrollPhysics(),
                           scrollDirection: Axis.vertical,
-                          itemCount: notificationList.length,
+                          itemCount: _notiController.notificationList.length,
                           itemBuilder: (BuildContext context, int index) {
                             return Column(
                               children: [
@@ -144,7 +128,8 @@ class _NotificationsState extends State<Notifications> {
                                                           alignment: Alignment
                                                               .centerLeft,
                                                           child: Text(
-                                                            notificationList[
+                                                            _notiController
+                                                                        .notificationList[
                                                                     index][
                                                                 'notification'],
                                                             style: bodyNormal,
@@ -164,8 +149,9 @@ class _NotificationsState extends State<Notifications> {
                                                         DateFormat(
                                                                 'yyyy-MM-dd _ kk:mm a')
                                                             .format(DateTime.parse(
-                                                                notificationList[
-                                                                            index]
+                                                                _notiController
+                                                                    .notificationList[
+                                                                        index]
                                                                         ['Time']
                                                                     .toDate()
                                                                     .toString()))
@@ -180,7 +166,7 @@ class _NotificationsState extends State<Notifications> {
                                             ],
                                           ),
                                         ),
-                                        notificationList[index]
+                                        _notiController.notificationList[index]
                                                     ['notificationType'] ==
                                                 1
                                             ? Row(
@@ -190,18 +176,20 @@ class _NotificationsState extends State<Notifications> {
                                                   InkWell(
                                                     onTap: () async {
                                                       await _dataController.joinGroup(
-                                                          notificationList[
-                                                                      index][
+                                                          _notiController
+                                                              .notificationList[
+                                                                  index][
                                                                   'groupToJoinID']
                                                               .toString(),
-                                                          notificationList[
-                                                                      index]
-                                                                  ['userToJoin']
-                                                              [0]);
+                                                          _notiController
+                                                                      .notificationList[
+                                                                  index][
+                                                              'userToJoin'][0]);
                                                       await _dataController
                                                           .deleteNotification(
-                                                              notificationList[
-                                                                          index]
+                                                              _notiController
+                                                                  .notificationList[
+                                                                      index]
                                                                       ['notiID']
                                                                   .toString());
                                                       Get.back();
@@ -235,9 +223,9 @@ class _NotificationsState extends State<Notifications> {
                                                       onTap: () async {
                                                         await _dataController
                                                             .deleteNotification(
-                                                                notificationList[
-                                                                            index]
-                                                                        [
+                                                                _notiController
+                                                                    .notificationList[
+                                                                        index][
                                                                         'notiID']
                                                                     .toString());
                                                         Get.back();
