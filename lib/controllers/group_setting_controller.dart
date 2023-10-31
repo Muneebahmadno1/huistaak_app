@@ -8,8 +8,10 @@ class GroupSettingController extends GetxController {
   List<Map<String, dynamic>> groupInfo = [];
 
   getGroupTaskList(groupID) async {
-    QuerySnapshot querySnapshot =
-        await Collections.GROUPS.doc(groupID).collection("tasks").get();
+    QuerySnapshot querySnapshot = await Collections.GROUPS
+        .doc(groupID)
+        .collection(Collections.TASKS)
+        .get();
     for (int i = 0; i < querySnapshot.docs.length; i++) {
       var a = querySnapshot.docs[i].data() as Map;
 
