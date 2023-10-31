@@ -19,7 +19,7 @@ class AssignMember extends StatefulWidget {
 
 class _AssignMemberState extends State<AssignMember> {
   List<int> selectedIndex = [];
-  final DataController _dataController = Get.find<DataController>();
+  final HomeController _dataController = Get.find<HomeController>();
 
   List<Map<String, dynamic>> userList = [];
   bool isLoading = false;

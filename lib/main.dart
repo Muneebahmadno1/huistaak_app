@@ -16,7 +16,7 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
 
-  Get.put(DataController());
+  Get.put(HomeController());
   runApp(const MyApp());
 }
 
@@ -60,13 +60,10 @@ class InitialBinding extends Bindings {
     // TODO: implement dependencies
     Get.put(GeneralController());
     Get.put(AuthController());
-    Get.put(DataController());
+    Get.put(HomeController());
     Get.put(GoalController());
     Get.put(GroupSettingController());
     Get.put(GroupController());
     Get.put(NotificationController());
-    // Get.put(NotificationController());
-    // Get.put(PricingController());
-    // Get.put(ShiftController());
   }
 }

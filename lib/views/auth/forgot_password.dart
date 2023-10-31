@@ -20,7 +20,7 @@ class ForgotPassword extends StatefulWidget {
 }
 
 class _ForgotPasswordState extends State<ForgotPassword> {
-  final DataController _dataController = Get.find<DataController>();
+  final HomeController _dataController = Get.find<HomeController>();
   final GlobalKey<FormState> key = GlobalKey<FormState>();
   TextEditingController emailEditingController = TextEditingController();
   bool isLoading = false;

@@ -20,7 +20,7 @@ class Notifications extends StatefulWidget {
 class _NotificationsState extends State<Notifications> {
   final NotificationController _notiController =
       Get.find<NotificationController>();
-  final DataController _dataController = Get.find<DataController>();
+  final HomeController _dataController = Get.find<HomeController>();
 
   bool isLoading = false;
 
@@ -185,7 +185,7 @@ class _NotificationsState extends State<Notifications> {
                                                                       .notificationList[
                                                                   index][
                                                               'userToJoin'][0]);
-                                                      await _dataController
+                                                      await _notiController
                                                           .deleteNotification(
                                                               _notiController
                                                                   .notificationList[
@@ -221,7 +221,7 @@ class _NotificationsState extends State<Notifications> {
                                                             left: 8.0),
                                                     child: InkWell(
                                                       onTap: () async {
-                                                        await _dataController
+                                                        await _notiController
                                                             .deleteNotification(
                                                                 _notiController
                                                                     .notificationList[

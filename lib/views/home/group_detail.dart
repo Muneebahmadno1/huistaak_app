@@ -30,7 +30,7 @@ class GroupDetail extends StatefulWidget {
 
 class _GroupDetailState extends State<GroupDetail> {
   final GroupController _groupController = Get.find<GroupController>();
-  final DataController _dataController = Get.find<DataController>();
+  final HomeController _dataController = Get.find<HomeController>();
   bool isLoading = false;
 
   getData() async {
@@ -440,7 +440,7 @@ class _GroupDetailState extends State<GroupDetail> {
                                                                             ZoomTapAnimation(
                                                                           onTap:
                                                                               () async {
-                                                                            await _dataController.startTask(
+                                                                            await _groupController.startTask(
                                                                                 widget.groupID.toString(),
                                                                                 _groupController.taskList[index]['id'].toString(),
                                                                                 widget.groupTitle);
@@ -490,7 +490,7 @@ class _GroupDetailState extends State<GroupDetail> {
                                                                       ZoomTapAnimation(
                                                                     onTap:
                                                                         () async {
-                                                                      await _dataController.endTask(
+                                                                      await _groupController.endTask(
                                                                           widget
                                                                               .groupID
                                                                               .toString(),

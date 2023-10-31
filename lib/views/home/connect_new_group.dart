@@ -22,7 +22,7 @@ class ConnectNewGroup extends StatefulWidget {
 }
 
 class _ConnectNewGroupState extends State<ConnectNewGroup> {
-  final DataController _dataController = Get.find<DataController>();
+  final HomeController _dataController = Get.find<HomeController>();
   TextEditingController codeController = TextEditingController();
   final GlobalKey<FormState> key = GlobalKey<FormState>();
 

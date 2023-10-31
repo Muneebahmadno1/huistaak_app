@@ -14,6 +14,7 @@ import '../../../constants/app_images.dart';
 import '../../../constants/custom_validators.dart';
 import '../../../constants/global_variables.dart';
 import '../../../controllers/data_controller.dart';
+import '../../../controllers/group_controller.dart';
 import '../../../helper/page_navigation.dart';
 import '../../../widgets/custom_widgets.dart';
 import '../../../widgets/text_form_fields.dart';
@@ -27,7 +28,8 @@ class CreateNewGroup extends StatefulWidget {
 }
 
 class _CreateNewGroupState extends State<CreateNewGroup> {
-  final DataController _dataController = Get.find<DataController>();
+  final GroupController _groupController = Get.find<GroupController>();
+  final HomeController _dataController = Get.find<HomeController>();
   TextEditingController groupNameEditingController = TextEditingController();
   bool loader = false;
   late PickedFile pickedFile;
@@ -337,7 +339,7 @@ class _CreateNewGroupState extends State<CreateNewGroup> {
                   child: ZoomTapAnimation(
                     onTap: () async {
                       if (groupFormField.currentState!.validate()) {
-                        await _dataController.createGroup(
+                        await _groupController.createGroup(
                             groupNameEditingController.text.toString(),
                             imageUrl,
                             _dataController.groupAdmins,

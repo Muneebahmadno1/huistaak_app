@@ -6,6 +6,7 @@ import '../helper/collections.dart';
 
 class NotificationController extends GetxController {
   List<Map<String, dynamic>> notificationList = [];
+
   getNotifications() async {
     QuerySnapshot querySnapshot = await Collections.USERS
         .doc(userData.userID)
@@ -22,5 +23,27 @@ class NotificationController extends GetxController {
         "userToJoin": List.from(a['userToJoin']),
       });
     }
+  }
+
+  deleteNotification(notiID) async {
+    await Collections.USERS
+        .doc(userData.userID.toString())
+        .collection(Collections.NOTIFICATIONS)
+        .doc(notiID)
+        .delete();
+  }
+
+  sendNotification(docID) {
+    var notiID = Collections.USERS
+        .doc(docID.toString())
+        .collection(Collections.NOTIFICATIONS)
+        .doc();
+    notiID.set({
+      "notificationType": 2,
+      "notification": userData.displayName.toString() + " assigned you a task ",
+      "userToJoin": FieldValue.arrayUnion([]),
+      "Time": DateTime.now(),
+      "notiID": notiID,
+    });
   }
 }
