@@ -122,14 +122,14 @@ class _ConnectedGroupScreenState extends State<ConnectedGroupScreen> {
                               width: 20,
                               child: Image.asset(
                                   "assets/icons/home/notification.png")),
-                          Positioned(
-                            right: 1,
-                            child: Icon(
-                              Icons.circle,
-                              size: 10,
-                              color: AppColors.buttonColor,
-                            ),
-                          ),
+                          // Positioned(
+                          //   right: 1,
+                          //   child: Icon(
+                          //     Icons.circle,
+                          //     size: 10,
+                          //     color: AppColors.buttonColor,
+                          //   ),
+                          // ),
                         ],
                       ),
                     ),
