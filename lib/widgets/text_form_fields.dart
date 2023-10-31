@@ -9,11 +9,13 @@ class AuthTextField extends StatefulWidget {
   final Widget? suffixIcon;
   final String? prefixIcon;
   final bool? isObscure;
+  final bool isNumber;
   final TextEditingController? controller;
   final FormFieldValidator<String>? validator;
 
   const AuthTextField(
       {Key? key,
+      this.isNumber = false,
       required this.hintText,
       this.controller,
       this.suffixIcon,
@@ -36,6 +38,7 @@ class _AuthTextFieldState extends State<AuthTextField> {
   Widget build(BuildContext context) {
     return Center(
       child: TextFormField(
+        keyboardType: widget.isNumber ? TextInputType.number : null,
         validator: widget.validator,
         obscureText: widget.isObscure ?? false,
         controller: widget.controller,

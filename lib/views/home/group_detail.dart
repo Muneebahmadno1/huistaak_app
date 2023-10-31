@@ -366,31 +366,29 @@ class _GroupDetailState extends State<GroupDetail> {
                                                         : SizedBox.shrink(),
                                                   ],
                                                 ),
-                                                for (var n = 0;
-                                                    n <
+                                                for (int i = 0;
+                                                    i <
                                                         taskList[index][
                                                                 'assignMembers']
                                                             .length;
-                                                    n++)
-                                                  taskList[index]
-                                                              ['assignMembers']
-                                                          .any((map) =>
-                                                              map['endTask'] ==
-                                                              null)
+                                                    i++)
+                                                  !taskList[index][
+                                                              'assignMembers'][i]
+                                                          .containsKey("endTask")
                                                       ? SizedBox.shrink()
                                                       : LikeBarWidget(
                                                           image:
                                                               "assets/images/man1.jpg",
                                                           count: taskList[index]
                                                                       [
-                                                                      'assignMembers'][n]
+                                                                      'assignMembers'][i]
                                                                   [
                                                                   'pointsEarned'] ??
                                                               "0",
                                                           percent: (double.parse(
                                                                   taskList[index]
                                                                           [
-                                                                          'assignMembers'][n]
+                                                                          'assignMembers'][i]
                                                                       [
                                                                       'pointsEarned']) /
                                                               double.parse(taskList[
@@ -416,66 +414,61 @@ class _GroupDetailState extends State<GroupDetail> {
                                                                 null)
                                                         ? Row(
                                                             children: [
-                                                              Expanded(
-                                                                child: Padding(
-                                                                  padding: const EdgeInsets
-                                                                      .symmetric(
-                                                                      vertical:
-                                                                          8),
-                                                                  child:
-                                                                      ZoomTapAnimation(
-                                                                    onTap:
-                                                                        () async {
-                                                                      await _dataController.startTask(
-                                                                          widget
-                                                                              .groupID
-                                                                              .toString(),
-                                                                          taskList[index]['id']
-                                                                              .toString(),
-                                                                          widget
-                                                                              .groupTitle);
-                                                                    },
-                                                                    onLongTap:
-                                                                        () {},
-                                                                    enableLongTapRepeatEvent:
-                                                                        false,
-                                                                    longTapRepeatDuration:
-                                                                        const Duration(
-                                                                            milliseconds:
-                                                                                100),
-                                                                    begin: 1.0,
-                                                                    end: 0.93,
-                                                                    beginDuration:
-                                                                        const Duration(
-                                                                            milliseconds:
-                                                                                20),
-                                                                    endDuration:
-                                                                        const Duration(
-                                                                            milliseconds:
-                                                                                120),
-                                                                    beginCurve:
-                                                                        Curves
-                                                                            .decelerate,
-                                                                    endCurve: Curves
-                                                                        .fastOutSlowIn,
-                                                                    child: Container(
-                                                                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                                                                        width: double.infinity,
-                                                                        height: 50,
-                                                                        decoration: BoxDecoration(
-                                                                          color:
-                                                                              Colors.white,
-                                                                          borderRadius:
-                                                                              BorderRadius.circular(50),
+                                                              taskList[index][
+                                                                          'assignMembers']
+                                                                      .any((map) =>
+                                                                          map['startTask'] !=
+                                                                          null)
+                                                                  ? SizedBox
+                                                                      .shrink()
+                                                                  : Expanded(
+                                                                      child:
+                                                                          Padding(
+                                                                        padding: const EdgeInsets
+                                                                            .symmetric(
+                                                                            vertical:
+                                                                                8),
+                                                                        child:
+                                                                            ZoomTapAnimation(
+                                                                          onTap:
+                                                                              () async {
+                                                                            await _dataController.startTask(
+                                                                                widget.groupID.toString(),
+                                                                                taskList[index]['id'].toString(),
+                                                                                widget.groupTitle);
+                                                                          },
+                                                                          onLongTap:
+                                                                              () {},
+                                                                          enableLongTapRepeatEvent:
+                                                                              false,
+                                                                          longTapRepeatDuration:
+                                                                              const Duration(milliseconds: 100),
+                                                                          begin:
+                                                                              1.0,
+                                                                          end:
+                                                                              0.93,
+                                                                          beginDuration:
+                                                                              const Duration(milliseconds: 20),
+                                                                          endDuration:
+                                                                              const Duration(milliseconds: 120),
+                                                                          beginCurve:
+                                                                              Curves.decelerate,
+                                                                          endCurve:
+                                                                              Curves.fastOutSlowIn,
+                                                                          child: Container(
+                                                                              padding: const EdgeInsets.symmetric(horizontal: 20),
+                                                                              width: double.infinity,
+                                                                              height: 50,
+                                                                              decoration: BoxDecoration(
+                                                                                color: Colors.white,
+                                                                                borderRadius: BorderRadius.circular(50),
+                                                                              ),
+                                                                              child: Center(
+                                                                                child: Text("Start", style: bodyLarge.copyWith(color: AppColors.buttonColor, fontWeight: FontWeight.bold)),
+                                                                              )),
                                                                         ),
-                                                                        child: Center(
-                                                                          child: Text(
-                                                                              "Start",
-                                                                              style: bodyLarge.copyWith(color: AppColors.buttonColor, fontWeight: FontWeight.bold)),
-                                                                        )),
-                                                                  ),
-                                                                ),
-                                                              ),
+                                                                      ),
+                                                                    ),
                                                               SizedBox(
                                                                 width: 10,
                                                               ),
@@ -495,8 +488,8 @@ class _GroupDetailState extends State<GroupDetail> {
                                                                               .toString(),
                                                                           taskList[index]['id']
                                                                               .toString(),
-                                                                          taskList[index]['assignMembers'][0]['startTask']
-                                                                              .toDate(),
+                                                                          taskList[index][
+                                                                              'assignMembers'],
                                                                           double.parse(taskList[index]['Duration'].toString()) *
                                                                               60,
                                                                           taskList[index]

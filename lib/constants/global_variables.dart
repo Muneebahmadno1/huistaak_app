@@ -48,6 +48,7 @@ TextStyle hintText =
 final userDocId = ValueNotifier("");
 
 UserModel userData = UserModel(
+  points: "",
   postalCode: '',
   phoneNumber: '',
   userID: "",

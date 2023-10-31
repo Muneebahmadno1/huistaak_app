@@ -4,10 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:huistaak/views/profile/change_password.dart';
 import 'package:huistaak/views/profile/edit_profile.dart';
-import 'package:huistaak/views/subscription/choose_plan.dart';
 import 'package:huistaak/widgets/card_widget.dart';
 import 'package:sizer/sizer.dart';
-import 'package:zoom_tap_animation/zoom_tap_animation.dart';
 
 import '../../constants/app_images.dart';
 import '../../constants/global_variables.dart';
@@ -98,7 +96,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 height: 6,
                               ),
                               Text(
-                                "0 points",
+                                userData.points + " points",
                                 style: bodySmall.copyWith(
                                     color: AppColors.buttonColor, fontSize: 12),
                               ),
@@ -111,70 +109,70 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   SizedBox(
                     height: 30,
                   ),
-                  DelayedDisplay(
-                    delay: Duration(milliseconds: 600),
-                    slidingBeginOffset: Offset(0, 0),
-                    child: ZoomTapAnimation(
-                      onTap: () {
-                        Get.to(() => ChoosePlan());
-                      },
-                      child: Container(
-                        height: 100,
-                        width: double.infinity,
-                        padding: EdgeInsets.symmetric(horizontal: 20),
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20),
-                            color: AppColors.buttonColor),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Container(
-                                  height: 22,
-                                  width: 48,
-                                  decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(6)),
-                                  child: Center(
-                                    child: Text(
-                                      "PRO",
-                                      style:
-                                          headingSmall.copyWith(fontSize: 13),
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(
-                                  height: 6,
-                                ),
-                                Text(
-                                  "Upgrade to Premium",
-                                  style: headingSmall.copyWith(
-                                      color: Colors.white),
-                                ),
-                                Text(
-                                  "This subscription is auto-renewable",
-                                  style: bodyNormal.copyWith(
-                                      fontSize: 13, color: Colors.white),
-                                ),
-                              ],
-                            ),
-                            Icon(
-                              Icons.arrow_forward_ios,
-                              size: 18,
-                              color: Colors.white,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 15,
-                  ),
+                  // DelayedDisplay(
+                  //   delay: Duration(milliseconds: 600),
+                  //   slidingBeginOffset: Offset(0, 0),
+                  //   child: ZoomTapAnimation(
+                  //     onTap: () {
+                  //       Get.to(() => ChoosePlan());
+                  //     },
+                  //     child: Container(
+                  //       height: 100,
+                  //       width: double.infinity,
+                  //       padding: EdgeInsets.symmetric(horizontal: 20),
+                  //       decoration: BoxDecoration(
+                  //           borderRadius: BorderRadius.circular(20),
+                  //           color: AppColors.buttonColor),
+                  //       child: Row(
+                  //         crossAxisAlignment: CrossAxisAlignment.center,
+                  //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  //         children: [
+                  //           Column(
+                  //             crossAxisAlignment: CrossAxisAlignment.start,
+                  //             mainAxisAlignment: MainAxisAlignment.center,
+                  //             children: [
+                  //               Container(
+                  //                 height: 22,
+                  //                 width: 48,
+                  //                 decoration: BoxDecoration(
+                  //                     color: Colors.white,
+                  //                     borderRadius: BorderRadius.circular(6)),
+                  //                 child: Center(
+                  //                   child: Text(
+                  //                     "PRO",
+                  //                     style:
+                  //                         headingSmall.copyWith(fontSize: 13),
+                  //                   ),
+                  //                 ),
+                  //               ),
+                  //               SizedBox(
+                  //                 height: 6,
+                  //               ),
+                  //               Text(
+                  //                 "Upgrade to Premium",
+                  //                 style: headingSmall.copyWith(
+                  //                     color: Colors.white),
+                  //               ),
+                  //               Text(
+                  //                 "This subscription is auto-renewable",
+                  //                 style: bodyNormal.copyWith(
+                  //                     fontSize: 13, color: Colors.white),
+                  //               ),
+                  //             ],
+                  //           ),
+                  //           Icon(
+                  //             Icons.arrow_forward_ios,
+                  //             size: 18,
+                  //             color: Colors.white,
+                  //           ),
+                  //         ],
+                  //       ),
+                  //     ),
+                  //   ),
+                  // ),
+                  // SizedBox(
+                  //   height: 15,
+                  // ),
                   DelayedDisplay(
                     delay: Duration(milliseconds: 700),
                     slidingBeginOffset: Offset(0, 0),

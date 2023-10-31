@@ -192,6 +192,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 18),
                     child: AuthTextField(
+                      isNumber: true,
                       controller: postalCodeEditingController,
                       validator: (value) => CustomValidator.isEmpty(value),
                       hintText: "Postal Code",
@@ -353,102 +354,102 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 SizedBox(
                   height: 30,
                 ),
-                DelayedDisplay(
-                  delay: Duration(milliseconds: 1800),
-                  slidingBeginOffset: Offset(0, 0),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 22.0),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                            child: Divider(
-                          thickness: 1.2,
-                          color: Colors.black38,
-                        )),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        Text(
-                          "or continue with",
-                          style: bodySmall.copyWith(
-                            color: Colors.black54,
-                            fontSize: 12,
-                            fontFamily: "MontserratSemiBold",
-                          ),
-                        ),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        Expanded(
-                            child: Divider(
-                          thickness: 1.2,
-                          color: Colors.black38,
-                        )),
-                      ],
-                    ),
-                  ),
-                ),
-                const SizedBox(
-                  height: 30,
-                ),
-                DelayedDisplay(
-                  delay: Duration(milliseconds: 1900),
-                  slidingBeginOffset: Offset(0, 0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Container(
-                        height: 56,
-                        width: 70,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(16),
-                          border: Border.all(color: Colors.black12, width: 1.4),
-                        ),
-                        child: Center(
-                          child: SizedBox(
-                              height: 30,
-                              child: Image.asset(AppImages.facebookIcon)),
-                        ),
-                      ),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      Container(
-                        height: 56,
-                        width: 70,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(16),
-                          border: Border.all(color: Colors.black12, width: 1.4),
-                        ),
-                        child: Center(
-                          child: SizedBox(
-                              height: 30,
-                              child: Image.asset(AppImages.googleIcon)),
-                        ),
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Container(
-                        height: 56,
-                        width: 70,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(16),
-                          border: Border.all(color: Colors.black12, width: 1.4),
-                        ),
-                        child: Center(
-                          child: SizedBox(
-                              height: 30,
-                              child: Image.asset(AppImages.appleIcon)),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
+                // DelayedDisplay(
+                //   delay: Duration(milliseconds: 1800),
+                //   slidingBeginOffset: Offset(0, 0),
+                //   child: Padding(
+                //     padding: const EdgeInsets.symmetric(horizontal: 22.0),
+                //     child: Row(
+                //       crossAxisAlignment: CrossAxisAlignment.start,
+                //       children: [
+                //         Expanded(
+                //             child: Divider(
+                //           thickness: 1.2,
+                //           color: Colors.black38,
+                //         )),
+                //         SizedBox(
+                //           width: 10,
+                //         ),
+                //         Text(
+                //           "or continue with",
+                //           style: bodySmall.copyWith(
+                //             color: Colors.black54,
+                //             fontSize: 12,
+                //             fontFamily: "MontserratSemiBold",
+                //           ),
+                //         ),
+                //         SizedBox(
+                //           width: 10,
+                //         ),
+                //         Expanded(
+                //             child: Divider(
+                //           thickness: 1.2,
+                //           color: Colors.black38,
+                //         )),
+                //       ],
+                //     ),
+                //   ),
+                // ),
+                // const SizedBox(
+                //   height: 30,
+                // ),
+                // DelayedDisplay(
+                //   delay: Duration(milliseconds: 1900),
+                //   slidingBeginOffset: Offset(0, 0),
+                //   child: Row(
+                //     mainAxisAlignment: MainAxisAlignment.center,
+                //     children: [
+                //       Container(
+                //         height: 56,
+                //         width: 70,
+                //         decoration: BoxDecoration(
+                //           borderRadius: BorderRadius.circular(16),
+                //           border: Border.all(color: Colors.black12, width: 1.4),
+                //         ),
+                //         child: Center(
+                //           child: SizedBox(
+                //               height: 30,
+                //               child: Image.asset(AppImages.facebookIcon)),
+                //         ),
+                //       ),
+                //       const SizedBox(
+                //         width: 10,
+                //       ),
+                //       Container(
+                //         height: 56,
+                //         width: 70,
+                //         decoration: BoxDecoration(
+                //           borderRadius: BorderRadius.circular(16),
+                //           border: Border.all(color: Colors.black12, width: 1.4),
+                //         ),
+                //         child: Center(
+                //           child: SizedBox(
+                //               height: 30,
+                //               child: Image.asset(AppImages.googleIcon)),
+                //         ),
+                //       ),
+                //       SizedBox(
+                //         width: 10,
+                //       ),
+                //       Container(
+                //         height: 56,
+                //         width: 70,
+                //         decoration: BoxDecoration(
+                //           borderRadius: BorderRadius.circular(16),
+                //           border: Border.all(color: Colors.black12, width: 1.4),
+                //         ),
+                //         child: Center(
+                //           child: SizedBox(
+                //               height: 30,
+                //               child: Image.asset(AppImages.appleIcon)),
+                //         ),
+                //       ),
+                //     ],
+                //   ),
+                // ),
+                // const SizedBox(
+                //   height: 20,
+                // ),
                 DelayedDisplay(
                   delay: Duration(milliseconds: 2000),
                   slidingBeginOffset: Offset(0, -1),

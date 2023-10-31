@@ -12,6 +12,7 @@ import '../views/auth/login_screen.dart';
 import '../views/home/bottom_nav_bar.dart';
 import '../views/home/connected_groups.dart';
 import '../widgets/custom_widgets.dart';
+import 'collections.dart';
 
 class DataHelper extends GetxController {
   DateTime? selectedDate = DateTime.now();
@@ -34,11 +35,12 @@ class DataHelper extends GetxController {
       await FirebaseAuth.instance.currentUser
           ?.updateDisplayName(map['displayName']);
 
-      FirebaseFirestore.instance.collection('users').doc(user.user!.uid).set({
+      Collections.USERS.doc(user.user!.uid).set({
         "userID": user.user!.uid,
         "displayName": map['displayName'].toString(),
         "email": emails,
         "imageUrl": "",
+        "points": "0",
         "postalCode": map['postalCode'].toString(),
       });
       FirebaseAuth.instance.currentUser?.sendEmailVerification();
@@ -66,11 +68,7 @@ class DataHelper extends GetxController {
 
       isEmailVerified = FirebaseAuth.instance.currentUser!.emailVerified;
       if (isEmailVerified) {
-        FirebaseFirestore.instance
-            .collection('users')
-            .doc(user.user!.uid)
-            .get()
-            .then((value) async {
+        Collections.USERS.doc(user.user!.uid).get().then((value) async {
           userData = UserModel.fromDocument(value.data());
           saveUserData(userID: userDocId.value);
           setUserLoggedIn(true);
@@ -109,20 +107,13 @@ class DataHelper extends GetxController {
   }
 
   editProfile(name, image, age, phone) async {
-    await FirebaseFirestore.instance
-        .collection('users')
-        .doc(userDocId.value)
-        .update({
+    await Collections.USERS.doc(userDocId.value).update({
       "displayName": name,
       "imageUrl": image,
       'postalCode': age,
       'phoneNumber': phone
     });
-    await FirebaseFirestore.instance
-        .collection('users')
-        .doc(userDocId.value)
-        .get()
-        .then((value) async {
+    await Collections.USERS.doc(userDocId.value).get().then((value) async {
       userData = UserModel.fromDocument(value.data());
     });
     return;
@@ -153,15 +144,15 @@ class DataHelper extends GetxController {
   }
 
   createGroup(groupName, groupImage, adminsList, membersList) async {
-    var groupID = FirebaseFirestore.instance.collection('groups').doc().id;
-    await FirebaseFirestore.instance.collection('groups').doc(groupID).set({
+    var groupID = Collections.GROUPS.doc().id;
+    await Collections.GROUPS.doc(groupID).set({
       "groupName": groupName,
       "groupImage": groupImage,
+      "groupID": groupID.toString(),
       "adminsList": adminsList,
       "membersList": membersList
     });
-    await FirebaseFirestore.instance
-        .collection('users')
+    await Collections.USERS
         .doc(userDocId.value)
         .collection("myGroups")
         .doc()
@@ -181,17 +172,13 @@ class DataHelper extends GetxController {
       'userID': userData.userID.toString(),
     };
 
-    var querySnapshot2 = await FirebaseFirestore.instance
-        .collection('groups')
-        .doc(groupID.toString())
-        .get();
+    var querySnapshot2 = await Collections.GROUPS.doc(groupID.toString()).get();
     adminList.add({
       "adminsList": List.from(querySnapshot2['adminsList']),
       "membersList": List.from(querySnapshot2['membersList']),
     });
 
-    var notiID = FirebaseFirestore.instance
-        .collection("users")
+    var notiID = Collections.USERS
         .doc(adminList[0]['adminsList'][0]['userID'])
         .collection("notifications")
         .doc();
@@ -208,17 +195,13 @@ class DataHelper extends GetxController {
   }
 
   joinGroup(groupID, Map<String, dynamic> newMap) async {
-    print("groupIDdd");
-    print(groupID);
-    print(newMap);
-    await FirebaseFirestore.instance.collection('groups').doc(groupID).update({
+    await Collections.GROUPS.doc(groupID).update({
       "membersList": FieldValue.arrayUnion([newMap])
     });
   }
 
   deleteNotification(notiID) async {
-    await FirebaseFirestore.instance
-        .collection("users")
+    await Collections.USERS
         .doc(userData.userID.toString())
         .collection("notifications")
         .doc(notiID)
@@ -226,8 +209,7 @@ class DataHelper extends GetxController {
   }
 
   sendNotification(docID) {
-    var notiID = FirebaseFirestore.instance
-        .collection("users")
+    var notiID = Collections.USERS
         .doc(docID.toString())
         .collection("notifications")
         .doc();
@@ -257,18 +239,11 @@ class DataHelper extends GetxController {
     Duration difference = endTime.difference(startTime);
     double hours = difference.inMinutes / 60;
 
-    CollectionReference ref = await FirebaseFirestore.instance
-        .collection('groups')
-        .doc(groupID)
-        .collection("tasks");
+    CollectionReference ref =
+        await Collections.GROUPS.doc(groupID).collection("tasks");
 
     String docId = ref.doc().id;
-    await FirebaseFirestore.instance
-        .collection('groups')
-        .doc(groupID)
-        .collection("tasks")
-        .doc(docId)
-        .set({
+    await Collections.GROUPS.doc(groupID).collection("tasks").doc(docId).set({
       "taskTitle": taskTitle,
       "taskDate": taskDate,
       "startTime": startTimeT,
@@ -282,11 +257,8 @@ class DataHelper extends GetxController {
   }
 
   startTask(groupID, taskID, groupTitle) {
-    final DocumentReference documentReference = FirebaseFirestore.instance
-        .collection("groups")
-        .doc(groupID)
-        .collection("tasks")
-        .doc(taskID);
+    final DocumentReference documentReference =
+        Collections.GROUPS.doc(groupID).collection("tasks").doc(taskID);
 
     Map<String, dynamic> newVariable = {
       'startTask': DateTime.now(), // Add the 4th variable here
@@ -328,16 +300,12 @@ class DataHelper extends GetxController {
     });
   }
 
-  endTask(groupID, taskID, DateTime StartTime, taskDurationInMin, points,
-      groupTitle) {
-    final DocumentReference documentReference = FirebaseFirestore.instance
-        .collection("groups")
-        .doc(groupID)
-        .collection("tasks")
-        .doc(taskID);
+  endTask(groupID, taskID, StartTime, taskDurationInMin, points, groupTitle) {
+    final DocumentReference documentReference =
+        Collections.GROUPS.doc(groupID).collection("tasks").doc(taskID);
 
 // Fetch the existing data from the document
-    documentReference.get().then((documentSnapshot) {
+    documentReference.get().then((documentSnapshot) async {
       if (documentSnapshot.exists) {
         dynamic data = documentSnapshot.data();
         List<Map<String, dynamic>> existingArray =
@@ -351,8 +319,9 @@ class DataHelper extends GetxController {
 
         if (index != -1 && containsStartTask == true) {
           // If a match is found, add the new variable to that map
-          int differenceInMinutes =
-              DateTime.now().difference(StartTime).inMinutes;
+          int differenceInMinutes = DateTime.now()
+              .difference(StartTime[index]['startTask'].toDate())
+              .inMinutes;
           print("differenceInMinutes");
           print(differenceInMinutes);
           var pointPerMinute = taskDurationInMin / double.parse(points);
@@ -378,6 +347,20 @@ class DataHelper extends GetxController {
           existingArray[index]['endTask'] = newVariable['endTask'];
           existingArray[index]['pointsEarned'] = newVariable['pointsEarned'];
           // Update the document with the modified array
+
+          String newValue = (int.parse(userData.points.toString()) +
+                  int.parse(userPoint.ceil().toString()))
+              .toString();
+
+          await Collections.USERS
+              .doc(userData.userID.toString())
+              .update({'points': newValue});
+          Collections.USERS
+              .doc(userData.userID.toString())
+              .get()
+              .then((value) async {
+            userData = UserModel.fromDocument(value.data());
+          });
           documentReference.update({
             'assignMembers': existingArray,
           }).then((_) {
@@ -398,11 +381,10 @@ class DataHelper extends GetxController {
     });
   }
 
-  addGroupGoal(goalTitle, goalDate, time, goalMembers) async {
-    var doc = await FirebaseFirestore.instance
-        .collection('users')
-        .doc(userDocId.value)
-        .collection("myGoals")
+  addGroupGoal(groupID, goalTitle, goalDate, time, goalMembers) async {
+    var doc = await Collections.GROUPS
+        .doc(groupID.toString())
+        .collection("Goals")
         .doc();
     doc.set({
       "goalID": doc.id,
