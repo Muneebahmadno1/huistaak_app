@@ -5,6 +5,8 @@ class Collections {
   static var GROUPS = FirebaseFirestore.instance.collection('groups');
 
   //subcollections
-  static String NOTIFICATIONS = 'comments';
-  static String MYGROUPS = 'statistics';
+  static String NOTIFICATIONS = 'notifications';
+  static String MYGROUPS = 'myGroups';
+  static String GOALS = 'goals';
+  static String TASKS = 'tasks';
 }

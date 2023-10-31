@@ -5,7 +5,8 @@ import 'package:huistaak/constants/global_variables.dart';
 import 'package:huistaak/views/home/widgets/add_members_widget.dart';
 import 'package:sizer/sizer.dart';
 
-import '../../../helper/data_helper.dart';
+import '../../../controllers/data_controller.dart';
+import '../../../helper/collections.dart';
 import '../../../widgets/custom_widgets.dart';
 
 class AddMember extends StatefulWidget {
@@ -22,7 +23,7 @@ class _AddMemberState extends State<AddMember> {
   List<dynamic> userList = [];
   List<dynamic> groupList = [];
   List<dynamic> groupMemberList = [];
-  final DataHelper _dataController = Get.find<DataHelper>();
+  final DataController _dataController = Get.find<DataController>();
   late String _dropDownValue;
   bool isLoading = false;
 
@@ -30,8 +31,7 @@ class _AddMemberState extends State<AddMember> {
     setState(() {
       isLoading = true;
     });
-    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
-        .collection('users')
+    QuerySnapshot querySnapshot = await Collections.USERS
         .where("userID", isNotEqualTo: userData.userID.toString())
         .get();
     for (int i = 0; i < querySnapshot.docs.length; i++) {
@@ -53,10 +53,9 @@ class _AddMemberState extends State<AddMember> {
     setState(() {
       isLoading = true;
     });
-    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
-        .collection('users')
+    QuerySnapshot querySnapshot = await Collections.USERS
         .doc(userData.userID)
-        .collection("myGroups")
+        .collection(Collections.MYGROUPS)
         .get();
     for (int i = 0; i < querySnapshot.docs.length; i++) {
       var a = querySnapshot.docs[i].data() as Map;

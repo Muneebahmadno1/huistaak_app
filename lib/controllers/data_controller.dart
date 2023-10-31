@@ -1,147 +1,23 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:huistaak/helper/page_navigation.dart';
 import 'package:intl/intl.dart';
 
 import '../constants/global_variables.dart';
-import '../controllers/general_controller.dart';
+import '../helper/collections.dart';
 import '../models/user_model.dart';
-import '../views/auth/login_screen.dart';
-import '../views/home/bottom_nav_bar.dart';
 import '../views/home/connected_groups.dart';
-import '../widgets/custom_widgets.dart';
-import 'collections.dart';
 
-class DataHelper extends GetxController {
+class DataController extends GetxController {
   DateTime? selectedDate = DateTime.now();
   DateTime? goalSelectedDate = DateTime.now();
   RxString startTime = '09:00 AM'.obs;
   RxString endTime = '10:00 AM'.obs;
-  bool isEmailVerified = false;
+  List<dynamic> chatUsers = [];
   List<Map<String, dynamic>> adminList = [];
   RxList<Map<String, dynamic>> groupAdmins = <Map<String, dynamic>>[].obs;
   RxList<Map<String, dynamic>> groupMembers = <Map<String, dynamic>>[].obs;
   RxList<Map<String, dynamic>> assignTaskMember = <Map<String, dynamic>>[].obs;
   RxList<Map<String, dynamic>> assignGoalMember = <Map<String, dynamic>>[].obs;
-
-  final loggedInGlobal = ValueNotifier(false);
-
-  registerUser(context, emails, pass, map) async {
-    try {
-      UserCredential user = await FirebaseAuth.instance
-          .createUserWithEmailAndPassword(email: emails, password: pass);
-      await FirebaseAuth.instance.currentUser
-          ?.updateDisplayName(map['displayName']);
-
-      Collections.USERS.doc(user.user!.uid).set({
-        "userID": user.user!.uid,
-        "displayName": map['displayName'].toString(),
-        "email": emails,
-        "imageUrl": "",
-        "points": "0",
-        "postalCode": map['postalCode'].toString(),
-      });
-      FirebaseAuth.instance.currentUser?.sendEmailVerification();
-      Get.back();
-      //setState(() {});
-      successPopUp(context, const LoginScreen(),
-          'Successfully registered,\n Verification link sent to your email.');
-    } catch (error) {
-      Get.back();
-      //setState(() {});
-      errorPopUp(
-        context,
-        error.toString().replaceRange(0, 14, '').split(']')[1],
-      );
-    }
-  }
-
-  validateUser(context, email, password) async {
-    try {
-      UserCredential user = await FirebaseAuth.instance
-          .signInWithEmailAndPassword(email: email, password: password);
-      userDocId.value = user.user!.uid;
-
-      await FirebaseAuth.instance.currentUser?.reload();
-
-      isEmailVerified = FirebaseAuth.instance.currentUser!.emailVerified;
-      if (isEmailVerified) {
-        Collections.USERS.doc(user.user!.uid).get().then((value) async {
-          userData = UserModel.fromDocument(value.data());
-          saveUserData(userID: userDocId.value);
-          setUserLoggedIn(true);
-          loggedInGlobal.value = true;
-          Get.back();
-          Get.find<GeneralController>().onBottomBarTapped(0);
-          PageTransition.pageProperNavigation(page: CustomBottomNavBar());
-        });
-      } else {
-        Get.back();
-        errorPopUp(context, "User not verified yet,\n Try again");
-      }
-    } on FirebaseAuthException catch (e) {
-      Get.back();
-      errorPopUp(
-        context,
-        e.code == 'user-not-found'
-            ? "User not found"
-            : (e.code == 'wrong-password')
-                ? "The Password you have entered is not correct"
-                : e.toString().replaceRange(0, 14, '').split(']')[1],
-      );
-    }
-  }
-
-  resetPassword(context, email) async {
-    try {
-      await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
-      successPopUp(context, LoginScreen(),
-          'To change password an email send to your email account.');
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'user-not-found') {
-        errorPopUp(context, "There is no record of this email");
-      }
-    }
-  }
-
-  editProfile(name, image, age, phone) async {
-    await Collections.USERS.doc(userDocId.value).update({
-      "displayName": name,
-      "imageUrl": image,
-      'postalCode': age,
-      'phoneNumber': phone
-    });
-    await Collections.USERS.doc(userDocId.value).get().then((value) async {
-      userData = UserModel.fromDocument(value.data());
-    });
-    return;
-  }
-
-  void changePassword(context, currentPassword, newPassword) async {
-    final user = await FirebaseAuth.instance.currentUser;
-    final cred = EmailAuthProvider.credential(
-        email: userData.email, password: currentPassword);
-
-    user?.reauthenticateWithCredential(cred).then((value) {
-      user.updatePassword(newPassword).then((_) {
-        //Success, do something
-        Get.back();
-        successPopUp(
-            context, CustomBottomNavBar(), 'Password Changed Successfully');
-      }).catchError((error) {
-        //Error, show something
-        Get.back();
-        errorPopUp(
-            context, 'Error occurred while changing password! Try Again ');
-      });
-    }).catchError((err) {
-      Get.back();
-      // setState(() {});
-      errorPopUp(context, 'Error occurred while changing password! Try Again ');
-    });
-  }
 
   createGroup(groupName, groupImage, adminsList, membersList) async {
     var groupID = Collections.GROUPS.doc().id;
@@ -154,7 +30,7 @@ class DataHelper extends GetxController {
     });
     await Collections.USERS
         .doc(userDocId.value)
-        .collection("myGroups")
+        .collection(Collections.MYGROUPS)
         .doc()
         .set({
       "groupID": groupID,
@@ -163,6 +39,33 @@ class DataHelper extends GetxController {
     });
 
     return;
+  }
+
+  getAllUserGroups() async {
+    QuerySnapshot querySnapshot =
+        await FirebaseFirestore.instance.collection('groups').get();
+    for (QueryDocumentSnapshot documentSnapshot in querySnapshot.docs) {
+      Map<String, dynamic> groupsData =
+          documentSnapshot.data() as Map<String, dynamic>;
+      List<dynamic> mamberArray = groupsData['membersList'];
+      List<dynamic> adminArray = groupsData['adminsList'];
+      for (var userMap in adminArray)
+        if (userMap['userID'] == userData.userID) {
+          chatUsers.add({
+            "groupImage": groupsData['groupImage'],
+            "groupName": groupsData['groupName'],
+            "id": documentSnapshot.id,
+          });
+        }
+      for (var userMap in mamberArray)
+        if (userMap['userID'] == userData.userID) {
+          chatUsers.add({
+            "groupImage": groupsData['groupImage'],
+            "groupName": groupsData['groupName'],
+            "id": documentSnapshot.id,
+          });
+        }
+    }
   }
 
   joinGroupRequest(groupID) async {
@@ -180,7 +83,7 @@ class DataHelper extends GetxController {
 
     var notiID = Collections.USERS
         .doc(adminList[0]['adminsList'][0]['userID'])
-        .collection("notifications")
+        .collection(Collections.NOTIFICATIONS)
         .doc();
     notiID.set({
       "notificationType": 1,
@@ -203,7 +106,7 @@ class DataHelper extends GetxController {
   deleteNotification(notiID) async {
     await Collections.USERS
         .doc(userData.userID.toString())
-        .collection("notifications")
+        .collection(Collections.NOTIFICATIONS)
         .doc(notiID)
         .delete();
   }
@@ -211,7 +114,7 @@ class DataHelper extends GetxController {
   sendNotification(docID) {
     var notiID = Collections.USERS
         .doc(docID.toString())
-        .collection("notifications")
+        .collection(Collections.NOTIFICATIONS)
         .doc();
     notiID.set({
       "notificationType": 2,
@@ -248,7 +151,7 @@ class DataHelper extends GetxController {
       "taskDate": taskDate,
       "startTime": startTimeT,
       "endTime": endTimeT,
-      "Duration": hours < 0 ? (-hours).toString() : (hours).toString(),
+      "duration": hours < 0 ? (-hours).toString() : (hours).toString(),
       "taskScore": taskScore,
       "assignMembers": assignMembers,
       "id": docId,
@@ -301,8 +204,10 @@ class DataHelper extends GetxController {
   }
 
   endTask(groupID, taskID, StartTime, taskDurationInMin, points, groupTitle) {
-    final DocumentReference documentReference =
-        Collections.GROUPS.doc(groupID).collection("tasks").doc(taskID);
+    final DocumentReference documentReference = Collections.GROUPS
+        .doc(groupID)
+        .collection(Collections.TASKS)
+        .doc(taskID);
 
 // Fetch the existing data from the document
     documentReference.get().then((documentSnapshot) async {
@@ -379,20 +284,5 @@ class DataHelper extends GetxController {
     }).catchError((error) {
       print('Error fetching document: $error');
     });
-  }
-
-  addGroupGoal(groupID, goalTitle, goalDate, time, goalMembers) async {
-    var doc = await Collections.GROUPS
-        .doc(groupID.toString())
-        .collection("Goals")
-        .doc();
-    doc.set({
-      "goalID": doc.id,
-      "goalTitle": goalTitle,
-      "goalDate": goalDate,
-      "goalTime": time,
-      "goalMembers": goalMembers,
-    });
-    return;
   }
 }

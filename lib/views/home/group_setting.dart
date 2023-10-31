@@ -8,6 +8,8 @@ import 'package:sizer/sizer.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:zoom_tap_animation/zoom_tap_animation.dart';
 
+import '../../controllers/group_setting_controller.dart';
+import '../../helper/collections.dart';
 import '../../widgets/custom_widgets.dart';
 
 class GroupSetting extends StatefulWidget {
@@ -20,7 +22,8 @@ class GroupSetting extends StatefulWidget {
 }
 
 class _GroupSettingState extends State<GroupSetting> {
-  List<Map<String, dynamic>> groupInfo = [];
+  final GroupSettingController _groupSettingController =
+      Get.find<GroupSettingController>();
   bool isLoading = false;
   bool Loading = false;
 
@@ -28,18 +31,7 @@ class _GroupSettingState extends State<GroupSetting> {
     setState(() {
       isLoading = true;
     });
-    var querySnapshot = await FirebaseFirestore.instance
-        .collection('groups')
-        .doc(widget.groupID)
-        .get();
-    setState(() {
-      groupInfo.add({
-        "groupImage": querySnapshot['groupImage'],
-        "groupName": querySnapshot['groupName'],
-        "adminsList": List.from(querySnapshot['adminsList']),
-        "membersList": List.from(querySnapshot['membersList']),
-      });
-    });
+    _groupSettingController.getGroupInfo(widget.groupID.toString());
     setState(() {
       isLoading = false;
     });
@@ -179,7 +171,8 @@ class _GroupSettingState extends State<GroupSetting> {
                                     1, // Set the width to 0 to make it disappear
                               ),
                             ),
-                            hintText: groupInfo[0]['groupName'],
+                            hintText: _groupSettingController.groupInfo[0]
+                                ['groupName'],
                             hintStyle: bodyNormal.copyWith(
                                 color: Colors.black,
                                 fontFamily: "MontserratSemiBold"),
@@ -250,7 +243,8 @@ class _GroupSettingState extends State<GroupSetting> {
                       height: 10,
                     ),
                     ListView.builder(
-                        itemCount: groupInfo[0]['adminsList'].length,
+                        itemCount: _groupSettingController
+                            .groupInfo[0]['adminsList'].length,
                         shrinkWrap: true,
                         padding: EdgeInsets.only(top: 16),
                         physics: BouncingScrollPhysics(),
@@ -275,8 +269,8 @@ class _GroupSettingState extends State<GroupSetting> {
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        groupInfo[0]['adminsList'][i]
-                                            ['displayName'],
+                                        _groupSettingController.groupInfo[0]
+                                            ['adminsList'][i]['displayName'],
                                         style: headingMedium,
                                       ),
                                       Text(
@@ -309,7 +303,8 @@ class _GroupSettingState extends State<GroupSetting> {
                       height: 10,
                     ),
                     ListView.builder(
-                        itemCount: groupInfo[0]['membersList'].length,
+                        itemCount: _groupSettingController
+                            .groupInfo[0]['membersList'].length,
                         shrinkWrap: true,
                         padding: EdgeInsets.only(top: 16),
                         physics: BouncingScrollPhysics(),
@@ -332,8 +327,8 @@ class _GroupSettingState extends State<GroupSetting> {
                                   Align(
                                     alignment: Alignment.centerLeft,
                                     child: Text(
-                                      groupInfo[0]['membersList'][j]
-                                          ['displayName'],
+                                      _groupSettingController.groupInfo[0]
+                                          ['membersList'][j]['displayName'],
                                       style: headingMedium,
                                     ),
                                   ),
@@ -382,37 +377,43 @@ class _GroupSettingState extends State<GroupSetting> {
                           setState(() {
                             Loading = true;
                           });
-                          if (groupInfo[0]['membersList'].isNotEmpty) {
-                            groupInfo[0]['membersList'].removeWhere((map) =>
-                                map['userID'] == userData.userID.toString());
+                          if (_groupSettingController
+                              .groupInfo[0]['membersList'].isNotEmpty) {
+                            _groupSettingController.groupInfo[0]['membersList']
+                                .removeWhere((map) =>
+                                    map['userID'] ==
+                                    userData.userID.toString());
 
-                            if (groupInfo[0]['membersList'].isNotEmpty) {
+                            if (_groupSettingController
+                                .groupInfo[0]['membersList'].isNotEmpty) {
                               FirebaseFirestore.instance
                                   .collection('groups')
                                   .doc(widget.groupID.toString())
                                   .update({
-                                'membersList': groupInfo[0]['membersList']
+                                'membersList': _groupSettingController
+                                    .groupInfo[0]['membersList']
                               });
                               setState(() {});
                             } else {
-                              FirebaseFirestore.instance
-                                  .collection('groups')
+                              Collections.GROUPS
                                   .doc(widget.groupID.toString())
                                   .delete();
                               setState(() {});
                             }
                           }
-                          if (groupInfo[0]['adminsList'].isNotEmpty) {
-                            groupInfo[0]['adminsList'].removeWhere((map) =>
-                                map['userID'] == userData.userID.toString());
-                            QuerySnapshot querySnapshot =
-                                await FirebaseFirestore.instance
-                                    .collection("users")
-                                    .doc(userData.userID)
-                                    .collection("myGroups")
-                                    .where("groupID",
-                                        isEqualTo: widget.groupID.toString())
-                                    .get();
+                          if (_groupSettingController
+                              .groupInfo[0]['adminsList'].isNotEmpty) {
+                            _groupSettingController.groupInfo[0]['adminsList']
+                                .removeWhere((map) =>
+                                    map['userID'] ==
+                                    userData.userID.toString());
+                            QuerySnapshot querySnapshot = await Collections
+                                .USERS
+                                .doc(userData.userID)
+                                .collection(Collections.MYGROUPS)
+                                .where("groupID",
+                                    isEqualTo: widget.groupID.toString())
+                                .get();
                             if (querySnapshot.docs.isNotEmpty) {
                               for (QueryDocumentSnapshot document
                                   in querySnapshot.docs) {
@@ -420,37 +421,47 @@ class _GroupSettingState extends State<GroupSetting> {
                               }
                             }
 
-                            if (groupInfo[0]['adminsList'].isNotEmpty) {
+                            if (_groupSettingController
+                                .groupInfo[0]['adminsList'].isNotEmpty) {
                               FirebaseFirestore.instance
                                   .collection('groups')
                                   .doc(widget.groupID.toString())
                                   .update({
-                                'adminsList': groupInfo[0]['adminsList']
+                                'adminsList': _groupSettingController
+                                    .groupInfo[0]['adminsList']
                               });
                               setState(() {});
-                            } else if (groupInfo[0]['membersList'].isNotEmpty) {
+                            } else if (_groupSettingController
+                                .groupInfo[0]['membersList'].isNotEmpty) {
                               // Remove the first element from membersList and store it in a variable.
                               Map<String, dynamic> removedMember =
-                                  groupInfo[0]['membersList'].removeAt(0);
+                                  _groupSettingController.groupInfo[0]
+                                          ['membersList']
+                                      .removeAt(0);
 
                               // Add the removed member to adminsList.
-                              groupInfo[0]['adminsList'].add(removedMember);
+                              _groupSettingController.groupInfo[0]['adminsList']
+                                  .add(removedMember);
 
                               // Now you can update the Firestore document with the modified groupInfo.
                               FirebaseFirestore.instance
                                   .collection('groups')
                                   .doc(widget.groupID.toString())
                                   .update({
-                                'membersList': groupInfo[0]['membersList'],
-                                'adminsList': groupInfo[0]['adminsList'],
+                                'membersList': _groupSettingController
+                                    .groupInfo[0]['membersList'],
+                                'adminsList': _groupSettingController
+                                    .groupInfo[0]['adminsList'],
                               });
                               setState(() {});
-                            } else if (groupInfo[0]['adminsList'].isEmpty) {
+                            } else if (_groupSettingController
+                                .groupInfo[0]['adminsList'].isEmpty) {
                               FirebaseFirestore.instance
                                   .collection('groups')
                                   .doc(widget.groupID.toString())
                                   .update({
-                                'adminsList': groupInfo[0]['adminsList']
+                                'adminsList': _groupSettingController
+                                    .groupInfo[0]['adminsList']
                               });
                               setState(() {});
                             }

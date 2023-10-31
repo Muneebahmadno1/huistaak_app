@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:delayed_display/delayed_display.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -9,7 +8,7 @@ import 'package:huistaak/widgets/custom_widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:sizer/sizer.dart';
 
-import '../../helper/data_helper.dart';
+import '../../controllers/goal_controller.dart';
 
 class NewGoalsScreen extends StatefulWidget {
   const NewGoalsScreen({super.key});
@@ -19,68 +18,13 @@ class NewGoalsScreen extends StatefulWidget {
 }
 
 class _NewGoalsScreenState extends State<NewGoalsScreen> {
-  final DataHelper _dataController = Get.find<DataHelper>();
+  final GoalController _goalController = Get.find<GoalController>();
   bool isLoading = false;
-  List<dynamic> groupList = [];
-  List<dynamic> groupWithUserList = [];
-  List<Map<String, dynamic>> goalList = [];
   getData() async {
     setState(() {
       isLoading = true;
     });
-    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
-        .collection('users')
-        .doc(userData.userID)
-        .collection("myGroups")
-        .get();
-    for (int i = 0; i < querySnapshot.docs.length; i++) {
-      var a = querySnapshot.docs[i].data() as Map;
-      setState(() {
-        groupList.add({
-          "groupName": a['groupName'],
-          "groupImage": a['groupImage'],
-          "groupID": a['groupID'],
-        });
-      });
-    }
-    QuerySnapshot querySnapshot2 =
-        await FirebaseFirestore.instance.collection('groups').get();
-    for (QueryDocumentSnapshot documentSnapshot1 in querySnapshot2.docs) {
-      Map<String, dynamic> groupsData =
-          documentSnapshot1.data() as Map<String, dynamic>;
-      List<dynamic> mamberArray = groupsData['membersList'];
-      for (var userMap in mamberArray)
-        if (userMap['userID'] == userData.userID) {
-          setState(() {
-            groupWithUserList.add({
-              "groupID": groupsData['groupID'],
-              "groupImage": groupsData['groupImage'],
-              "groupName": groupsData['groupName'],
-              "id": documentSnapshot1.id,
-            });
-          });
-        }
-    }
-
-    for (int i = 0; i < groupWithUserList.length; i++) {
-      QuerySnapshot querySnapshot1 = await FirebaseFirestore.instance
-          .collection('groups')
-          .doc(groupWithUserList[i]['groupID'])
-          .collection("Goals")
-          .get();
-      for (int i = 0; i < querySnapshot1.docs.length; i++) {
-        var a = querySnapshot1.docs[i].data() as Map;
-        setState(() {
-          goalList.add({
-            "goalTitle": a['goalTitle'],
-            "goalDate": a['goalDate'],
-            "goalTime": a['goalTime'],
-            "goalID": a['goalID'],
-          });
-        });
-      }
-    }
-
+    await _goalController.getGoalPageData();
     setState(() {
       isLoading = false;
     });
@@ -125,7 +69,7 @@ class _NewGoalsScreenState extends State<NewGoalsScreen> {
                     padding: EdgeInsets.only(top: 30.h),
                     child: CircularProgressIndicator(),
                   ))
-                : goalList.isEmpty
+                : _goalController.goalList.isEmpty
                     ? Center(
                         child: Padding(
                           padding: EdgeInsets.only(top: 30.h),
@@ -135,7 +79,7 @@ class _NewGoalsScreenState extends State<NewGoalsScreen> {
                         ),
                       )
                     : ListView.builder(
-                        itemCount: goalList.length,
+                        itemCount: _goalController.goalList.length,
                         shrinkWrap: true,
                         padding: EdgeInsets.only(top: 16),
                         physics: BouncingScrollPhysics(),
@@ -169,7 +113,8 @@ class _NewGoalsScreenState extends State<NewGoalsScreen> {
                                           ),
                                           Expanded(
                                             child: Text(
-                                              goalList[index]['goalTitle'],
+                                              _goalController.goalList[index]
+                                                  ['goalTitle'],
                                               style: headingMedium.copyWith(
                                                   color: Colors.white),
                                               maxLines: 2,
@@ -184,7 +129,8 @@ class _NewGoalsScreenState extends State<NewGoalsScreen> {
                                           icon: "assets/icons/home/date.png",
                                           title: "Date",
                                           data: DateFormat('yyyy-MM-dd').format(
-                                              goalList[index]['goalDate']
+                                              _goalController.goalList[index]
+                                                      ['goalDate']
                                                   .toDate())),
                                       SizedBox(
                                         height: 10,
@@ -205,7 +151,7 @@ class _NewGoalsScreenState extends State<NewGoalsScreen> {
                         },
                       ),
             Expanded(child: SizedBox()),
-            groupList.isNotEmpty
+            _goalController.groupList.isNotEmpty
                 ? DelayedDisplay(
                     delay: Duration(milliseconds: 600),
                     slidingBeginOffset: Offset(0, 0),

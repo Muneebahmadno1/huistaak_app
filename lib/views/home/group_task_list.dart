@@ -1,5 +1,4 @@
 import 'package:avatar_stack/avatar_stack.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:delayed_display/delayed_display.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -9,6 +8,7 @@ import 'package:intl/intl.dart';
 import 'package:sizer/sizer.dart';
 
 import '../../constants/global_variables.dart';
+import '../../controllers/group_setting_controller.dart';
 import '../../widgets/custom_widgets.dart';
 
 class GroupTaskList extends StatefulWidget {
@@ -20,32 +20,15 @@ class GroupTaskList extends StatefulWidget {
 }
 
 class _GroupTaskListState extends State<GroupTaskList> {
-  List<Map<String, dynamic>> taskList = [];
+  final GroupSettingController _groupSettingController =
+      Get.find<GroupSettingController>();
   bool isLoading = false;
 
   getData() async {
     setState(() {
       isLoading = true;
     });
-    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
-        .collection('groups')
-        .doc(widget.groupID)
-        .collection("tasks")
-        .get();
-    for (int i = 0; i < querySnapshot.docs.length; i++) {
-      var a = querySnapshot.docs[i].data() as Map;
-      setState(() {
-        taskList.add({
-          "taskTitle": a['taskTitle'],
-          "taskScore": a['taskScore'],
-          "taskDate": a['taskDate'],
-          "startTime": a['startTime'],
-          "endTime": a['endTime'],
-          "assignMembers": List.from(a['assignMembers']),
-          "id": a['id'],
-        });
-      });
-    }
+    await _groupSettingController.getGroupTaskList(widget.groupID.toString());
     setState(() {
       isLoading = false;
     });
@@ -81,36 +64,36 @@ class _GroupTaskListState extends State<GroupTaskList> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            SizedBox(
-              height: 30,
-            ),
-            Align(
-              alignment: Alignment.center,
-              child: Text(
-                "Tuesday, 26th Sep, 2023",
-                style: bodyNormal.copyWith(color: Colors.black54),
-              ),
-            ),
+            // SizedBox(
+            //   height: 30,
+            // ),
+            // Align(
+            //   alignment: Alignment.center,
+            //   child: Text(
+            //     "Tuesday, 26th Sep, 2023",
+            //     style: bodyNormal.copyWith(color: Colors.black54),
+            //   ),
+            // ),
             SizedBox(
               height: 6,
             ),
             isLoading
                 ? Center(
                     child: Padding(
-                    padding: EdgeInsets.only(top: 25.h),
+                    padding: EdgeInsets.only(top: 35.h),
                     child: CircularProgressIndicator(),
                   ))
-                : taskList.isEmpty
+                : _groupSettingController.taskList.isEmpty
                     ? Center(
                         child: Padding(
-                          padding: EdgeInsets.only(top: 25.h),
+                          padding: EdgeInsets.only(top: 35.h),
                           child: Container(
                             child: Text("No tasks for now"),
                           ),
                         ),
                       )
                     : ListView.builder(
-                        itemCount: taskList.length,
+                        itemCount: _groupSettingController.taskList.length,
                         shrinkWrap: true,
                         padding: EdgeInsets.only(top: 16),
                         physics: BouncingScrollPhysics(),
@@ -135,7 +118,8 @@ class _GroupTaskListState extends State<GroupTaskList> {
                                       Align(
                                         alignment: Alignment.centerLeft,
                                         child: Text(
-                                          taskList[index]['taskTitle'],
+                                          _groupSettingController
+                                              .taskList[index]['taskTitle'],
                                           style: headingLarge.copyWith(
                                               color: Colors.white),
                                         ),
@@ -147,7 +131,8 @@ class _GroupTaskListState extends State<GroupTaskList> {
                                           icon: "assets/icons/home/date.png",
                                           title: "Date",
                                           data: DateFormat('yyyy-MM-dd').format(
-                                              taskList[index]['taskDate']
+                                              _groupSettingController
+                                                  .taskList[index]['taskDate']
                                                   .toDate())),
                                       SizedBox(
                                         height: 10,
@@ -170,7 +155,8 @@ class _GroupTaskListState extends State<GroupTaskList> {
                                       TaskDetailWidget(
                                           icon: "assets/icons/home/points.png",
                                           title: "Task Score Points",
-                                          data: taskList[index]['taskScore']),
+                                          data: _groupSettingController
+                                              .taskList[index]['taskScore']),
                                       SizedBox(
                                         height: 20,
                                       ),
@@ -190,7 +176,8 @@ class _GroupTaskListState extends State<GroupTaskList> {
                                               avatars: [
                                                 for (var n = 0;
                                                     n <
-                                                        taskList[0][
+                                                        _groupSettingController
+                                                            .taskList[0][
                                                                 'assignMembers']
                                                             .length;
                                                     n++)
