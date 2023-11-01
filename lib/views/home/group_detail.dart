@@ -498,7 +498,7 @@ class _GroupDetailState extends State<GroupDetail> {
                                                                               .toString(),
                                                                           _groupController.taskList[index][
                                                                               'assignMembers'],
-                                                                          double.parse(_groupController.taskList[index]['Duration'].toString()) *
+                                                                          double.parse(_groupController.taskList[index]['duration'].toString()) *
                                                                               60,
                                                                           _groupController.taskList[index]
                                                                               [

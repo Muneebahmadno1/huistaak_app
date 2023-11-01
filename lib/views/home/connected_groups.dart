@@ -10,6 +10,7 @@ import 'package:zoom_tap_animation/zoom_tap_animation.dart';
 import '../../constants/app_images.dart';
 import '../../constants/global_variables.dart';
 import '../../controllers/data_controller.dart';
+import '../../controllers/notification_controller.dart';
 
 class ConnectedGroupScreen extends StatefulWidget {
   @override
@@ -19,6 +20,8 @@ class ConnectedGroupScreen extends StatefulWidget {
 class _ConnectedGroupScreenState extends State<ConnectedGroupScreen> {
   bool isLoading = false;
   final HomeController _dataController = Get.find<HomeController>();
+  final NotificationController _notiController =
+      Get.find<NotificationController>();
 
   getData() async {
     setState(() {

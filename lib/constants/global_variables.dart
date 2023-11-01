@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/user_model.dart';
@@ -46,16 +47,16 @@ TextStyle hintText =
 ///----------App variables
 
 final userDocId = ValueNotifier("");
-
+RxString fcmToken = ''.obs;
 UserModel userData = UserModel(
-  points: "",
-  postalCode: '',
-  phoneNumber: '',
-  userID: "",
-  displayName: "",
-  email: "",
-  imageUrl: "",
-);
+    points: "",
+    postalCode: '',
+    phoneNumber: '',
+    userID: "",
+    displayName: "",
+    email: "",
+    imageUrl: "",
+    fcmToken: "");
 
 void setUserLoggedIn(bool key) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();

@@ -29,6 +29,7 @@ class AuthController extends GetxController {
         "imageUrl": "",
         "points": "0",
         "postalCode": map['postalCode'].toString(),
+        "fcmToken": fcmToken.value,
       });
       FirebaseAuth.instance.currentUser?.sendEmailVerification();
       Get.back();
