@@ -19,6 +19,9 @@ class HomeController extends GetxController {
   RxList<Map<String, dynamic>> groupMembers = <Map<String, dynamic>>[].obs;
   RxList<Map<String, dynamic>> assignTaskMember = <Map<String, dynamic>>[].obs;
   RxList<Map<String, dynamic>> assignGoalMember = <Map<String, dynamic>>[].obs;
+  List<dynamic> userList = [];
+  List<dynamic> groupList = [];
+  List<dynamic> groupMemberList = [];
 
   getAllUserGroups() async {
     chatUsers.clear();
@@ -80,8 +83,12 @@ class HomeController extends GetxController {
         .get()
         .then((value) async {
       UserModel notiUserData = UserModel.fromDocument(value.data());
+      var data = {
+        'type': "request",
+        'end_time': DateTime.now().toString(),
+      };
       _notiController.sendNotifications(notiUserData.fcmToken.toString(),
-          userData.displayName.toString() + " requested to join group ");
+          userData.displayName.toString() + " requested to join group ", data);
     });
     return;
   }
@@ -89,6 +96,30 @@ class HomeController extends GetxController {
   joinGroup(groupID, Map<String, dynamic> newMap) async {
     await Collections.GROUPS.doc(groupID).update({
       "membersList": FieldValue.arrayUnion([newMap])
+    });
+  }
+
+  getGroupMember() async {
+    userList.clear();
+    QuerySnapshot querySnapshot = await Collections.USERS
+        .where("userID", isNotEqualTo: userData.userID.toString())
+        .get();
+    for (int i = 0; i < querySnapshot.docs.length; i++) {
+      var a = querySnapshot.docs[i].data() as Map;
+      userList.add({
+        "displayName": a['displayName'],
+        "imageUrl": a['imageUrl'],
+        "userID": a['userID'],
+      });
+    }
+  }
+
+  getTaskMember(groupID) async {
+    userList.clear();
+    var querySnapshot = await Collections.GROUPS.doc(groupID.toString()).get();
+
+    userList.add({
+      "membersList": List.from(querySnapshot['membersList']),
     });
   }
 }

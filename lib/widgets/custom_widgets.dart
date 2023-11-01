@@ -262,10 +262,10 @@ successPopUp(BuildContext context, page, message) {
                         padding: const EdgeInsets.all(18.0),
                         child: Column(
                           children: [
-                            Icon(
-                              Icons.account_tree_rounded,
+                            Image.asset(
+                              "assets/icons/icon_blue.png",
                               color: AppColors.buttonColor,
-                              size: 5.h,
+                              height: 5.h,
                             ),
                             const SizedBox(
                               height: 20,

@@ -5,7 +5,6 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:huistaak/views/home/group/add_member.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart' as path;
 import 'package:zoom_tap_animation/zoom_tap_animation.dart';
@@ -15,10 +14,9 @@ import '../../../constants/custom_validators.dart';
 import '../../../constants/global_variables.dart';
 import '../../../controllers/data_controller.dart';
 import '../../../controllers/group_controller.dart';
-import '../../../helper/page_navigation.dart';
 import '../../../widgets/custom_widgets.dart';
 import '../../../widgets/text_form_fields.dart';
-import '../bottom_nav_bar.dart';
+import '../group_detail.dart';
 
 class CreateNewGroup extends StatefulWidget {
   const CreateNewGroup({super.key});
@@ -31,6 +29,7 @@ class _CreateNewGroupState extends State<CreateNewGroup> {
   final GroupController _groupController = Get.find<GroupController>();
   final HomeController _dataController = Get.find<HomeController>();
   TextEditingController groupNameEditingController = TextEditingController();
+  bool creatingGroup = false;
   bool loader = false;
   late PickedFile pickedFile;
   String? imageUrl;
@@ -176,159 +175,126 @@ class _CreateNewGroupState extends State<CreateNewGroup> {
                   height: 20,
                 ),
                 // DelayedDisplay(
-                //   delay: Duration(milliseconds: 600),
-                //   slidingBeginOffset: Offset(0, 0),
-                //   child: ZoomTapAnimation(
-                //     onTap: () {
-                //       Get.to(() => CreateNewGroupTask());
-                //     },
-                //     child: Container(
-                //       padding: const EdgeInsets.symmetric(horizontal: 24),
-                //       width: double.infinity,
-                //       height: 60,
-                //       decoration: BoxDecoration(
+                //   delay: Duration(milliseconds: 700),
+                //   slidingBeginOffset: Offset(0, -1),
+                //   child: Align(
+                //     alignment: Alignment.centerLeft,
+                //     child: Text(
+                //       "Group Admin:",
+                //       style: bodyNormal.copyWith(
                 //           color: AppColors.buttonColor,
-                //           borderRadius: BorderRadius.circular(40)),
-                //       child: Row(
-                //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                //         children: [
-                //           Text(
-                //             "Add Tasks",
-                //             style: headingSmall.copyWith(color: Colors.white),
-                //           ),
-                //           Icon(
-                //             Icons.arrow_forward_ios,
-                //             color: Colors.white,
-                //           )
-                //         ],
-                //       ),
+                //           fontFamily: "MontserratSemiBold"),
                 //     ),
                 //   ),
                 // ),
                 // SizedBox(
+                //   height: 10,
+                // ),
+                // Obx(
+                //   () => DelayedDisplay(
+                //     delay: Duration(milliseconds: 800),
+                //     slidingBeginOffset: Offset(0, 0),
+                //     child: Row(
+                //       // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                //       crossAxisAlignment: CrossAxisAlignment.center,
+                //       children: [
+                //         for (int i = 0;
+                //             i < _dataController.groupAdmins.length;
+                //             i++)
+                //           Padding(
+                //             padding: const EdgeInsets.only(right: 8.0),
+                //             child: CircleAvatar(
+                //               radius: 20,
+                //               backgroundImage:
+                //                   AssetImage("assets/images/man1.jpg"),
+                //             ),
+                //           ),
+                //         // ZoomTapAnimation(
+                //         //   onTap: () {
+                //         //     Get.to(() => AddMember(from: 'admin'));
+                //         //   },
+                //         //   child: Container(
+                //         //       height: 40,
+                //         //       width: 40,
+                //         //       decoration: BoxDecoration(
+                //         //           color: Colors.white,
+                //         //           shape: BoxShape.circle,
+                //         //           image: DecorationImage(
+                //         //               image: AssetImage(
+                //         //                   "assets/images/dotted_border.png"))),
+                //         //       child: Icon(
+                //         //         Icons.add,
+                //         //         color: AppColors.buttonColor,
+                //         //       )),
+                //         // ),
+                //       ],
+                //     ),
+                //   ),
+                // ),
+                //
+                // SizedBox(
                 //   height: 20,
                 // ),
-                DelayedDisplay(
-                  delay: Duration(milliseconds: 700),
-                  slidingBeginOffset: Offset(0, -1),
-                  child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      "Group Admin:",
-                      style: bodyNormal.copyWith(
-                          color: AppColors.buttonColor,
-                          fontFamily: "MontserratSemiBold"),
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                Obx(
-                  () => DelayedDisplay(
-                    delay: Duration(milliseconds: 800),
-                    slidingBeginOffset: Offset(0, 0),
-                    child: Row(
-                      // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        for (int i = 0;
-                            i < _dataController.groupAdmins.length;
-                            i++)
-                          Padding(
-                            padding: const EdgeInsets.only(right: 8.0),
-                            child: CircleAvatar(
-                              radius: 20,
-                              backgroundImage:
-                                  AssetImage("assets/images/man1.jpg"),
-                            ),
-                          ),
-                        // ZoomTapAnimation(
-                        //   onTap: () {
-                        //     Get.to(() => AddMember(from: 'admin'));
-                        //   },
-                        //   child: Container(
-                        //       height: 40,
-                        //       width: 40,
-                        //       decoration: BoxDecoration(
-                        //           color: Colors.white,
-                        //           shape: BoxShape.circle,
-                        //           image: DecorationImage(
-                        //               image: AssetImage(
-                        //                   "assets/images/dotted_border.png"))),
-                        //       child: Icon(
-                        //         Icons.add,
-                        //         color: AppColors.buttonColor,
-                        //       )),
-                        // ),
-                      ],
-                    ),
-                  ),
-                ),
-
-                SizedBox(
-                  height: 20,
-                ),
-                DelayedDisplay(
-                  delay: Duration(milliseconds: 900),
-                  slidingBeginOffset: Offset(0, -1),
-                  child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      "Add Group Members:",
-                      style: bodyNormal.copyWith(
-                          color: AppColors.buttonColor,
-                          fontFamily: "MontserratSemiBold"),
-                    ),
-                  ),
-                ),
-
-                SizedBox(
-                  height: 20,
-                ),
-                Obx(
-                  () => DelayedDisplay(
-                    delay: Duration(milliseconds: 800),
-                    slidingBeginOffset: Offset(0, 0),
-                    child: Row(
-                      // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        for (int i = 0;
-                            i < _dataController.groupMembers.length;
-                            i++)
-                          Padding(
-                            padding: const EdgeInsets.only(right: 8.0),
-                            child: CircleAvatar(
-                              radius: 20,
-                              backgroundImage:
-                                  AssetImage("assets/images/man1.jpg"),
-                            ),
-                          ),
-                        ZoomTapAnimation(
-                          onTap: () {
-                            Get.to(() => AddMember(
-                                  from: 'member',
-                                ));
-                          },
-                          child: Container(
-                              height: 40,
-                              width: 40,
-                              decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  shape: BoxShape.circle,
-                                  image: DecorationImage(
-                                      image: AssetImage(
-                                          "assets/images/dotted_border.png"))),
-                              child: Icon(
-                                Icons.add,
-                                color: AppColors.buttonColor,
-                              )),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
+                // DelayedDisplay(
+                //   delay: Duration(milliseconds: 900),
+                //   slidingBeginOffset: Offset(0, -1),
+                //   child: Align(
+                //     alignment: Alignment.centerLeft,
+                //     child: Text(
+                //       "Add Group Members:",
+                //       style: bodyNormal.copyWith(
+                //           color: AppColors.buttonColor,
+                //           fontFamily: "MontserratSemiBold"),
+                //     ),
+                //   ),
+                // ),
+                //
+                // SizedBox(
+                //   height: 20,
+                // ),
+                // Obx(
+                //   () => DelayedDisplay(
+                //     delay: Duration(milliseconds: 800),
+                //     slidingBeginOffset: Offset(0, 0),
+                //     child: Row(
+                //       // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                //       crossAxisAlignment: CrossAxisAlignment.center,
+                //       children: [
+                //         for (int i = 0;
+                //             i < _dataController.groupMembers.length;
+                //             i++)
+                //           Padding(
+                //             padding: const EdgeInsets.only(right: 8.0),
+                //             child: CircleAvatar(
+                //               radius: 20,
+                //               backgroundImage:
+                //                   AssetImage("assets/images/man1.jpg"),
+                //             ),
+                //           ),
+                //         ZoomTapAnimation(
+                //           onTap: () {
+                //             Get.to(() => AddMember(
+                //                   from: 'member',
+                //                 ));
+                //           },
+                //           child: Container(
+                //               height: 40,
+                //               width: 40,
+                //               decoration: BoxDecoration(
+                //                   color: Colors.white,
+                //                   shape: BoxShape.circle,
+                //                   image: DecorationImage(
+                //                       image: AssetImage(
+                //                           "assets/images/dotted_border.png"))),
+                //               child: Icon(
+                //                 Icons.add,
+                //                 color: AppColors.buttonColor,
+                //               )),
+                //         ),
+                //       ],
+                //     ),
+                //   ),
+                // ),
 
                 SizedBox(
                   height: 20,
@@ -339,15 +305,24 @@ class _CreateNewGroupState extends State<CreateNewGroup> {
                   child: ZoomTapAnimation(
                     onTap: () async {
                       if (groupFormField.currentState!.validate()) {
-                        await _groupController.createGroup(
+                        setState(() {
+                          creatingGroup = true;
+                        });
+                        var groupID = await _groupController.createGroup(
                             groupNameEditingController.text.toString(),
                             imageUrl,
                             _dataController.groupAdmins,
                             _dataController.groupMembers);
                         _dataController.groupAdmins.clear();
                         _dataController.groupMembers.clear();
-                        PageTransition.pageProperNavigation(
-                            page: CustomBottomNavBar());
+                        Get.offAll(() => GroupDetail(
+                              groupID: groupID,
+                              groupTitle:
+                                  groupNameEditingController.text.toString(),
+                            ));
+                        setState(() {
+                          creatingGroup = false;
+                        });
                       }
                     },
                     child: Container(
@@ -360,10 +335,13 @@ class _CreateNewGroupState extends State<CreateNewGroup> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text(
-                            "Create Group",
-                            style: headingSmall.copyWith(color: Colors.white),
-                          ),
+                          creatingGroup
+                              ? Center(child: CircularProgressIndicator())
+                              : Text(
+                                  "Create Group",
+                                  style: headingSmall.copyWith(
+                                      color: Colors.white),
+                                ),
                         ],
                       ),
                     ),

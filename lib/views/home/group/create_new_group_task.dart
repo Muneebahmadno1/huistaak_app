@@ -331,9 +331,10 @@ class _CreateNewGroupTaskState extends State<CreateNewGroupTask> {
                         for (int i = 0;
                             i < _dataController.assignTaskMember.length;
                             i++) {
-                          await _notiController.sendNotification(_dataController
-                              .assignTaskMember[i]['userID']
-                              .toString());
+                          await _notiController.sendNotification(
+                              _dataController.assignTaskMember[i]['userID']
+                                  .toString(),
+                              _dataController.endTime.toString());
                         }
 
                         _dataController.assignTaskMember.clear();

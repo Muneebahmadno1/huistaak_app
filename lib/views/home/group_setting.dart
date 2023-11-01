@@ -85,6 +85,91 @@ class _GroupSettingState extends State<GroupSetting> {
                       child: Align(
                           alignment: Alignment.centerLeft,
                           child: Text(
+                            "Group ID: ",
+                            style: headingSmall.copyWith(
+                                color: AppColors.buttonColor),
+                          )),
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    DelayedDisplay(
+                      delay: Duration(milliseconds: 600),
+                      slidingBeginOffset: Offset(0, 0),
+                      child: TextFormField(
+                        readOnly: true,
+                        style: bodyNormal.copyWith(
+                            fontFamily: "MontserratSemiBold"),
+                        decoration: InputDecoration(
+                            contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 20, vertical: 20),
+                            disabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(50),
+                              borderSide: BorderSide(
+                                color: Colors
+                                    .black26, // Make the border transparent
+                                width:
+                                    1, // Set the width to 0 to make it disappear
+                              ),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(50),
+                              borderSide: BorderSide(
+                                color: Colors
+                                    .black26, // Make the border transparent
+                                width:
+                                    1, // Set the width to 0 to make it disappear
+                              ),
+                            ),
+                            errorBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(50),
+                              borderSide: BorderSide(
+                                color: Colors
+                                    .black26, // Make the border transparent
+                                width:
+                                    1, // Set the width to 0 to make it disappear
+                              ),
+                            ),
+                            focusedErrorBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(50),
+                              borderSide: BorderSide(
+                                color: Colors
+                                    .black26, // Make the border transparent
+                                width:
+                                    1, // Set the width to 0 to make it disappear
+                              ),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(50),
+                              borderSide: BorderSide(
+                                color: Colors
+                                    .black26, // Make the border transparent
+                                width:
+                                    1, // Set the width to 0 to make it disappear
+                              ),
+                            ),
+                            hintText: widget.groupID.toString(),
+                            hintStyle: bodyNormal.copyWith(
+                                color: Colors.black,
+                                fontFamily: "MontserratSemiBold"),
+                            prefixIconColor: Colors.white,
+                            prefixIconConstraints: const BoxConstraints(
+                              maxHeight: 30,
+                              minHeight: 30,
+                            )),
+                      ),
+                      // CustomTextField(
+                      //     hintText: groupInfo[0]['groupName'])
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    DelayedDisplay(
+                      delay: Duration(milliseconds: 300),
+                      slidingBeginOffset: Offset(0, -1),
+                      child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
                             "Group Photo:",
                             style: headingSmall.copyWith(
                                 color: AppColors.buttonColor),

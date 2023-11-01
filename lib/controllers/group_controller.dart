@@ -5,7 +5,6 @@ import 'package:intl/intl.dart';
 import '../constants/global_variables.dart';
 import '../helper/collections.dart';
 import '../models/user_model.dart';
-import '../views/home/connected_groups.dart';
 
 class GroupController extends GetxController {
   List<Map<String, dynamic>> taskList = [];
@@ -77,10 +76,6 @@ class GroupController extends GetxController {
         } else {
           print('No matching userID found.');
         }
-        Get.off(() => ConnectedGroupScreen(
-            // groupID: groupID,
-            // groupTitle: groupTitle,
-            ));
       }
     }).catchError((error) {
       print('Error fetching document: $error');
@@ -160,10 +155,6 @@ class GroupController extends GetxController {
         } else {
           print("Task haven't started yet");
         }
-        Get.off(() => ConnectedGroupScreen(
-            // groupID: groupID,
-            // groupTitle: groupTitle,
-            ));
       }
     }).catchError((error) {
       print('Error fetching document: $error');
@@ -188,8 +179,7 @@ class GroupController extends GetxController {
       "groupName": groupName,
       "groupImage": groupImage,
     });
-
-    return;
+    return groupID;
   }
 
   addGroupTask(groupID, taskTitle, taskDate, String startTimeT, String endTimeT,

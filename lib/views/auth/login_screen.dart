@@ -189,8 +189,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       alignment: Alignment.centerRight,
                       child: InkWell(
                         onTap: () {
-                          Get.to(() => ForgotPassword(
-                              controller: TextEditingController()));
+                          Get.to(() => ForgotPassword());
                         },
                         child: Text(
                           "Forgot Password?",

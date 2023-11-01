@@ -128,7 +128,7 @@ class _GroupDetailState extends State<GroupDetail> {
                                           ? SizedBox(
                                               width: 150,
                                               child: Text(
-                                                "You , " +
+                                                "You, " +
                                                     _groupController
                                                                 .groupInfo[0]
                                                             ['membersList'][0]
@@ -148,7 +148,7 @@ class _GroupDetailState extends State<GroupDetail> {
                                           : SizedBox(
                                               width: 150,
                                               child: Text(
-                                                "You , " +
+                                                "You, " +
                                                     _groupController
                                                                 .groupInfo[0]
                                                             ['membersList'][0]
@@ -444,6 +444,7 @@ class _GroupDetailState extends State<GroupDetail> {
                                                                                 widget.groupID.toString(),
                                                                                 _groupController.taskList[index]['id'].toString(),
                                                                                 widget.groupTitle);
+                                                                            getData();
                                                                           },
                                                                           onLongTap:
                                                                               () {},
@@ -480,74 +481,68 @@ class _GroupDetailState extends State<GroupDetail> {
                                                               SizedBox(
                                                                 width: 10,
                                                               ),
-                                                              Expanded(
-                                                                child: Padding(
-                                                                  padding: const EdgeInsets
-                                                                      .symmetric(
-                                                                      vertical:
-                                                                          8),
-                                                                  child:
-                                                                      ZoomTapAnimation(
-                                                                    onTap:
-                                                                        () async {
-                                                                      await _groupController.endTask(
-                                                                          widget
-                                                                              .groupID
-                                                                              .toString(),
-                                                                          _groupController.taskList[index]['id']
-                                                                              .toString(),
-                                                                          _groupController.taskList[index][
-                                                                              'assignMembers'],
-                                                                          double.parse(_groupController.taskList[index]['duration'].toString()) *
-                                                                              60,
-                                                                          _groupController.taskList[index]
-                                                                              [
-                                                                              'taskScore'],
-                                                                          widget
-                                                                              .groupTitle);
-                                                                    },
-                                                                    onLongTap:
-                                                                        () {},
-                                                                    enableLongTapRepeatEvent:
-                                                                        false,
-                                                                    longTapRepeatDuration:
-                                                                        const Duration(
-                                                                            milliseconds:
-                                                                                100),
-                                                                    begin: 1.0,
-                                                                    end: 0.93,
-                                                                    beginDuration:
-                                                                        const Duration(
-                                                                            milliseconds:
-                                                                                20),
-                                                                    endDuration:
-                                                                        const Duration(
-                                                                            milliseconds:
-                                                                                120),
-                                                                    beginCurve:
-                                                                        Curves
-                                                                            .decelerate,
-                                                                    endCurve: Curves
-                                                                        .fastOutSlowIn,
-                                                                    child: Container(
-                                                                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                                                                        width: double.infinity,
-                                                                        height: 50,
-                                                                        decoration: BoxDecoration(
-                                                                          color: Colors
-                                                                              .white
-                                                                              .withOpacity(0.5),
-                                                                          borderRadius:
-                                                                              BorderRadius.circular(50),
+                                                              _groupController
+                                                                      .taskList[
+                                                                          index]
+                                                                          [
+                                                                          'assignMembers']
+                                                                      .any((map) =>
+                                                                          map['startTask'] ==
+                                                                          null)
+                                                                  ? SizedBox
+                                                                      .shrink()
+                                                                  : Expanded(
+                                                                      child:
+                                                                          Padding(
+                                                                        padding: const EdgeInsets
+                                                                            .symmetric(
+                                                                            vertical:
+                                                                                8),
+                                                                        child:
+                                                                            ZoomTapAnimation(
+                                                                          onTap:
+                                                                              () async {
+                                                                            await _groupController.endTask(
+                                                                                widget.groupID.toString(),
+                                                                                _groupController.taskList[index]['id'].toString(),
+                                                                                _groupController.taskList[index]['assignMembers'],
+                                                                                double.parse(_groupController.taskList[index]['duration'].toString()) * 60,
+                                                                                _groupController.taskList[index]['taskScore'],
+                                                                                widget.groupTitle);
+                                                                            getData();
+                                                                          },
+                                                                          onLongTap:
+                                                                              () {},
+                                                                          enableLongTapRepeatEvent:
+                                                                              false,
+                                                                          longTapRepeatDuration:
+                                                                              const Duration(milliseconds: 100),
+                                                                          begin:
+                                                                              1.0,
+                                                                          end:
+                                                                              0.93,
+                                                                          beginDuration:
+                                                                              const Duration(milliseconds: 20),
+                                                                          endDuration:
+                                                                              const Duration(milliseconds: 120),
+                                                                          beginCurve:
+                                                                              Curves.decelerate,
+                                                                          endCurve:
+                                                                              Curves.fastOutSlowIn,
+                                                                          child: Container(
+                                                                              padding: const EdgeInsets.symmetric(horizontal: 20),
+                                                                              width: double.infinity,
+                                                                              height: 50,
+                                                                              decoration: BoxDecoration(
+                                                                                color: Colors.white.withOpacity(0.5),
+                                                                                borderRadius: BorderRadius.circular(50),
+                                                                              ),
+                                                                              child: Center(
+                                                                                child: Text("Finish", style: bodyLarge.copyWith(color: Colors.white, fontWeight: FontWeight.bold)),
+                                                                              )),
                                                                         ),
-                                                                        child: Center(
-                                                                          child: Text(
-                                                                              "Finish",
-                                                                              style: bodyLarge.copyWith(color: Colors.white, fontWeight: FontWeight.bold)),
-                                                                        )),
-                                                                  ),
-                                                                ),
-                                                              ),
+                                                                      ),
+                                                                    ),
                                                             ],
                                                           )
                                                         : SizedBox.shrink()

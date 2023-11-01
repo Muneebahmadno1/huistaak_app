@@ -37,7 +37,7 @@ class NotificationController extends GetxController {
         .delete();
   }
 
-  sendNotification(docID) {
+  sendNotification(docID, endTime) {
     var notiID = Collections.USERS
         .doc(docID.toString())
         .collection(Collections.NOTIFICATIONS)
@@ -51,33 +51,25 @@ class NotificationController extends GetxController {
     });
     Collections.USERS.doc(docID.toString()).get().then((value) async {
       UserModel notiUserData = UserModel.fromDocument(value.data());
+      var data = {
+        'type': "scheduled",
+        'end_time': DateTime.now().toString(),
+      };
       sendNotifications(notiUserData.fcmToken.toString(),
-          userData.displayName.toString() + " assigned you a task ");
+          userData.displayName.toString() + " assigned you a task ", data);
     });
   }
 
-  sendNotifications(deviceTokens, description) async {
+  sendNotifications(deviceTokens, description, data) async {
     String url = "https://fcm.googleapis.com/fcm/send";
 
     var apiKey =
         'key=AAAAoKUwY_0:APA91bH9L1ChtMkNJfzY_T_B9hkRFj3osMkvkx0RhUUpL2UnOV3hJ8AEVRgdCpsKPREqYyXic7KE824DY5NLUBXX1oA9dshHBdSpvh2o7CGyTKVkUocGVjkxcnA5maXgRbJ9c8GH8Uyt';
-    // final payload = <String, dynamic>{
-    //   'registration_ids': deviceTokens, // An
-    //   // array of device tokens
-    //   "priority": "high",
-    //   'notification': {
-    //     'title': titleController.text,
-    //     'body': descriptionController.text,
-    //   },
-    //   'data': {
-    //     'link': linkController.text,
-    //   }
-    // };
 
     var apiData = {
       "registration_ids": [deviceTokens],
       "notification": {"title": 'Huistaak', "body": description.toString()},
-      // "data": data
+      "data": data
     };
 
     print('APIDATA: $apiData');

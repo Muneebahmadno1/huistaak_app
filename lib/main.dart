@@ -8,6 +8,8 @@ import 'package:huistaak/controllers/general_controller.dart';
 import 'package:huistaak/splash_screen.dart';
 import 'package:huistaak/views/notification/notifications.dart';
 import 'package:sizer/sizer.dart';
+import 'package:timezone/data/latest.dart' as tz;
+import 'package:timezone/timezone.dart' as tz;
 
 import 'controllers/auth_controller.dart';
 import 'controllers/data_controller.dart';
@@ -29,7 +31,7 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 
 void _handleMessage(RemoteMessage message) {
   print("_handleMessage");
-  print(message.data['link']);
+  print(message.data);
   print("message");
   print(message);
   Get.offAll(const Notifications());
@@ -63,7 +65,56 @@ Future<void> setupInteractedMessage() async {
   FirebaseMessaging.onMessageOpenedApp.listen(_handleMessage);
 }
 
+tz.TZDateTime _twoHoursBeforeUsualTime(time) {
+  tz.initializeTimeZones();
+  tz.Location location = tz.getLocation('Asia/Karachi');
+  tz.TZDateTime now = tz.TZDateTime.from(DateTime.parse(time), location);
+  tz.TZDateTime scheduledDate = now.subtract(const Duration(minutes: 30));
+  print(scheduledDate);
+  return scheduledDate;
+}
+
+void scheduleBeforeUsualTimeNotification(time) async {
+  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
+
+  const AndroidInitializationSettings initializationSettingsAndroid =
+      AndroidInitializationSettings('ic_launcher');
+  const DarwinInitializationSettings initializationSettingsIOS =
+      DarwinInitializationSettings();
+  const InitializationSettings initializationSettings = InitializationSettings(
+      android: initializationSettingsAndroid, iOS: initializationSettingsIOS);
+
+  await flutterLocalNotificationsPlugin.initialize(initializationSettings);
+  var androidPlatformChannelSpecifics = const AndroidNotificationDetails(
+    'daily_notification_channel',
+    'Daily Notification',
+    importance: Importance.max,
+    priority: Priority.high,
+  );
+
+  var platformChannelSpecifics =
+      NotificationDetails(android: androidPlatformChannelSpecifics);
+
+  await FlutterLocalNotificationsPlugin().zonedSchedule(
+    0,
+    'Huistaak',
+    'Your Task Duration will end in 30 minutes',
+    _twoHoursBeforeUsualTime(time),
+    platformChannelSpecifics,
+    androidAllowWhileIdle: true,
+    uiLocalNotificationDateInterpretation:
+        UILocalNotificationDateInterpretation.absoluteTime,
+  );
+}
+
 Future<void> _selectNotification(RemoteMessage message) async {
+  print(message.data);
+  if (message.data['type'] == 'scheduled') {
+    scheduleBeforeUsualTimeNotification(message.data['end_time'].toString());
+  }
+  ;
+  // if (message.data)
   AndroidNotificationDetails androidPlatformChannelSpecifics =
       const AndroidNotificationDetails(
           'high_importance_channel', 'High Importance Notifications',

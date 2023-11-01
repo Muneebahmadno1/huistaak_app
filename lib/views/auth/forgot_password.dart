@@ -12,8 +12,7 @@ import '../../widgets/text_form_fields.dart';
 import 'login_screen.dart';
 
 class ForgotPassword extends StatefulWidget {
-  final TextEditingController controller;
-  const ForgotPassword({Key? key, required this.controller}) : super(key: key);
+  const ForgotPassword({Key? key}) : super(key: key);
 
   @override
   State<ForgotPassword> createState() => _ForgotPasswordState();

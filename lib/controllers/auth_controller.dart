@@ -65,6 +65,9 @@ class AuthController extends GetxController {
           Get.find<GeneralController>().onBottomBarTapped(0);
           PageTransition.pageProperNavigation(page: CustomBottomNavBar());
         });
+        await Collections.USERS
+            .doc(userDocId.value)
+            .update({"fcmToken": fcmToken.value});
       } else {
         Get.back();
         errorPopUp(context, "User not verified yet,\n Try again");

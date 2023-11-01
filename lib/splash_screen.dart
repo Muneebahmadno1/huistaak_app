@@ -60,9 +60,11 @@ class _SplashScreenState extends State<SplashScreen>
       print("Token saved");
       print(fcmToken.value);
     });
-    await Collections.USERS
-        .doc(userDocId.value)
-        .update({"fcmToken": fcmToken.value});
+    login
+        ? await Collections.USERS
+            .doc(userDocId.value)
+            .update({"fcmToken": fcmToken.value})
+        : null;
   }
 
   @override
