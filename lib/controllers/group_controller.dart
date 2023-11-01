@@ -42,8 +42,10 @@ class GroupController extends GetxController {
   }
 
   startTask(groupID, taskID, groupTitle) {
-    final DocumentReference documentReference =
-        Collections.GROUPS.doc(groupID).collection("tasks").doc(taskID);
+    final DocumentReference documentReference = Collections.GROUPS
+        .doc(groupID)
+        .collection(Collections.TASKS)
+        .doc(taskID);
 
     Map<String, dynamic> newVariable = {
       'startTask': DateTime.now(), // Add the 4th variable here
@@ -208,10 +210,14 @@ class GroupController extends GetxController {
     double hours = difference.inMinutes / 60;
 
     CollectionReference ref =
-        await Collections.GROUPS.doc(groupID).collection("tasks");
+        await Collections.GROUPS.doc(groupID).collection(Collections.TASKS);
 
     String docId = ref.doc().id;
-    await Collections.GROUPS.doc(groupID).collection("tasks").doc(docId).set({
+    await Collections.GROUPS
+        .doc(groupID)
+        .collection(Collections.TASKS)
+        .doc(docId)
+        .set({
       "taskTitle": taskTitle,
       "taskDate": taskDate,
       "startTime": startTimeT,

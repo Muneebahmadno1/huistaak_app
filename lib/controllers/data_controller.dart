@@ -18,8 +18,7 @@ class HomeController extends GetxController {
 
   getAllUserGroups() async {
     chatUsers.clear();
-    QuerySnapshot querySnapshot =
-        await FirebaseFirestore.instance.collection('groups').get();
+    QuerySnapshot querySnapshot = await Collections.GROUPS.get();
     for (QueryDocumentSnapshot documentSnapshot in querySnapshot.docs) {
       Map<String, dynamic> groupsData =
           documentSnapshot.data() as Map<String, dynamic>;

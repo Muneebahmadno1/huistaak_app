@@ -83,10 +83,7 @@ class _AddMemberState extends State<AddMember> {
   }
 
   groupMembers(groupID) async {
-    var querySnapshot = await FirebaseFirestore.instance
-        .collection('groups')
-        .doc(groupID)
-        .get();
+    var querySnapshot = await Collections.GROUPS.doc(groupID).get();
     setState(() {
       groupMemberList.add({
         "membersList": List.from(querySnapshot['membersList']),

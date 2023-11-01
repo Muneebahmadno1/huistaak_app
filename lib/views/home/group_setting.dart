@@ -386,8 +386,7 @@ class _GroupSettingState extends State<GroupSetting> {
 
                             if (_groupSettingController
                                 .groupInfo[0]['membersList'].isNotEmpty) {
-                              FirebaseFirestore.instance
-                                  .collection('groups')
+                              Collections.GROUPS
                                   .doc(widget.groupID.toString())
                                   .update({
                                 'membersList': _groupSettingController
@@ -423,8 +422,7 @@ class _GroupSettingState extends State<GroupSetting> {
 
                             if (_groupSettingController
                                 .groupInfo[0]['adminsList'].isNotEmpty) {
-                              FirebaseFirestore.instance
-                                  .collection('groups')
+                              Collections.GROUPS
                                   .doc(widget.groupID.toString())
                                   .update({
                                 'adminsList': _groupSettingController
@@ -444,8 +442,7 @@ class _GroupSettingState extends State<GroupSetting> {
                                   .add(removedMember);
 
                               // Now you can update the Firestore document with the modified groupInfo.
-                              FirebaseFirestore.instance
-                                  .collection('groups')
+                              Collections.GROUPS
                                   .doc(widget.groupID.toString())
                                   .update({
                                 'membersList': _groupSettingController
@@ -456,8 +453,7 @@ class _GroupSettingState extends State<GroupSetting> {
                               setState(() {});
                             } else if (_groupSettingController
                                 .groupInfo[0]['adminsList'].isEmpty) {
-                              FirebaseFirestore.instance
-                                  .collection('groups')
+                              Collections.GROUPS
                                   .doc(widget.groupID.toString())
                                   .update({
                                 'adminsList': _groupSettingController

@@ -23,8 +23,7 @@ class GoalController extends GetxController {
         "groupID": a['groupID'],
       });
     }
-    QuerySnapshot querySnapshot2 =
-        await FirebaseFirestore.instance.collection('groups').get();
+    QuerySnapshot querySnapshot2 = await Collections.GROUPS.get();
     for (QueryDocumentSnapshot documentSnapshot1 in querySnapshot2.docs) {
       Map<String, dynamic> groupsData =
           documentSnapshot1.data() as Map<String, dynamic>;
