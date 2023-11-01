@@ -3,8 +3,12 @@ import 'package:get/get.dart';
 
 import '../constants/global_variables.dart';
 import '../helper/collections.dart';
+import '../models/user_model.dart';
+import 'notification_controller.dart';
 
 class HomeController extends GetxController {
+  final NotificationController _notiController =
+      Get.find<NotificationController>();
   DateTime? selectedDate = DateTime.now();
   DateTime? goalSelectedDate = DateTime.now();
   RxString startTime = '09:00 AM'.obs;
@@ -15,6 +19,9 @@ class HomeController extends GetxController {
   RxList<Map<String, dynamic>> groupMembers = <Map<String, dynamic>>[].obs;
   RxList<Map<String, dynamic>> assignTaskMember = <Map<String, dynamic>>[].obs;
   RxList<Map<String, dynamic>> assignGoalMember = <Map<String, dynamic>>[].obs;
+  List<dynamic> userList = [];
+  List<dynamic> groupList = [];
+  List<dynamic> groupMemberList = [];
 
   getAllUserGroups() async {
     chatUsers.clear();
@@ -71,12 +78,48 @@ class HomeController extends GetxController {
       "Time": DateTime.now(),
       "notiID": notiID.id,
     });
+    Collections.USERS
+        .doc(adminList[0]['adminsList'][0]['userID'].toString())
+        .get()
+        .then((value) async {
+      UserModel notiUserData = UserModel.fromDocument(value.data());
+      var data = {
+        'type': "request",
+        'end_time': DateTime.now().toString(),
+      };
+      _notiController.sendNotifications(notiUserData.fcmToken.toString(),
+          userData.displayName.toString() + " requested to join group ", data);
+    });
     return;
   }
 
   joinGroup(groupID, Map<String, dynamic> newMap) async {
     await Collections.GROUPS.doc(groupID).update({
       "membersList": FieldValue.arrayUnion([newMap])
+    });
+  }
+
+  getGroupMember() async {
+    userList.clear();
+    QuerySnapshot querySnapshot = await Collections.USERS
+        .where("userID", isNotEqualTo: userData.userID.toString())
+        .get();
+    for (int i = 0; i < querySnapshot.docs.length; i++) {
+      var a = querySnapshot.docs[i].data() as Map;
+      userList.add({
+        "displayName": a['displayName'],
+        "imageUrl": a['imageUrl'],
+        "userID": a['userID'],
+      });
+    }
+  }
+
+  getTaskMember(groupID) async {
+    userList.clear();
+    var querySnapshot = await Collections.GROUPS.doc(groupID.toString()).get();
+
+    userList.add({
+      "membersList": List.from(querySnapshot['membersList']),
     });
   }
 }

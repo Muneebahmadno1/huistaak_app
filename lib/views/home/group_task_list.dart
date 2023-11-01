@@ -61,169 +61,162 @@ class _GroupTaskListState extends State<GroupTaskList> {
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 22.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            // SizedBox(
-            //   height: 30,
-            // ),
-            // Align(
-            //   alignment: Alignment.center,
-            //   child: Text(
-            //     "Tuesday, 26th Sep, 2023",
-            //     style: bodyNormal.copyWith(color: Colors.black54),
-            //   ),
-            // ),
-            SizedBox(
-              height: 6,
-            ),
-            isLoading
-                ? Center(
-                    child: Padding(
-                    padding: EdgeInsets.only(top: 35.h),
-                    child: CircularProgressIndicator(),
-                  ))
-                : _groupSettingController.taskList.isEmpty
-                    ? Center(
-                        child: Padding(
-                          padding: EdgeInsets.only(top: 35.h),
-                          child: Container(
-                            child: Text("No tasks for now"),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              SizedBox(
+                height: 6,
+              ),
+              isLoading
+                  ? Center(
+                      child: Padding(
+                      padding: EdgeInsets.only(top: 35.h),
+                      child: CircularProgressIndicator(),
+                    ))
+                  : _groupSettingController.taskList.isEmpty
+                      ? Center(
+                          child: Padding(
+                            padding: EdgeInsets.only(top: 35.h),
+                            child: Container(
+                              child: Text("No tasks for now"),
+                            ),
                           ),
-                        ),
-                      )
-                    : ListView.builder(
-                        itemCount: _groupSettingController.taskList.length,
-                        shrinkWrap: true,
-                        padding: EdgeInsets.only(top: 16),
-                        physics: BouncingScrollPhysics(),
-                        itemBuilder: (context, index) {
-                          return Padding(
-                            padding: EdgeInsets.only(bottom: 15.0),
-                            child: DelayedDisplay(
-                              delay: Duration(milliseconds: 400),
-                              slidingBeginOffset: Offset(0, 0),
-                              child: Container(
-                                padding: EdgeInsets.all(20),
-                                width: double.infinity,
-                                decoration: BoxDecoration(
-                                  color: AppColors.buttonColor,
-                                  borderRadius: BorderRadius.circular(20),
-                                ),
-                                child: DelayedDisplay(
-                                  delay: Duration(milliseconds: 600),
-                                  slidingBeginOffset: Offset(0, -1),
-                                  child: Column(
-                                    children: [
-                                      Align(
-                                        alignment: Alignment.centerLeft,
-                                        child: Text(
-                                          _groupSettingController
-                                              .taskList[index]['taskTitle'],
-                                          style: headingLarge.copyWith(
-                                              color: Colors.white),
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        height: 10,
-                                      ),
-                                      TaskDetailWidget(
-                                          icon: "assets/icons/home/date.png",
-                                          title: "Date",
-                                          data: DateFormat('yyyy-MM-dd').format(
-                                              _groupSettingController
-                                                  .taskList[index]['taskDate']
-                                                  .toDate())),
-                                      SizedBox(
-                                        height: 10,
-                                      ),
-                                      TaskDetailWidget(
-                                          icon: "assets/icons/home/time.png",
-                                          title: "Time",
-                                          data: "10 am to 05 pm"),
-                                      SizedBox(
-                                        height: 10,
-                                      ),
-                                      TaskDetailWidget(
-                                          icon:
-                                              "assets/icons/home/duration.png",
-                                          title: "Task Duration",
-                                          data: "08 hours"),
-                                      SizedBox(
-                                        height: 10,
-                                      ),
-                                      TaskDetailWidget(
-                                          icon: "assets/icons/home/points.png",
-                                          title: "Task Score Points",
-                                          data: _groupSettingController
-                                              .taskList[index]['taskScore']),
-                                      SizedBox(
-                                        height: 20,
-                                      ),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Text(
-                                            "Task assigned to:",
-                                            style: headingSmall.copyWith(
+                        )
+                      : ListView.builder(
+                          itemCount: _groupSettingController.taskList.length,
+                          shrinkWrap: true,
+                          padding: EdgeInsets.only(top: 16),
+                          physics: BouncingScrollPhysics(),
+                          itemBuilder: (context, index) {
+                            return Padding(
+                              padding: EdgeInsets.only(bottom: 15.0),
+                              child: DelayedDisplay(
+                                delay: Duration(milliseconds: 400),
+                                slidingBeginOffset: Offset(0, 0),
+                                child: Container(
+                                  padding: EdgeInsets.all(20),
+                                  width: double.infinity,
+                                  decoration: BoxDecoration(
+                                    color: AppColors.buttonColor,
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                  child: DelayedDisplay(
+                                    delay: Duration(milliseconds: 600),
+                                    slidingBeginOffset: Offset(0, -1),
+                                    child: Column(
+                                      children: [
+                                        Align(
+                                          alignment: Alignment.centerLeft,
+                                          child: Text(
+                                            _groupSettingController
+                                                .taskList[index]['taskTitle'],
+                                            style: headingLarge.copyWith(
                                                 color: Colors.white),
                                           ),
-                                          SizedBox(
-                                            width: 74,
-                                            child: AvatarStack(
-                                              height: 34,
-                                              avatars: [
-                                                for (var n = 0;
-                                                    n <
-                                                        _groupSettingController
-                                                            .taskList[0][
-                                                                'assignMembers']
-                                                            .length;
-                                                    n++)
-                                                  AssetImage(
-                                                      "assets/images/man1.jpg"),
-                                              ],
+                                        ),
+                                        SizedBox(
+                                          height: 10,
+                                        ),
+                                        TaskDetailWidget(
+                                            icon: "assets/icons/home/date.png",
+                                            title: "Date",
+                                            data: DateFormat('yyyy-MM-dd')
+                                                .format(_groupSettingController
+                                                    .taskList[index]['taskDate']
+                                                    .toDate())),
+                                        SizedBox(
+                                          height: 10,
+                                        ),
+                                        TaskDetailWidget(
+                                            icon: "assets/icons/home/time.png",
+                                            title: "Time",
+                                            data: "10 am to 05 pm"),
+                                        SizedBox(
+                                          height: 10,
+                                        ),
+                                        TaskDetailWidget(
+                                            icon:
+                                                "assets/icons/home/duration.png",
+                                            title: "Task Duration",
+                                            data: "08 hours"),
+                                        SizedBox(
+                                          height: 10,
+                                        ),
+                                        TaskDetailWidget(
+                                            icon:
+                                                "assets/icons/home/points.png",
+                                            title: "Task Score Points",
+                                            data: _groupSettingController
+                                                .taskList[index]['taskScore']),
+                                        SizedBox(
+                                          height: 20,
+                                        ),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text(
+                                              "Task assigned to:",
+                                              style: headingSmall.copyWith(
+                                                  color: Colors.white),
                                             ),
-                                          ),
-                                        ],
-                                      ),
-                                      LikeBarWidget(
-                                        image: "assets/images/man1.jpg",
-                                        count: "10",
-                                        percent: 0.8,
-                                        TotalCount: "15",
-                                      ),
-                                      SizedBox(
-                                        height: 10,
-                                      ),
-                                      LikeBarWidget(
-                                        image: "assets/images/man1.jpg",
-                                        count: "10",
-                                        percent: 0.8,
-                                        TotalCount: "15",
-                                      ),
-                                      SizedBox(
-                                        height: 10,
-                                      ),
-                                      LikeBarWidget(
-                                        image: "assets/images/man1.jpg",
-                                        count: "10",
-                                        percent: 0.8,
-                                        TotalCount: "15",
-                                      ),
-                                      SizedBox(
-                                        height: 20,
-                                      ),
-                                    ],
+                                            SizedBox(
+                                              width: 74,
+                                              child: AvatarStack(
+                                                height: 34,
+                                                avatars: [
+                                                  for (var n = 0;
+                                                      n <
+                                                          _groupSettingController
+                                                              .taskList[0][
+                                                                  'assignMembers']
+                                                              .length;
+                                                      n++)
+                                                    AssetImage(
+                                                        "assets/images/man1.jpg"),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        LikeBarWidget(
+                                          image: "assets/images/man1.jpg",
+                                          count: "10",
+                                          percent: 0.8,
+                                          TotalCount: "15",
+                                        ),
+                                        SizedBox(
+                                          height: 10,
+                                        ),
+                                        LikeBarWidget(
+                                          image: "assets/images/man1.jpg",
+                                          count: "10",
+                                          percent: 0.8,
+                                          TotalCount: "15",
+                                        ),
+                                        SizedBox(
+                                          height: 10,
+                                        ),
+                                        LikeBarWidget(
+                                          image: "assets/images/man1.jpg",
+                                          count: "10",
+                                          percent: 0.8,
+                                          TotalCount: "15",
+                                        ),
+                                        SizedBox(
+                                          height: 20,
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
-                          );
-                        },
-                      ),
-          ],
+                            );
+                          },
+                        ),
+            ],
+          ),
         ),
       ),
     );

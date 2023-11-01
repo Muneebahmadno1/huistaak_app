@@ -6,6 +6,7 @@ class UserModel {
   dynamic postalCode;
   dynamic imageUrl;
   dynamic points;
+  dynamic fcmToken;
 
   UserModel({
     required this.userID,
@@ -15,16 +16,19 @@ class UserModel {
     required this.postalCode,
     required this.imageUrl,
     required this.points,
+    required this.fcmToken,
   });
 
   factory UserModel.fromDocument(var data) {
     return UserModel(
-        userID: data['userID'],
-        points: data['points'],
-        email: data['email'],
-        displayName: data['displayName'],
-        imageUrl: data['imageUrl'],
-        phoneNumber: data['phoneNumber'],
-        postalCode: data['postalCode']);
+      userID: data['userID'],
+      points: data['points'],
+      email: data['email'],
+      displayName: data['displayName'],
+      imageUrl: data['imageUrl'],
+      phoneNumber: data['phoneNumber'],
+      postalCode: data['postalCode'],
+      fcmToken: data['fcmToken'],
+    );
   }
 }

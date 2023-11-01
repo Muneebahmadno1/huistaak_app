@@ -9,6 +9,7 @@ import '../../constants/global_variables.dart';
 import '../../controllers/auth_controller.dart';
 import '../../widgets/custom_widgets.dart';
 import '../../widgets/text_form_fields.dart';
+import '../auth/forgot_password.dart';
 
 class ChangePassword extends StatefulWidget {
   const ChangePassword({super.key});
@@ -163,7 +164,30 @@ class _ChangePasswordState extends State<ChangePassword> {
                       ),
                     ),
                   ),
-                  const SizedBox(
+                  DelayedDisplay(
+                    delay: Duration(milliseconds: 900),
+                    slidingBeginOffset: Offset(0, -1),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 18, horizontal: 18),
+                      child: Align(
+                        alignment: Alignment.centerRight,
+                        child: InkWell(
+                          onTap: () {
+                            Get.to(() => ForgotPassword());
+                          },
+                          child: Text(
+                            "Forgot Password?",
+                            style: headingSmall.copyWith(
+                                color: AppColors.buttonColor,
+                                fontWeight: FontWeight.bold),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(
                     height: 120,
                   ),
                   DelayedDisplay(
@@ -173,7 +197,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                       padding: const EdgeInsets.symmetric(
                           horizontal: 22.0, vertical: 8),
                       child: CustomButton(
-                        buttonText: "Change Changes",
+                        buttonText: "Change Password",
                         onTap: () async {
                           if (key.currentState!.validate()) {
                             Get.defaultDialog(

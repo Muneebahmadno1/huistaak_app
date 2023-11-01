@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:huistaak/constants/global_variables.dart';
 import 'package:huistaak/views/auth/welcome_screen.dart';
@@ -12,6 +13,7 @@ import 'models/user_model.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
+
   @override
   State<SplashScreen> createState() => _SplashScreenState();
 }
@@ -19,6 +21,7 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen>
     with TickerProviderStateMixin {
   late bool login;
+
   getData() async {
     // Future.delayed(const Duration(milliseconds: 10000), () {
     //   PageTransition.pageProperNavigation(page: const EmojiRatingApp());
@@ -48,6 +51,20 @@ class _SplashScreenState extends State<SplashScreen>
     // TODO: implement initState
     super.initState();
     getData();
+    getFCM();
+  }
+
+  getFCM() async {
+    await FirebaseMessaging.instance.getToken().then((value) {
+      fcmToken.value = value!;
+      print("Token saved");
+      print(fcmToken.value);
+    });
+    login
+        ? await Collections.USERS
+            .doc(userDocId.value)
+            .update({"fcmToken": fcmToken.value})
+        : null;
   }
 
   @override

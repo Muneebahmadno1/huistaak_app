@@ -29,7 +29,7 @@ class _VerifyPhoneState extends State<VerifyPhone> {
         title: CustomAppBar(
           pageTitle: "",
           onTap: () {
-            Get.off(() => ForgotPassword(controller: TextEditingController()));
+            Get.off(() => ForgotPassword());
           },
           leadingButton: Icon(
             Icons.arrow_back_ios,

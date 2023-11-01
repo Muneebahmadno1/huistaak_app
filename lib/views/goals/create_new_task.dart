@@ -121,7 +121,7 @@ class _CreateNewTaskState extends State<CreateNewTask> {
                           controller: goalNameEditingController,
                           validator: (value) =>
                               CustomValidator.isEmptyUserName(value),
-                          hintText: "Clean Garden",
+                          hintText: "Going to the cinema",
                         ),
                       ),
                       const SizedBox(height: 20),

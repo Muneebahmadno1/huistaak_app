@@ -10,6 +10,9 @@ class GoalController extends GetxController {
   List<Map<String, dynamic>> goalList = [];
 
   getGoalPageData() async {
+    groupList.clear();
+    groupWithUserList.clear();
+    goalList.clear();
     QuerySnapshot querySnapshot = await Collections.USERS
         .doc(userData.userID)
         .collection(Collections.MYGROUPS)

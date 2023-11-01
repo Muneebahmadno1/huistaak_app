@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:delayed_display/delayed_display.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -8,9 +7,11 @@ import 'package:sizer/sizer.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:zoom_tap_animation/zoom_tap_animation.dart';
 
+import '../../controllers/general_controller.dart';
 import '../../controllers/group_setting_controller.dart';
-import '../../helper/collections.dart';
+import '../../helper/page_navigation.dart';
 import '../../widgets/custom_widgets.dart';
+import 'bottom_nav_bar.dart';
 
 class GroupSetting extends StatefulWidget {
   final groupID;
@@ -31,7 +32,8 @@ class _GroupSettingState extends State<GroupSetting> {
     setState(() {
       isLoading = true;
     });
-    _groupSettingController.getGroupInfo(widget.groupID.toString());
+
+    await _groupSettingController.getGroupInfo(widget.groupID.toString());
     setState(() {
       isLoading = false;
     });
@@ -66,7 +68,7 @@ class _GroupSettingState extends State<GroupSetting> {
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 18.0),
         child: SingleChildScrollView(
-          child: isLoading
+          child: isLoading == true
               ? Center(
                   child: Padding(
                   padding: EdgeInsets.only(top: 25.h),
@@ -74,6 +76,91 @@ class _GroupSettingState extends State<GroupSetting> {
                 ))
               : Column(
                   children: [
+                    SizedBox(
+                      height: 20,
+                    ),
+                    DelayedDisplay(
+                      delay: Duration(milliseconds: 300),
+                      slidingBeginOffset: Offset(0, -1),
+                      child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            "Group ID: ",
+                            style: headingSmall.copyWith(
+                                color: AppColors.buttonColor),
+                          )),
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    DelayedDisplay(
+                      delay: Duration(milliseconds: 600),
+                      slidingBeginOffset: Offset(0, 0),
+                      child: TextFormField(
+                        readOnly: true,
+                        style: bodyNormal.copyWith(
+                            fontFamily: "MontserratSemiBold"),
+                        decoration: InputDecoration(
+                            contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 20, vertical: 20),
+                            disabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(50),
+                              borderSide: BorderSide(
+                                color: Colors
+                                    .black26, // Make the border transparent
+                                width:
+                                    1, // Set the width to 0 to make it disappear
+                              ),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(50),
+                              borderSide: BorderSide(
+                                color: Colors
+                                    .black26, // Make the border transparent
+                                width:
+                                    1, // Set the width to 0 to make it disappear
+                              ),
+                            ),
+                            errorBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(50),
+                              borderSide: BorderSide(
+                                color: Colors
+                                    .black26, // Make the border transparent
+                                width:
+                                    1, // Set the width to 0 to make it disappear
+                              ),
+                            ),
+                            focusedErrorBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(50),
+                              borderSide: BorderSide(
+                                color: Colors
+                                    .black26, // Make the border transparent
+                                width:
+                                    1, // Set the width to 0 to make it disappear
+                              ),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(50),
+                              borderSide: BorderSide(
+                                color: Colors
+                                    .black26, // Make the border transparent
+                                width:
+                                    1, // Set the width to 0 to make it disappear
+                              ),
+                            ),
+                            hintText: widget.groupID.toString(),
+                            hintStyle: bodyNormal.copyWith(
+                                color: Colors.black,
+                                fontFamily: "MontserratSemiBold"),
+                            prefixIconColor: Colors.white,
+                            prefixIconConstraints: const BoxConstraints(
+                              maxHeight: 30,
+                              minHeight: 30,
+                            )),
+                      ),
+                      // CustomTextField(
+                      //     hintText: groupInfo[0]['groupName'])
+                    ),
                     SizedBox(
                       height: 20,
                     ),
@@ -377,91 +464,11 @@ class _GroupSettingState extends State<GroupSetting> {
                           setState(() {
                             Loading = true;
                           });
-                          if (_groupSettingController
-                              .groupInfo[0]['membersList'].isNotEmpty) {
-                            _groupSettingController.groupInfo[0]['membersList']
-                                .removeWhere((map) =>
-                                    map['userID'] ==
-                                    userData.userID.toString());
-
-                            if (_groupSettingController
-                                .groupInfo[0]['membersList'].isNotEmpty) {
-                              Collections.GROUPS
-                                  .doc(widget.groupID.toString())
-                                  .update({
-                                'membersList': _groupSettingController
-                                    .groupInfo[0]['membersList']
-                              });
-                              setState(() {});
-                            } else {
-                              Collections.GROUPS
-                                  .doc(widget.groupID.toString())
-                                  .delete();
-                              setState(() {});
-                            }
-                          }
-                          if (_groupSettingController
-                              .groupInfo[0]['adminsList'].isNotEmpty) {
-                            _groupSettingController.groupInfo[0]['adminsList']
-                                .removeWhere((map) =>
-                                    map['userID'] ==
-                                    userData.userID.toString());
-                            QuerySnapshot querySnapshot = await Collections
-                                .USERS
-                                .doc(userData.userID)
-                                .collection(Collections.MYGROUPS)
-                                .where("groupID",
-                                    isEqualTo: widget.groupID.toString())
-                                .get();
-                            if (querySnapshot.docs.isNotEmpty) {
-                              for (QueryDocumentSnapshot document
-                                  in querySnapshot.docs) {
-                                await document.reference.delete();
-                              }
-                            }
-
-                            if (_groupSettingController
-                                .groupInfo[0]['adminsList'].isNotEmpty) {
-                              Collections.GROUPS
-                                  .doc(widget.groupID.toString())
-                                  .update({
-                                'adminsList': _groupSettingController
-                                    .groupInfo[0]['adminsList']
-                              });
-                              setState(() {});
-                            } else if (_groupSettingController
-                                .groupInfo[0]['membersList'].isNotEmpty) {
-                              // Remove the first element from membersList and store it in a variable.
-                              Map<String, dynamic> removedMember =
-                                  _groupSettingController.groupInfo[0]
-                                          ['membersList']
-                                      .removeAt(0);
-
-                              // Add the removed member to adminsList.
-                              _groupSettingController.groupInfo[0]['adminsList']
-                                  .add(removedMember);
-
-                              // Now you can update the Firestore document with the modified groupInfo.
-                              Collections.GROUPS
-                                  .doc(widget.groupID.toString())
-                                  .update({
-                                'membersList': _groupSettingController
-                                    .groupInfo[0]['membersList'],
-                                'adminsList': _groupSettingController
-                                    .groupInfo[0]['adminsList'],
-                              });
-                              setState(() {});
-                            } else if (_groupSettingController
-                                .groupInfo[0]['adminsList'].isEmpty) {
-                              Collections.GROUPS
-                                  .doc(widget.groupID.toString())
-                                  .update({
-                                'adminsList': _groupSettingController
-                                    .groupInfo[0]['adminsList']
-                              });
-                              setState(() {});
-                            }
-                          }
+                          await _groupSettingController
+                              .leaveGroup(widget.groupID.toString());
+                          Get.find<GeneralController>().onBottomBarTapped(0);
+                          PageTransition.pageProperNavigation(
+                              page: CustomBottomNavBar());
                           setState(() {
                             Loading = false;
                           });

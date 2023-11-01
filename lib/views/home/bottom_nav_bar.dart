@@ -52,8 +52,7 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
               filledIcon: Icons.home_filled,
               outlinedIcon: Icons.home_outlined,
             ),
-            BarItem(
-                filledIcon: Icons.circle, outlinedIcon: Icons.circle_outlined),
+            BarItem(filledIcon: Icons.flag, outlinedIcon: Icons.flag_outlined),
             BarItem(
               filledIcon: Icons.person_2,
               outlinedIcon: Icons.person_2_outlined,
