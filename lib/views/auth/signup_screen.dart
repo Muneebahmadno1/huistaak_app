@@ -194,7 +194,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     child: AuthTextField(
                       isNumber: true,
                       controller: postalCodeEditingController,
-                      validator: (value) => CustomValidator.isEmpty(value),
+                      validator: (value) => CustomValidator.postalCode(value),
                       hintText: "Postal Code",
                       prefixIcon: AppImages.mapIcon,
                     ),

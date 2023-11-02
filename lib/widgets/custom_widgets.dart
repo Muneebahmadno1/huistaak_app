@@ -1,5 +1,6 @@
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
 import 'package:zoom_tap_animation/zoom_tap_animation.dart';
@@ -25,6 +26,7 @@ class _CustomButtonState extends State<CustomButton> {
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: ZoomTapAnimation(
         onTap: () {
+          HapticFeedback.heavyImpact();
           widget.onTap();
         },
         onLongTap: () {},

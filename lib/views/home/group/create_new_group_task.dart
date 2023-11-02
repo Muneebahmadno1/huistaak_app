@@ -33,6 +33,8 @@ class _CreateNewGroupTaskState extends State<CreateNewGroupTask> {
       Get.find<NotificationController>();
   TextEditingController taskNameEditingController = TextEditingController();
   int points = 1;
+  bool timeError = false;
+  bool isLoading = false;
   final GlobalKey<FormState> taskFormField = GlobalKey();
 
   @override
@@ -169,7 +171,22 @@ class _CreateNewGroupTaskState extends State<CreateNewGroupTask> {
                     ],
                   ),
                 ),
-                const SizedBox(height: 20),
+                timeError
+                    ? Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(left: 18.0),
+                            child: Text(
+                              "Start and End Time can't be same",
+                              style:
+                                  TextStyle(color: Colors.red[800], height: 3),
+                            ),
+                          ),
+                        ],
+                      )
+                    : SizedBox.shrink(),
+                const SizedBox(height: 10),
                 DelayedDisplay(
                   delay: Duration(milliseconds: 900),
                   slidingBeginOffset: Offset(0, -1),
@@ -317,35 +334,68 @@ class _CreateNewGroupTaskState extends State<CreateNewGroupTask> {
                 DelayedDisplay(
                   delay: Duration(milliseconds: 1300),
                   slidingBeginOffset: Offset(0, 0),
-                  child: CustomButton(
+                  child: ZoomTapAnimation(
                     onTap: () async {
                       if (taskFormField.currentState!.validate()) {
-                        await _groupController.addGroupTask(
-                            widget.groupID,
-                            taskNameEditingController.text,
-                            _dataController.selectedDate,
-                            _dataController.startTime.toString(),
-                            _dataController.endTime.toString(),
-                            points.toString(),
-                            _dataController.assignTaskMember);
-                        for (int i = 0;
-                            i < _dataController.assignTaskMember.length;
-                            i++) {
-                          await _notiController.sendNotification(
-                              _dataController.assignTaskMember[i]['userID']
-                                  .toString(),
-                              _dataController.endTime.toString());
-                        }
+                        if (_dataController.startTime.value ==
+                            _dataController.endTime.value) {
+                          setState(() {
+                            timeError = true;
+                          });
+                        } else {
+                          setState(() {
+                            timeError = false;
+                            isLoading = true;
+                          });
+                          await _groupController.addGroupTask(
+                              widget.groupID,
+                              taskNameEditingController.text,
+                              _dataController.selectedDate,
+                              _dataController.startTime.toString(),
+                              _dataController.endTime.toString(),
+                              points.toString(),
+                              _dataController.assignTaskMember);
+                          for (int i = 0;
+                              i < _dataController.assignTaskMember.length;
+                              i++) {
+                            await _notiController.sendNotification(
+                                _dataController.assignTaskMember[i]['userID']
+                                    .toString(),
+                                _dataController.endTime.toString());
+                          }
 
-                        _dataController.assignTaskMember.clear();
-                        PageTransition.pageBackNavigation(
-                            page: GroupDetail(
-                          groupTitle: widget.groupTitle,
-                          groupID: widget.groupID,
-                        ));
+                          _dataController.assignTaskMember.clear();
+                          PageTransition.pageBackNavigation(
+                              page: GroupDetail(
+                            groupTitle: widget.groupTitle,
+                            groupID: widget.groupID,
+                          ));
+                          setState(() {
+                            isLoading = false;
+                          });
+                        }
                       }
                     },
-                    buttonText: "Add task",
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 24),
+                      width: double.infinity,
+                      height: 60,
+                      decoration: BoxDecoration(
+                          color: AppColors.buttonColor,
+                          borderRadius: BorderRadius.circular(40)),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          isLoading
+                              ? Center(child: CircularProgressIndicator())
+                              : Text(
+                                  "Add Task",
+                                  style: headingSmall.copyWith(
+                                      color: Colors.white),
+                                ),
+                        ],
+                      ),
+                    ),
                   ),
                 ),
               ],

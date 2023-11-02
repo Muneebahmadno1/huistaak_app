@@ -55,7 +55,7 @@ class _GroupSettingState extends State<GroupSetting> {
         backgroundColor: Colors.transparent,
         automaticallyImplyLeading: false,
         title: CustomAppBar(
-          pageTitle: "Group Detail",
+          pageTitle: "Group Details",
           onTap: () {
             Get.back();
           },
@@ -93,74 +93,78 @@ class _GroupSettingState extends State<GroupSetting> {
                     SizedBox(
                       height: 10,
                     ),
-                    DelayedDisplay(
-                      delay: Duration(milliseconds: 600),
-                      slidingBeginOffset: Offset(0, 0),
-                      child: TextFormField(
-                        readOnly: true,
+                    // DelayedDisplay(
+                    //   delay: Duration(milliseconds: 600),
+                    //   slidingBeginOffset: Offset(0, 0),
+                    //   child: TextFormField(
+                    //     readOnly: true,
+                    //     style: bodyNormal.copyWith(
+                    //         fontFamily: "MontserratSemiBold"),
+                    //     decoration: InputDecoration(
+                    //         contentPadding: const EdgeInsets.symmetric(
+                    //             horizontal: 20, vertical: 20),
+                    //         disabledBorder: OutlineInputBorder(
+                    //           borderRadius: BorderRadius.circular(50),
+                    //           borderSide: BorderSide(
+                    //             color: Colors
+                    //                 .black26, // Make the border transparent
+                    //             width:
+                    //                 1, // Set the width to 0 to make it disappear
+                    //           ),
+                    //         ),
+                    //         focusedBorder: OutlineInputBorder(
+                    //           borderRadius: BorderRadius.circular(50),
+                    //           borderSide: BorderSide(
+                    //             color: Colors
+                    //                 .black26, // Make the border transparent
+                    //             width:
+                    //                 1, // Set the width to 0 to make it disappear
+                    //           ),
+                    //         ),
+                    //         errorBorder: OutlineInputBorder(
+                    //           borderRadius: BorderRadius.circular(50),
+                    //           borderSide: BorderSide(
+                    //             color: Colors
+                    //                 .black26, // Make the border transparent
+                    //             width:
+                    //                 1, // Set the width to 0 to make it disappear
+                    //           ),
+                    //         ),
+                    //         focusedErrorBorder: OutlineInputBorder(
+                    //           borderRadius: BorderRadius.circular(50),
+                    //           borderSide: BorderSide(
+                    //             color: Colors
+                    //                 .black26, // Make the border transparent
+                    //             width:
+                    //                 1, // Set the width to 0 to make it disappear
+                    //           ),
+                    //         ),
+                    //         enabledBorder: OutlineInputBorder(
+                    //           borderRadius: BorderRadius.circular(50),
+                    //           borderSide: BorderSide(
+                    //             color: Colors
+                    //                 .black26, // Make the border transparent
+                    //             width:
+                    //                 1, // Set the width to 0 to make it disappear
+                    //           ),
+                    //         ),
+                    //         hintText: widget.groupID.toString(),
+                    //         hintStyle: bodyNormal.copyWith(
+                    //             color: Colors.black,
+                    //             fontFamily: "MontserratSemiBold"),
+                    //         prefixIconColor: Colors.white,
+                    //         prefixIconConstraints: const BoxConstraints(
+                    //           maxHeight: 30,
+                    //           minHeight: 30,
+                    //         )),
+                    //   ),
+                    //   // CustomTextField(
+                    //   //     hintText: groupInfo[0]['groupName'])
+                    // ),
+                    SelectableText(widget.groupID.toString(),
                         style: bodyNormal.copyWith(
-                            fontFamily: "MontserratSemiBold"),
-                        decoration: InputDecoration(
-                            contentPadding: const EdgeInsets.symmetric(
-                                horizontal: 20, vertical: 20),
-                            disabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(50),
-                              borderSide: BorderSide(
-                                color: Colors
-                                    .black26, // Make the border transparent
-                                width:
-                                    1, // Set the width to 0 to make it disappear
-                              ),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(50),
-                              borderSide: BorderSide(
-                                color: Colors
-                                    .black26, // Make the border transparent
-                                width:
-                                    1, // Set the width to 0 to make it disappear
-                              ),
-                            ),
-                            errorBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(50),
-                              borderSide: BorderSide(
-                                color: Colors
-                                    .black26, // Make the border transparent
-                                width:
-                                    1, // Set the width to 0 to make it disappear
-                              ),
-                            ),
-                            focusedErrorBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(50),
-                              borderSide: BorderSide(
-                                color: Colors
-                                    .black26, // Make the border transparent
-                                width:
-                                    1, // Set the width to 0 to make it disappear
-                              ),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(50),
-                              borderSide: BorderSide(
-                                color: Colors
-                                    .black26, // Make the border transparent
-                                width:
-                                    1, // Set the width to 0 to make it disappear
-                              ),
-                            ),
-                            hintText: widget.groupID.toString(),
-                            hintStyle: bodyNormal.copyWith(
-                                color: Colors.black,
-                                fontFamily: "MontserratSemiBold"),
-                            prefixIconColor: Colors.white,
-                            prefixIconConstraints: const BoxConstraints(
-                              maxHeight: 30,
-                              minHeight: 30,
-                            )),
-                      ),
-                      // CustomTextField(
-                      //     hintText: groupInfo[0]['groupName'])
-                    ),
+                            color: Colors.black,
+                            fontFamily: "MontserratSemiBold")),
                     SizedBox(
                       height: 20,
                     ),
@@ -183,7 +187,12 @@ class _GroupSettingState extends State<GroupSetting> {
                       slidingBeginOffset: Offset(0, 0),
                       child: CircleAvatar(
                         radius: 70,
-                        backgroundImage: AssetImage("assets/images/man1.jpg"),
+                        backgroundImage: _groupSettingController.groupInfo[0]
+                                    ['groupImage'] ==
+                                null
+                            ? AssetImage("assets/images/man1.jpg")
+                            : NetworkImage(_groupSettingController.groupInfo[0]
+                                ['groupImage']) as ImageProvider,
                       ),
                     ),
                     SizedBox(

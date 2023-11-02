@@ -42,7 +42,9 @@ class _ConnectedGroupListState extends State<ConnectedGroupList> {
               child: Row(
                 children: <Widget>[
                   CircleAvatar(
-                    backgroundImage: AssetImage(widget.imageUrl),
+                    backgroundImage: widget.imageUrl == "assets/images/man1.jpg"
+                        ? AssetImage(widget.imageUrl)
+                        : NetworkImage(widget.imageUrl) as ImageProvider,
                     maxRadius: 28,
                   ),
                   SizedBox(
@@ -87,7 +89,7 @@ class _ConnectedGroupListState extends State<ConnectedGroupList> {
                     height: 6,
                   ),
                   Text(
-                    DateFormat('dd-MM-yyyy').format(widget.time),
+                    DateFormat('HH:mm a').format(widget.time),
                     style: bodySmall.copyWith(
                         fontFamily: "MontserratRegular",
                         fontSize: 12,

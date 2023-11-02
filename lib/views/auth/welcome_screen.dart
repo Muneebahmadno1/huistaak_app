@@ -82,8 +82,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                       onTap: () {
                         Get.to(
                             () => SignUpScreen(
-                                  controller: TextEditingController(),
-                                ),
+                                controller: TextEditingController()),
                             transition: Transition.rightToLeft);
                       },
                     ),

@@ -101,8 +101,12 @@ class _GroupDetailState extends State<GroupDetail> {
                               ),
                               CircleAvatar(
                                 radius: 20,
-                                backgroundImage:
-                                    AssetImage("assets/images/man1.jpg"),
+                                backgroundImage: _groupController.groupInfo[0]
+                                            ['groupImage'] ==
+                                        null
+                                    ? AssetImage("assets/images/man1.jpg")
+                                    : NetworkImage(_groupController.groupInfo[0]
+                                        ['groupImage']) as ImageProvider,
                               ),
                               SizedBox(
                                 width: 10,

@@ -168,7 +168,8 @@ class GroupController extends GetxController {
       "groupImage": groupImage,
       "groupID": groupID.toString(),
       "adminsList": adminsList,
-      "membersList": membersList
+      "membersList": membersList,
+      "date": DateTime.now(),
     });
     await Collections.USERS
         .doc(userDocId.value)

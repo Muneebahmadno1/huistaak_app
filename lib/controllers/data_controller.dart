@@ -36,6 +36,7 @@ class HomeController extends GetxController {
           chatUsers.add({
             "groupImage": groupsData['groupImage'],
             "groupName": groupsData['groupName'],
+            'date': groupsData['date'],
             "id": documentSnapshot.id,
           });
         }
@@ -44,6 +45,7 @@ class HomeController extends GetxController {
           chatUsers.add({
             "groupImage": groupsData['groupImage'],
             "groupName": groupsData['groupName'],
+            'date': groupsData['date'],
             "id": documentSnapshot.id,
           });
         }
@@ -53,45 +55,52 @@ class HomeController extends GetxController {
   }
 
   joinGroupRequest(groupID) async {
-    final newMap = {
-      'displayName': userData.displayName.toString(),
-      'imageUrl': userData.imageUrl.toString(),
-      'userID': userData.userID.toString(),
-    };
-
-    var querySnapshot2 = await Collections.GROUPS.doc(groupID.toString()).get();
-    adminList.add({
-      "adminsList": List.from(querySnapshot2['adminsList']),
-      "membersList": List.from(querySnapshot2['membersList']),
-    });
-
-    var notiID = Collections.USERS
-        .doc(adminList[0]['adminsList'][0]['userID'])
-        .collection(Collections.NOTIFICATIONS)
-        .doc();
-    notiID.set({
-      "read": false,
-      "notificationType": 1,
-      "notification":
-          userData.displayName.toString() + " requested to join group",
-      "userToJoin": FieldValue.arrayUnion([newMap]),
-      "groupToJoinID": groupID,
-      "Time": DateTime.now(),
-      "notiID": notiID.id,
-    });
-    Collections.USERS
-        .doc(adminList[0]['adminsList'][0]['userID'].toString())
-        .get()
-        .then((value) async {
-      UserModel notiUserData = UserModel.fromDocument(value.data());
-      var data = {
-        'type': "request",
-        'end_time': DateTime.now().toString(),
+    try {
+      final newMap = {
+        'displayName': userData.displayName.toString(),
+        'imageUrl': userData.imageUrl.toString(),
+        'userID': userData.userID.toString(),
       };
-      _notiController.sendNotifications(notiUserData.fcmToken.toString(),
-          userData.displayName.toString() + " requested to join group ", data);
-    });
-    return;
+      var querySnapshot2 =
+          await Collections.GROUPS.doc(groupID.toString()).get();
+
+      adminList.add({
+        "adminsList": List.from(querySnapshot2['adminsList']),
+        "membersList": List.from(querySnapshot2['membersList']),
+      });
+
+      var notiID = Collections.USERS
+          .doc(adminList[0]['adminsList'][0]['userID'])
+          .collection(Collections.NOTIFICATIONS)
+          .doc();
+      notiID.set({
+        "read": false,
+        "notificationType": 1,
+        "notification":
+            userData.displayName.toString() + " requested to join group",
+        "userToJoin": FieldValue.arrayUnion([newMap]),
+        "groupToJoinID": groupID,
+        "Time": DateTime.now(),
+        "notiID": notiID.id,
+      });
+      Collections.USERS
+          .doc(adminList[0]['adminsList'][0]['userID'].toString())
+          .get()
+          .then((value) async {
+        UserModel notiUserData = UserModel.fromDocument(value.data());
+        var data = {
+          'type': "request",
+          'end_time': DateTime.now().toString(),
+        };
+        _notiController.sendNotifications(
+            notiUserData.fcmToken.toString(),
+            userData.displayName.toString() + " requested to join group ",
+            data);
+      });
+      return true;
+    } catch (e) {
+      return false;
+    }
   }
 
   joinGroup(groupID, Map<String, dynamic> newMap) async {
