@@ -20,6 +20,7 @@ class ConnectedGroupScreen extends StatefulWidget {
 
 class _ConnectedGroupScreenState extends State<ConnectedGroupScreen> {
   bool isLoading = false;
+  bool isUnreadNotificationPresent = false;
   final HomeController _dataController = Get.find<HomeController>();
   final NotificationController _notiController =
       Get.find<NotificationController>();
@@ -29,6 +30,9 @@ class _ConnectedGroupScreenState extends State<ConnectedGroupScreen> {
       isLoading = true;
     });
     await _dataController.getAllUserGroups();
+    await _notiController.getNotifications();
+    isUnreadNotificationPresent = _notiController.notificationList
+        .any((element) => element["read"] == false);
     setState(() {
       isLoading = false;
     });
@@ -49,160 +53,164 @@ class _ConnectedGroupScreenState extends State<ConnectedGroupScreen> {
         backgroundColor: Colors.transparent,
         automaticallyImplyLeading: false,
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 22.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            DelayedDisplay(
-              delay: Duration(milliseconds: 300),
-              slidingBeginOffset: Offset(0, -1),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Row(
-                    children: [
-                      CircleAvatar(
-                        radius: 20,
-                        backgroundImage: userData.imageUrl == ""
-                            ? AssetImage(
-                                AppImages.profileImage,
-                              )
-                            : NetworkImage(
-                                userData.imageUrl,
-                              ) as ImageProvider,
-                        // AssetImage("assets/images/man1.jpg"),
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Text(
-                        userData.displayName,
-                        style: bodyNormal.copyWith(
-                            color: Colors.black87,
-                            fontWeight: FontWeight.bold,
-                            fontFamily: "MontserratSemiBold"),
-                      ),
-                    ],
+      body: isLoading
+          ? Center(
+              child: Padding(
+              padding: EdgeInsets.only(top: 25.h),
+              child: CircularProgressIndicator(),
+            ))
+          : Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 22.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  DelayedDisplay(
+                    delay: Duration(milliseconds: 300),
+                    slidingBeginOffset: Offset(0, -1),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Row(
+                          children: [
+                            CircleAvatar(
+                              radius: 20,
+                              backgroundImage: userData.imageUrl == ""
+                                  ? AssetImage(
+                                      AppImages.profileImage,
+                                    )
+                                  : NetworkImage(
+                                      userData.imageUrl,
+                                    ) as ImageProvider,
+                              // AssetImage("assets/images/man1.jpg"),
+                            ),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            Text(
+                              userData.displayName,
+                              style: bodyNormal.copyWith(
+                                  color: Colors.black87,
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: "MontserratSemiBold"),
+                            ),
+                          ],
+                        ),
+                        ZoomTapAnimation(
+                          onTap: () {
+                            Get.to(() => Notifications());
+                          },
+                          child: SizedBox(
+                            width: 22,
+                            child: Stack(
+                              children: [
+                                SizedBox(
+                                    height: 20,
+                                    width: 20,
+                                    child: Image.asset(
+                                        "assets/icons/home/notification.png")),
+                                isUnreadNotificationPresent
+                                    ? Positioned(
+                                        right: 1,
+                                        child: Icon(
+                                          Icons.circle,
+                                          size: 10,
+                                          color: AppColors.buttonColor,
+                                        ),
+                                      )
+                                    : SizedBox.shrink(),
+                              ],
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
                   ),
-                  ZoomTapAnimation(
-                    onTap: () {
-                      Get.to(() => Notifications());
-                    },
-                    child: SizedBox(
-                      width: 22,
-                      child: Stack(
-                        children: [
-                          SizedBox(
-                              height: 20,
-                              width: 20,
-                              child: Image.asset(
-                                  "assets/icons/home/notification.png")),
-                          // Positioned(
-                          //   right: 1,
-                          //   child: Icon(
-                          //     Icons.circle,
-                          //     size: 10,
-                          //     color: AppColors.buttonColor,
-                          //   ),
-                          // ),
-                        ],
+                  SizedBox(
+                    height: 30,
+                  ),
+                  // DelayedDisplay(
+                  //   delay: Duration(milliseconds: 300),
+                  //   slidingBeginOffset: Offset(0, 0),
+                  //   child: AuthTextField(
+                  //     hintText: "Search your chats",
+                  //     prefixIcon: "assets/icons/home/search.png",
+                  //   ),
+                  // ),
+                  // SizedBox(
+                  //   height: 30,
+                  // ),
+                  DelayedDisplay(
+                    delay: Duration(milliseconds: 400),
+                    slidingBeginOffset: Offset(0, -1),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        "Your Connected Groups",
+                        style:
+                            bodyNormal.copyWith(color: AppColors.buttonColor),
                       ),
                     ),
-                  )
+                  ),
+                  SizedBox(
+                    height: 6,
+                  ),
+                  _dataController.chatUsers.isEmpty
+                      ? Center(
+                          child: Padding(
+                            padding: EdgeInsets.only(top: 25.h),
+                            child: Container(
+                              child: Text("No Connected Group"),
+                            ),
+                          ),
+                        )
+                      : Expanded(
+                          child: ListView.builder(
+                            itemCount: _dataController.chatUsers.length,
+                            shrinkWrap: true,
+                            padding: EdgeInsets.only(top: 16),
+                            physics: BouncingScrollPhysics(),
+                            itemBuilder: (context, index) {
+                              return DelayedDisplay(
+                                delay: Duration(milliseconds: 400),
+                                slidingBeginOffset: Offset(0, -1),
+                                child: ConnectedGroupList(
+                                  name: _dataController.chatUsers[index]
+                                      ['groupName'],
+                                  desc: _dataController.chatUsers[index]
+                                      ['groupName'],
+                                  imageUrl: _dataController.chatUsers[index]
+                                          ['groupImage'] ??
+                                      "assets/images/man1.jpg",
+                                  time: DateTime.now(),
+                                  groupID: _dataController.chatUsers[index]
+                                      ['id'],
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                  _dataController.chatUsers.isEmpty
+                      ? Expanded(child: SizedBox())
+                      : SizedBox.shrink(),
+                  _dataController.chatUsers.isEmpty
+                      ? DelayedDisplay(
+                          delay: Duration(milliseconds: 600),
+                          slidingBeginOffset: Offset(0, 0),
+                          child: CustomButton(
+                            onTap: () {
+                              Get.to(() => ConnectNewGroup());
+                            },
+                            buttonText: "Create a new Group",
+                          ),
+                        )
+                      : SizedBox.shrink(),
+                  _dataController.chatUsers.isEmpty
+                      ? Expanded(child: SizedBox())
+                      : SizedBox.shrink(),
                 ],
               ),
             ),
-            SizedBox(
-              height: 30,
-            ),
-            // DelayedDisplay(
-            //   delay: Duration(milliseconds: 300),
-            //   slidingBeginOffset: Offset(0, 0),
-            //   child: AuthTextField(
-            //     hintText: "Search your chats",
-            //     prefixIcon: "assets/icons/home/search.png",
-            //   ),
-            // ),
-            // SizedBox(
-            //   height: 30,
-            // ),
-            DelayedDisplay(
-              delay: Duration(milliseconds: 400),
-              slidingBeginOffset: Offset(0, -1),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  "Your Connected Groups",
-                  style: bodyNormal.copyWith(color: AppColors.buttonColor),
-                ),
-              ),
-            ),
-            SizedBox(
-              height: 6,
-            ),
-            isLoading
-                ? Center(
-                    child: Padding(
-                    padding: EdgeInsets.only(top: 25.h),
-                    child: CircularProgressIndicator(),
-                  ))
-                : _dataController.chatUsers.isEmpty
-                    ? Center(
-                        child: Padding(
-                          padding: EdgeInsets.only(top: 25.h),
-                          child: Container(
-                            child: Text("No Connected Group"),
-                          ),
-                        ),
-                      )
-                    : Expanded(
-                        child: ListView.builder(
-                          itemCount: _dataController.chatUsers.length,
-                          shrinkWrap: true,
-                          padding: EdgeInsets.only(top: 16),
-                          physics: BouncingScrollPhysics(),
-                          itemBuilder: (context, index) {
-                            return DelayedDisplay(
-                              delay: Duration(milliseconds: 400),
-                              slidingBeginOffset: Offset(0, -1),
-                              child: ConnectedGroupList(
-                                name: _dataController.chatUsers[index]
-                                    ['groupName'],
-                                desc: _dataController.chatUsers[index]
-                                    ['groupName'],
-                                imageUrl: _dataController.chatUsers[index]
-                                        ['groupImage'] ??
-                                    "assets/images/man1.jpg",
-                                time: DateTime.now(),
-                                groupID: _dataController.chatUsers[index]['id'],
-                              ),
-                            );
-                          },
-                        ),
-                      ),
-            _dataController.chatUsers.isEmpty
-                ? Expanded(child: SizedBox())
-                : SizedBox.shrink(),
-            _dataController.chatUsers.isEmpty
-                ? DelayedDisplay(
-                    delay: Duration(milliseconds: 600),
-                    slidingBeginOffset: Offset(0, 0),
-                    child: CustomButton(
-                      onTap: () {
-                        Get.to(() => ConnectNewGroup());
-                      },
-                      buttonText: "Create a new Group",
-                    ),
-                  )
-                : SizedBox.shrink(),
-            _dataController.chatUsers.isEmpty
-                ? Expanded(child: SizedBox())
-                : SizedBox.shrink(),
-          ],
-        ),
-      ),
       floatingActionButton: isLoading
           ? null
           : _dataController.chatUsers.isEmpty
