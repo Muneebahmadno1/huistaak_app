@@ -60,7 +60,8 @@ class GoalController extends GetxController {
     }
   }
 
-  addGroupGoal(groupID, goalTitle, goalDate, time, goalMembers) async {
+  addGroupGoal(
+      groupID, goalTitle, goalDate, time, goalMembers, goalPoints) async {
     var doc = await Collections.GROUPS
         .doc(groupID.toString())
         .collection(Collections.GOALS)
@@ -71,6 +72,7 @@ class GoalController extends GetxController {
       "goalDate": goalDate,
       "goalTime": time,
       "goalMembers": goalMembers,
+      "goalPoints": goalPoints
     });
     return;
   }

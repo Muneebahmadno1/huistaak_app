@@ -27,6 +27,7 @@ class _CreateNewTaskState extends State<CreateNewTask> {
   final GoalController _goalController = Get.find<GoalController>();
   final HomeController _dataController = Get.find<HomeController>();
   TextEditingController goalNameEditingController = TextEditingController();
+  TextEditingController goalPointsEditingController = TextEditingController();
   final GlobalKey<FormState> goalFormField = GlobalKey();
   List<dynamic> groupList = [];
   late String _dropDownValue;
@@ -144,6 +145,30 @@ class _CreateNewTaskState extends State<CreateNewTask> {
                           child: DatePickerWidget(
                             from: "goal",
                           )),
+                      const SizedBox(height: 20),
+                      DelayedDisplay(
+                        delay: Duration(milliseconds: 300),
+                        slidingBeginOffset: Offset(0, -1),
+                        child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            "Goal Points",
+                            style: headingSmall.copyWith(
+                                color: AppColors.buttonColor),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      DelayedDisplay(
+                        delay: Duration(milliseconds: 400),
+                        slidingBeginOffset: Offset(0, 0),
+                        child: AuthTextField(
+                          isNumber: true,
+                          controller: goalPointsEditingController,
+                          validator: (value) => CustomValidator.isEmpty(value),
+                          hintText: "No. of points to achieve goal",
+                        ),
+                      ),
                       const SizedBox(height: 20),
                       DelayedDisplay(
                         delay: Duration(milliseconds: 500),
@@ -296,7 +321,7 @@ class _CreateNewTaskState extends State<CreateNewTask> {
                       //   ),
                       // ),
                       SizedBox(
-                        height: 20.h,
+                        height: 15.h,
                       ),
                       DelayedDisplay(
                         delay: Duration(milliseconds: 1100),
@@ -309,7 +334,8 @@ class _CreateNewTaskState extends State<CreateNewTask> {
                                   goalNameEditingController.text,
                                   _dataController.selectedDate,
                                   _dataController.startTime.toString(),
-                                  _dataController.assignGoalMember);
+                                  _dataController.assignGoalMember,
+                                  goalPointsEditingController.text.toString());
                               _dataController.assignGoalMember.clear();
                               Get.find<GeneralController>()
                                   .onBottomBarTapped(1);

@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:delayed_display/delayed_display.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -7,8 +8,11 @@ import 'package:sizer/sizer.dart';
 import '../../constants/app_images.dart';
 import '../../constants/global_variables.dart';
 import '../../controllers/data_controller.dart';
+import '../../controllers/general_controller.dart';
 import '../../controllers/notification_controller.dart';
+import '../../helper/page_navigation.dart';
 import '../../widgets/custom_widgets.dart';
+import '../home/bottom_nav_bar.dart';
 
 class Notifications extends StatefulWidget {
   const Notifications({Key? key}) : super(key: key);
@@ -29,6 +33,20 @@ class _NotificationsState extends State<Notifications> {
       isLoading = true;
     });
     await _notiController.getNotifications();
+    FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
+    CollectionReference collectionReference = firebaseFirestore
+        .collection('users')
+        .doc(userData.userID.toString())
+        .collection("notifications");
+
+    QuerySnapshot querySnapshot = await collectionReference.get();
+
+    querySnapshot.docs.forEach((doc) {
+      collectionReference.doc(doc.id).update({
+        'read':
+            true, // Change 'fieldNameToUpdate' to the field you want to update
+      });
+    });
     setState(() {
       isLoading = false;
     });
@@ -51,7 +69,8 @@ class _NotificationsState extends State<Notifications> {
         title: CustomAppBar(
           pageTitle: "Notifications",
           onTap: () {
-            Get.back();
+            Get.find<GeneralController>().onBottomBarTapped(0);
+            PageTransition.pageProperNavigation(page: CustomBottomNavBar());
           },
           leadingButton: Icon(
             Icons.arrow_back_ios,

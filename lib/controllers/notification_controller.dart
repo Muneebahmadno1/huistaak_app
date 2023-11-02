@@ -12,6 +12,7 @@ class NotificationController extends GetxController {
   List<Map<String, dynamic>> notificationList = [];
 
   getNotifications() async {
+    notificationList.clear();
     QuerySnapshot querySnapshot = await Collections.USERS
         .doc(userData.userID)
         .collection(Collections.NOTIFICATIONS)
@@ -19,6 +20,7 @@ class NotificationController extends GetxController {
     for (int i = 0; i < querySnapshot.docs.length; i++) {
       var a = querySnapshot.docs[i].data() as Map;
       notificationList.add({
+        "read": a['read'],
         "notification": a['notification'],
         "notificationType": a['notificationType'],
         "notiID": a['notiID'],
@@ -43,6 +45,7 @@ class NotificationController extends GetxController {
         .collection(Collections.NOTIFICATIONS)
         .doc();
     notiID.set({
+      "read": false,
       "notificationType": 2,
       "notification": userData.displayName.toString() + " assigned you a task ",
       "userToJoin": FieldValue.arrayUnion([]),

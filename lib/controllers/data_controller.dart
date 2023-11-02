@@ -70,6 +70,7 @@ class HomeController extends GetxController {
         .collection(Collections.NOTIFICATIONS)
         .doc();
     notiID.set({
+      "read": false,
       "notificationType": 1,
       "notification":
           userData.displayName.toString() + " requested to join group",
