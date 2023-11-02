@@ -17,7 +17,7 @@ class AssignMember extends StatefulWidget {
 }
 
 class _AssignMemberState extends State<AssignMember> {
-  List<int> selectedIndex = [];
+  // List<int> selectedIndex = [];
   final HomeController _dataController = Get.find<HomeController>();
 
   bool isLoading = false;
@@ -87,23 +87,21 @@ class _AssignMemberState extends State<AssignMember> {
                             itemBuilder: (c, i) {
                               return InkWell(
                                 onTap: () {
-                                  print(selectedIndex.contains(i));
-                                  print(widget.from);
-                                  if (selectedIndex.contains(i) &&
-                                      (widget.from == "groupTask"
-                                          ? _dataController.assignTaskMember
-                                              .any((map) =>
-                                                  map['userID'] ==
-                                                  _dataController.userList[0]
-                                                          ['membersList'][i]
-                                                      ['userID'])
-                                          : _dataController.assignGoalMember
-                                              .any((map) =>
-                                                  map['userID'] ==
-                                                  _dataController.userList[0]
-                                                          ['membersList'][i]
-                                                      ['userID']))) {
-                                    selectedIndex.remove(i);
+                                  print("_dataController.assignTaskMember");
+                                  print(_dataController.assignTaskMember);
+                                  if (widget.from == "groupTask"
+                                      ? _dataController.assignTaskMember.any(
+                                          (map) =>
+                                              map['userID'] ==
+                                              _dataController.userList[0]
+                                                  ['membersList'][i]['userID'])
+                                      : _dataController.assignGoalMember.any(
+                                          (map) =>
+                                              map['userID'] ==
+                                              _dataController.userList[0]
+                                                      ['membersList'][i]
+                                                  ['userID'])) {
+                                    print("abc");
                                     widget.from == "groupTask"
                                         ? _dataController.assignTaskMember
                                             .removeWhere((map) =>
@@ -118,9 +116,7 @@ class _AssignMemberState extends State<AssignMember> {
                                                         ['membersList'][i]
                                                     ['userID']);
                                   } else {
-                                    selectedIndex.add(i);
-                                    print(selectedIndex.contains(i));
-                                    print(widget.from);
+                                    print("abc1");
                                     widget.from == "groupTask"
                                         ? _dataController.assignTaskMember.add({
                                             'userID': _dataController
@@ -145,11 +141,24 @@ class _AssignMemberState extends State<AssignMember> {
                                                 [i]['imageUrl']
                                           });
                                   }
+                                  print("fhf");
+                                  print(_dataController.assignTaskMember);
+                                  print(_dataController.userList[0]
+                                      ['membersList'][i]['userID']);
+                                  print(_dataController.assignTaskMember.any(
+                                      (person) =>
+                                          person['userID'] ==
+                                          _dataController.userList[0]
+                                              ['membersList'][i]['userID']));
                                   setState(() {});
                                 },
                                 child: AddMemberWidget(
                                   suffixIcon: "assets/images/man1.jpg",
-                                  isActive: selectedIndex.contains(i),
+                                  isActive: _dataController.assignTaskMember
+                                      .any((person) =>
+                                          person['userID'] ==
+                                          _dataController.userList[0]
+                                              ['membersList'][i]['userID']),
                                   title: _dataController.userList[0]
                                       ['membersList'][i]['displayName'],
                                 ),

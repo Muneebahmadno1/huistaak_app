@@ -137,8 +137,10 @@ class _NewGoalsScreenState extends State<NewGoalsScreen> {
                                       ),
                                       GoalDetailWidget(
                                           icon: "assets/icons/home/time.png",
-                                          title: "Time",
-                                          data: "10 am to 05 pm"),
+                                          title: "Points to achieve",
+                                          data: _goalController.goalList[index]
+                                                  ['goalPoints'] ??
+                                              "0"),
                                       SizedBox(
                                         height: 20,
                                       ),

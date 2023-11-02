@@ -51,11 +51,12 @@ class _DatePickerWidgetState extends State<DatePickerWidget> {
   Future<void> _showDatePicker(BuildContext context) async {
     final DateTime? pickedDate = await showDatePicker(
       context: context,
+      initialEntryMode: DatePickerEntryMode.calendarOnly,
       initialDate: (widget.from == 'goal'
               ? _dataController.goalSelectedDate
               : _dataController.selectedDate) ??
           DateTime.now(),
-      firstDate: DateTime(1900),
+      firstDate: DateTime.now(),
       lastDate: DateTime(2101),
       builder: (BuildContext context, Widget? child) {
         return Theme(

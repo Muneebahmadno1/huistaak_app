@@ -30,8 +30,18 @@ class GoalController extends GetxController {
     for (QueryDocumentSnapshot documentSnapshot1 in querySnapshot2.docs) {
       Map<String, dynamic> groupsData =
           documentSnapshot1.data() as Map<String, dynamic>;
-      List<dynamic> mamberArray = groupsData['membersList'];
-      for (var userMap in mamberArray)
+      List<dynamic> memberArray = groupsData['membersList'];
+      List<dynamic> adminArray = groupsData['adminsList'];
+      for (var userMap in adminArray)
+        if (userMap['userID'] == userData.userID) {
+          groupWithUserList.add({
+            "groupID": groupsData['groupID'],
+            "groupImage": groupsData['groupImage'],
+            "groupName": groupsData['groupName'],
+            "id": documentSnapshot1.id,
+          });
+        }
+      for (var userMap in memberArray)
         if (userMap['userID'] == userData.userID) {
           groupWithUserList.add({
             "groupID": groupsData['groupID'],
@@ -54,6 +64,7 @@ class GoalController extends GetxController {
           "goalTitle": a['goalTitle'],
           "goalDate": a['goalDate'],
           "goalTime": a['goalTime'],
+          "goalPoints": a['goalPoints'],
           "goalID": a['goalID'],
         });
       }

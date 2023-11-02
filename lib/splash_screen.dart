@@ -2,9 +2,11 @@ import 'dart:async';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:huistaak/constants/global_variables.dart';
 import 'package:huistaak/views/auth/welcome_screen.dart';
 import 'package:huistaak/views/home/bottom_nav_bar.dart';
+import 'package:sizer/sizer.dart';
 
 import '../constants/app_images.dart';
 import 'helper/collections.dart';
@@ -74,9 +76,21 @@ class _SplashScreenState extends State<SplashScreen>
       body: Padding(
         padding: const EdgeInsets.all(80.0),
         child: Center(
-          child: Image.asset(
-            AppImages.logo,
-            color: Colors.white,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Image.asset(
+                AppImages.logo,
+                color: Colors.white,
+              ),
+              SizedBox(
+                height: 30.h,
+              ),
+              SpinKitFadingCircle(
+                color: Colors.white,
+                size: 50.0,
+              ),
+            ],
           ),
         ),
       ),

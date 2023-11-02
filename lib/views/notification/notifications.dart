@@ -211,7 +211,13 @@ class _NotificationsState extends State<Notifications> {
                                                                       index]
                                                                       ['notiID']
                                                                   .toString());
-                                                      Get.back();
+                                                      Get.find<
+                                                              GeneralController>()
+                                                          .onBottomBarTapped(0);
+                                                      PageTransition
+                                                          .pageProperNavigation(
+                                                              page:
+                                                                  CustomBottomNavBar());
                                                     },
                                                     child: Container(
                                                         padding:
@@ -247,7 +253,14 @@ class _NotificationsState extends State<Notifications> {
                                                                         index][
                                                                         'notiID']
                                                                     .toString());
-                                                        Get.back();
+                                                        Get.find<
+                                                                GeneralController>()
+                                                            .onBottomBarTapped(
+                                                                0);
+                                                        PageTransition
+                                                            .pageProperNavigation(
+                                                                page:
+                                                                    CustomBottomNavBar());
                                                       },
                                                       child: Container(
                                                           padding:

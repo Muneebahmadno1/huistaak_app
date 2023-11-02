@@ -78,8 +78,8 @@ class AuthController extends GetxController {
         context,
         e.code == 'user-not-found'
             ? "User not found"
-            : (e.code == 'wrong-password')
-                ? "The Password you have entered is not correct"
+            : (e.code == 'INVALID_LOGIN_CREDENTIALS')
+                ? "The Email or Password you have entered is not correct"
                 : e.toString().replaceRange(0, 14, '').split(']')[1],
       );
     }

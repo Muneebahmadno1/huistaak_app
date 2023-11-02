@@ -194,9 +194,10 @@ class _CreateNewTaskState extends State<CreateNewTask> {
                             borderRadius: BorderRadius.circular(40),
                           ),
                           child: Padding(
-                            padding: const EdgeInsets.all(8.0),
+                            padding: const EdgeInsets.only(
+                                left: 20.0, right: 20.0, top: 3),
                             child: DropdownButton(
-                              borderRadius: BorderRadius.circular(40),
+                              borderRadius: BorderRadius.circular(20),
                               underline: SizedBox(),
                               hint: Text(
                                 _dropDownValue,

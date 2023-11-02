@@ -12,6 +12,7 @@ import '../../constants/global_variables.dart';
 import '../../controllers/data_controller.dart';
 import '../../controllers/notification_controller.dart';
 import '../../widgets/custom_widgets.dart';
+import '../../widgets/text_form_fields.dart';
 
 class ConnectedGroupScreen extends StatefulWidget {
   @override
@@ -20,6 +21,7 @@ class ConnectedGroupScreen extends StatefulWidget {
 
 class _ConnectedGroupScreenState extends State<ConnectedGroupScreen> {
   bool isLoading = false;
+  TextEditingController searchController = TextEditingController();
   bool isUnreadNotificationPresent = false;
   final HomeController _dataController = Get.find<HomeController>();
   final NotificationController _notiController =
@@ -129,17 +131,26 @@ class _ConnectedGroupScreenState extends State<ConnectedGroupScreen> {
                   SizedBox(
                     height: 30,
                   ),
-                  // DelayedDisplay(
-                  //   delay: Duration(milliseconds: 300),
-                  //   slidingBeginOffset: Offset(0, 0),
-                  //   child: AuthTextField(
-                  //     hintText: "Search your chats",
-                  //     prefixIcon: "assets/icons/home/search.png",
-                  //   ),
-                  // ),
-                  // SizedBox(
-                  //   height: 30,
-                  // ),
+                  DelayedDisplay(
+                    delay: Duration(milliseconds: 300),
+                    slidingBeginOffset: Offset(0, 0),
+                    child: CustomTextField(
+                      onChanged: (value) {
+                        setState(() {});
+                      },
+                      hintText: 'Search your chats',
+                      controller: searchController,
+                      prefixIcon: "assets/icons/home/search.png",
+                    ),
+                    // child: AuthTextField(
+                    //   controller: searchController,
+                    //   hintText: "Search your chats",
+                    //   prefixIcon: "assets/icons/home/search.png",
+                    // ),
+                  ),
+                  SizedBox(
+                    height: 30,
+                  ),
                   DelayedDisplay(
                     delay: Duration(milliseconds: 400),
                     slidingBeginOffset: Offset(0, -1),
@@ -171,22 +182,36 @@ class _ConnectedGroupScreenState extends State<ConnectedGroupScreen> {
                             padding: EdgeInsets.only(top: 16),
                             physics: BouncingScrollPhysics(),
                             itemBuilder: (context, index) {
-                              return DelayedDisplay(
-                                delay: Duration(milliseconds: 400),
-                                slidingBeginOffset: Offset(0, -1),
-                                child: ConnectedGroupList(
-                                  name: _dataController.chatUsers[index]
-                                      ['groupName'],
-                                  desc: _dataController.chatUsers[index]
-                                      ['groupName'],
-                                  imageUrl: _dataController.chatUsers[index]
-                                          ['groupImage'] ??
-                                      "assets/images/man1.jpg",
-                                  time: DateTime.now(),
-                                  groupID: _dataController.chatUsers[index]
-                                      ['id'],
-                                ),
-                              );
+                              return _dataController.chatUsers[index]
+                                          ['groupName']
+                                      .toLowerCase()
+                                      .contains(searchController.text
+                                          .toString()
+                                          .toLowerCase())
+                                  ? DelayedDisplay(
+                                      delay: Duration(milliseconds: 400),
+                                      slidingBeginOffset: Offset(0, -1),
+                                      child: ConnectedGroupList(
+                                        name: _dataController.chatUsers[index]
+                                            ['groupName'],
+                                        desc: _dataController.chatUsers[index]
+                                            ['groupName'],
+                                        imageUrl:
+                                            _dataController.chatUsers[index]
+                                                    ['groupImage'] ??
+                                                "assets/images/man1.jpg",
+                                        time: _dataController.chatUsers[index]
+                                                    ['date'] ==
+                                                null
+                                            ? DateTime.now()
+                                            : _dataController.chatUsers[index]
+                                                    ['date']
+                                                .toDate(),
+                                        groupID: _dataController
+                                            .chatUsers[index]['id'],
+                                      ),
+                                    )
+                                  : SizedBox.shrink();
                             },
                           ),
                         ),

@@ -134,7 +134,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                     padding: const EdgeInsets.symmetric(
                         horizontal: 22.0, vertical: 8),
                     child: CustomButton(
-                      buttonText: "Send Code",
+                      buttonText: "Reset Link",
                       onTap: () async {
                         if (key.currentState!.validate()) {
                           setState(() {

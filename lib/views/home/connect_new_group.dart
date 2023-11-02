@@ -25,7 +25,7 @@ class _ConnectNewGroupState extends State<ConnectNewGroup> {
   final HomeController _dataController = Get.find<HomeController>();
   TextEditingController codeController = TextEditingController();
   final GlobalKey<FormState> key = GlobalKey<FormState>();
-
+  bool isLoading = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -156,11 +156,21 @@ class _ConnectNewGroupState extends State<ConnectNewGroup> {
                 child: ZoomTapAnimation(
                   onTap: () async {
                     if (key.currentState!.validate()) {
-                      await _dataController
+                      setState(() {
+                        isLoading = true;
+                      });
+                      var result = await _dataController
                           .joinGroupRequest(codeController.text.toString());
-                      Get.find<GeneralController>().onBottomBarTapped(0);
-                      PageTransition.pageProperNavigation(
-                          page: CustomBottomNavBar());
+                      if (result == true) {
+                        Get.find<GeneralController>().onBottomBarTapped(0);
+                        PageTransition.pageProperNavigation(
+                            page: CustomBottomNavBar());
+                      } else {
+                        print(errorPopUp(context, "Group code is invalid"));
+                      }
+                      setState(() {
+                        isLoading = false;
+                      });
                     }
                   },
                   child: Container(
@@ -173,10 +183,13 @@ class _ConnectNewGroupState extends State<ConnectNewGroup> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text(
-                          "Join Now",
-                          style: headingSmall.copyWith(color: Colors.white),
-                        ),
+                        isLoading
+                            ? Center(child: CircularProgressIndicator())
+                            : Text(
+                                "Join Now",
+                                style:
+                                    headingSmall.copyWith(color: Colors.white),
+                              ),
                       ],
                     ),
                   ),
