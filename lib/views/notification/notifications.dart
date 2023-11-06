@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:delayed_display/delayed_display.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:sizer/sizer.dart';
@@ -80,7 +81,7 @@ class _NotificationsState extends State<Notifications> {
         ),
       ),
       body: isLoading
-          ? Center(child: CircularProgressIndicator())
+          ? Center(child: CircularProgressIndicator(color: Colors.white))
           : _notiController.notificationList.isEmpty
               ? Center(child: Text("No notification for now"))
               : Column(
@@ -98,154 +99,160 @@ class _NotificationsState extends State<Notifications> {
                           itemBuilder: (BuildContext context, int index) {
                             return Column(
                               children: [
-                                InkWell(
-                                  onTap: () {},
-                                  child: DelayedDisplay(
-                                    delay: const Duration(milliseconds: 150),
-                                    slidingBeginOffset: const Offset(0, 1),
-                                    child: Column(
-                                      children: [
-                                        Container(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 14, vertical: 10),
-                                          width: double.infinity,
-                                          height: 80,
-                                          color: Colors.white12,
-                                          child: Row(
-                                            children: [
-                                              CircleAvatar(
-                                                radius: 26,
-                                                backgroundImage:
-                                                    userData.imageUrl == ""
-                                                        ? AssetImage(
-                                                            AppImages
-                                                                .profileImage,
-                                                          )
-                                                        : NetworkImage(
-                                                            userData.imageUrl,
-                                                          ) as ImageProvider,
-                                              ),
-                                              Column(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.end,
-                                                children: [
-                                                  Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment.start,
-                                                    children: [
-                                                      SizedBox(
-                                                        width: 12,
-                                                      ),
-                                                      ConstrainedBox(
-                                                        constraints:
-                                                            BoxConstraints(
-                                                                maxWidth: 74.w,
-                                                                maxHeight: 44),
-                                                        child: Align(
-                                                          alignment: Alignment
-                                                              .centerLeft,
-                                                          child: Text(
+                                Slidable(
+                                  closeOnScroll: true,
+                                  // Specify a key if the Slidable is dismissible.
+                                  key: ValueKey(0),
+                                  // The end action pane is the one at the right or the bottom side.
+                                  endActionPane: ActionPane(
+                                    // A motion is a widget used to control how the pane animates.
+                                    motion: ScrollMotion(),
+
+                                    // A pane can dismiss the Slidable.
+                                    dismissible:
+                                        DismissiblePane(onDismissed: () {
+                                      _notiController.deleteNotification(
+                                          _notiController
+                                              .notificationList[index]['notiID']
+                                              .toString());
+                                    }),
+
+                                    // All actions are defined in the children parameter.
+                                    children: [
+                                      // A SlidableAction can have an icon and/or a label.
+                                      SlidableAction(
+                                        backgroundColor: Color(0xFFFE4A49),
+                                        foregroundColor: Colors.white,
+                                        icon: Icons.delete,
+                                        label: 'Delete',
+                                        onPressed: (BuildContext context) {
+                                          _notiController.deleteNotification(
+                                              _notiController
+                                                  .notificationList[index]
+                                                      ['notiID']
+                                                  .toString());
+                                        },
+                                      ),
+                                      // SlidableAction(
+                                      //   backgroundColor: Color(0xFF21B7CA),
+                                      //   foregroundColor: Colors.white,
+                                      //   icon: Icons.share,
+                                      //   label: 'Share',
+                                      //   onPressed: (BuildContext context) {},
+                                      // ),
+                                    ],
+                                  ),
+                                  child: InkWell(
+                                    onTap: () {},
+                                    child: DelayedDisplay(
+                                      delay: const Duration(milliseconds: 150),
+                                      slidingBeginOffset: const Offset(0, 1),
+                                      child: Column(
+                                        children: [
+                                          Container(
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 14, vertical: 10),
+                                            width: double.infinity,
+                                            height: 80,
+                                            color: Colors.white12,
+                                            child: Row(
+                                              children: [
+                                                CircleAvatar(
+                                                  radius: 26,
+                                                  backgroundImage:
+                                                      userData.imageUrl == ""
+                                                          ? AssetImage(
+                                                              AppImages
+                                                                  .profileImage,
+                                                            )
+                                                          : NetworkImage(
+                                                              userData.imageUrl,
+                                                            ) as ImageProvider,
+                                                ),
+                                                Column(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.end,
+                                                  children: [
+                                                    Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        SizedBox(
+                                                          width: 12,
+                                                        ),
+                                                        ConstrainedBox(
+                                                          constraints:
+                                                              BoxConstraints(
+                                                                  maxWidth:
+                                                                      74.w,
+                                                                  maxHeight:
+                                                                      44),
+                                                          child: Align(
+                                                            alignment: Alignment
+                                                                .centerLeft,
+                                                            child: Text(
+                                                              _notiController
+                                                                          .notificationList[
+                                                                      index][
+                                                                  'notification'],
+                                                              style: bodyNormal,
+                                                              overflow:
+                                                                  TextOverflow
+                                                                      .ellipsis,
+                                                              maxLines: 2,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    Align(
+                                                        alignment: Alignment
+                                                            .bottomRight,
+                                                        child: Text(
+                                                          DateFormat(
+                                                                  'yyyy-MM-dd kk:mm a')
+                                                              .format(DateTime.parse(
+                                                                  _notiController
+                                                                      .notificationList[
+                                                                          index]
+                                                                          [
+                                                                          'Time']
+                                                                      .toDate()
+                                                                      .toString()))
+                                                              .toString(),
+                                                          style: bodySmall
+                                                              .copyWith(
+                                                                  color: Colors
+                                                                      .black45),
+                                                        )),
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          _notiController.notificationList[
+                                                          index]
+                                                      ['notificationType'] ==
+                                                  1
+                                              ? Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    InkWell(
+                                                      onTap: () async {
+                                                        await _dataController.joinGroup(
+                                                            _notiController
+                                                                .notificationList[
+                                                                    index][
+                                                                    'groupToJoinID']
+                                                                .toString(),
                                                             _notiController
                                                                         .notificationList[
                                                                     index][
-                                                                'notification'],
-                                                            style: bodyNormal,
-                                                            overflow:
-                                                                TextOverflow
-                                                                    .ellipsis,
-                                                            maxLines: 2,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                  Align(
-                                                      alignment:
-                                                          Alignment.bottomRight,
-                                                      child: Text(
-                                                        DateFormat(
-                                                                'yyyy-MM-dd _ kk:mm a')
-                                                            .format(DateTime.parse(
-                                                                _notiController
-                                                                    .notificationList[
-                                                                        index]
-                                                                        ['Time']
-                                                                    .toDate()
-                                                                    .toString()))
-                                                            .toString(),
-                                                        style:
-                                                            bodySmall.copyWith(
-                                                                color: Colors
-                                                                    .black45),
-                                                      )),
-                                                ],
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                        _notiController.notificationList[index]
-                                                    ['notificationType'] ==
-                                                1
-                                            ? Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                children: [
-                                                  InkWell(
-                                                    onTap: () async {
-                                                      await _dataController.joinGroup(
-                                                          _notiController
-                                                              .notificationList[
-                                                                  index][
-                                                                  'groupToJoinID']
-                                                              .toString(),
-                                                          _notiController
-                                                                      .notificationList[
-                                                                  index][
-                                                              'userToJoin'][0]);
-                                                      await _notiController
-                                                          .deleteNotification(
-                                                              _notiController
-                                                                  .notificationList[
-                                                                      index]
-                                                                      ['notiID']
-                                                                  .toString());
-                                                      Get.find<
-                                                              GeneralController>()
-                                                          .onBottomBarTapped(0);
-                                                      PageTransition
-                                                          .pageProperNavigation(
-                                                              page:
-                                                                  CustomBottomNavBar());
-                                                    },
-                                                    child: Container(
-                                                        padding:
-                                                            EdgeInsets.all(8),
-                                                        decoration:
-                                                            BoxDecoration(
-                                                          color: AppColors
-                                                              .buttonColor,
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(5),
-                                                        ),
-                                                        width: 20.w,
-                                                        child: Center(
-                                                            child: Text(
-                                                          "Accept",
-                                                          style: bodyNormal
-                                                              .copyWith(
-                                                                  color: Colors
-                                                                      .white),
-                                                        ))),
-                                                  ),
-                                                  Padding(
-                                                    padding:
-                                                        const EdgeInsets.only(
-                                                            left: 8.0),
-                                                    child: InkWell(
-                                                      onTap: () async {
+                                                                'userToJoin'][0]);
                                                         await _notiController
                                                             .deleteNotification(
                                                                 _notiController
@@ -267,7 +274,8 @@ class _NotificationsState extends State<Notifications> {
                                                               EdgeInsets.all(8),
                                                           decoration:
                                                               BoxDecoration(
-                                                            color: Colors.red,
+                                                            color: AppColors
+                                                                .buttonColor,
                                                             borderRadius:
                                                                 BorderRadius
                                                                     .circular(
@@ -276,18 +284,64 @@ class _NotificationsState extends State<Notifications> {
                                                           width: 20.w,
                                                           child: Center(
                                                               child: Text(
-                                                            "Reject",
+                                                            "Accept",
                                                             style: bodyNormal
                                                                 .copyWith(
                                                                     color: Colors
                                                                         .white),
                                                           ))),
                                                     ),
-                                                  )
-                                                ],
-                                              )
-                                            : SizedBox.shrink()
-                                      ],
+                                                    Padding(
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              left: 8.0),
+                                                      child: InkWell(
+                                                        onTap: () async {
+                                                          await _notiController
+                                                              .deleteNotification(
+                                                                  _notiController
+                                                                      .notificationList[
+                                                                          index]
+                                                                          [
+                                                                          'notiID']
+                                                                      .toString());
+                                                          Get.find<
+                                                                  GeneralController>()
+                                                              .onBottomBarTapped(
+                                                                  0);
+                                                          PageTransition
+                                                              .pageProperNavigation(
+                                                                  page:
+                                                                      CustomBottomNavBar());
+                                                        },
+                                                        child: Container(
+                                                            padding:
+                                                                EdgeInsets.all(
+                                                                    8),
+                                                            decoration:
+                                                                BoxDecoration(
+                                                              color: Colors.red,
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          5),
+                                                            ),
+                                                            width: 20.w,
+                                                            child: Center(
+                                                                child: Text(
+                                                              "Reject",
+                                                              style: bodyNormal
+                                                                  .copyWith(
+                                                                      color: Colors
+                                                                          .white),
+                                                            ))),
+                                                      ),
+                                                    )
+                                                  ],
+                                                )
+                                              : SizedBox.shrink()
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ),

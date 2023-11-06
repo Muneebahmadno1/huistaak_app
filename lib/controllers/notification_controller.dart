@@ -16,6 +16,7 @@ class NotificationController extends GetxController {
     QuerySnapshot querySnapshot = await Collections.USERS
         .doc(userData.userID)
         .collection(Collections.NOTIFICATIONS)
+        .orderBy('Time', descending: true)
         .get();
     for (int i = 0; i < querySnapshot.docs.length; i++) {
       var a = querySnapshot.docs[i].data() as Map;
@@ -39,7 +40,7 @@ class NotificationController extends GetxController {
         .delete();
   }
 
-  sendNotification(docID, endTime) {
+  sendNotification(docID, endTime, groupName) {
     var notiID = Collections.USERS
         .doc(docID.toString())
         .collection(Collections.NOTIFICATIONS)
@@ -47,7 +48,9 @@ class NotificationController extends GetxController {
     notiID.set({
       "read": false,
       "notificationType": 2,
-      "notification": userData.displayName.toString() + " assigned you a task ",
+      "notification": userData.displayName.toString() +
+          " assigned you a task in " +
+          groupName.toString(),
       "userToJoin": FieldValue.arrayUnion([]),
       "Time": DateTime.now(),
       "notiID": notiID.id,

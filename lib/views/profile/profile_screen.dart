@@ -206,6 +206,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       cardText: "Change Password",
                       leadingIcon: Icon(
                         Icons.navigate_next,
+                        color: AppColors.buttonColor,
                         size: 36,
                       ),
                     ),
@@ -227,6 +228,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       cardText: "Logout",
                       leadingIcon: Icon(
                         Icons.navigate_next,
+                        color: AppColors.buttonColor,
                         size: 36,
                       ),
                     ),

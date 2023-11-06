@@ -13,7 +13,6 @@ import '../../constants/app_images.dart';
 import '../../constants/custom_validators.dart';
 import '../../constants/global_variables.dart';
 import '../../controllers/auth_controller.dart';
-import '../../helper/page_navigation.dart';
 import '../../widgets/custom_widgets.dart';
 import '../../widgets/text_form_fields.dart';
 import '../home/bottom_nav_bar.dart';
@@ -249,10 +248,13 @@ class _EditProfileState extends State<EditProfile> {
                               postalCodeController.text,
                               phoneController.text);
                           setState(() {});
-                          PageTransition.pageBackNavigation(
-                              page: CustomBottomNavBar(
-                            pageIndex: 2,
-                          ));
+                          successPopUp(
+                              context,
+                              CustomBottomNavBar(
+                                pageIndex: 2,
+                              ),
+                              'Changes are saved successfully');
+                          setState(() {});
                         }
                       },
                     ),

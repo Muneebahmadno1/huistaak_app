@@ -67,7 +67,7 @@ class _NewGoalsScreenState extends State<NewGoalsScreen> {
                 ? Center(
                     child: Padding(
                     padding: EdgeInsets.only(top: 30.h),
-                    child: CircularProgressIndicator(),
+                    child: CircularProgressIndicator(color: Colors.white),
                   ))
                 : _goalController.goalList.isEmpty
                     ? Center(
@@ -78,97 +78,117 @@ class _NewGoalsScreenState extends State<NewGoalsScreen> {
                           ),
                         ),
                       )
-                    : ListView.builder(
-                        itemCount: _goalController.goalList.length,
-                        shrinkWrap: true,
-                        padding: EdgeInsets.only(top: 16),
-                        physics: BouncingScrollPhysics(),
-                        itemBuilder: (context, index) {
-                          return Padding(
-                            padding: EdgeInsets.only(bottom: 15.0),
-                            child: DelayedDisplay(
-                              delay: Duration(milliseconds: 400),
-                              slidingBeginOffset: Offset(0, 0),
-                              child: Container(
-                                padding: EdgeInsets.all(20),
-                                width: double.infinity,
-                                decoration: BoxDecoration(
-                                  color: AppColors.buttonColor,
-                                  borderRadius: BorderRadius.circular(20),
-                                ),
-                                child: DelayedDisplay(
-                                  delay: Duration(milliseconds: 500),
-                                  slidingBeginOffset: Offset(0, -1),
-                                  child: Column(
-                                    children: [
-                                      Row(
-                                        children: [
-                                          CircleAvatar(
-                                            radius: 20,
-                                            backgroundImage: AssetImage(
-                                                "assets/images/man1.jpg"),
-                                          ),
-                                          SizedBox(
-                                            width: 10,
-                                          ),
-                                          Expanded(
-                                            child: Text(
-                                              _goalController.goalList[index]
-                                                  ['goalTitle'],
-                                              style: headingMedium.copyWith(
-                                                  color: Colors.white),
-                                              maxLines: 2,
+                    : Expanded(
+                        child: ListView.builder(
+                          itemCount: _goalController.goalList.length,
+                          shrinkWrap: true,
+                          padding: EdgeInsets.only(top: 16),
+                          physics: BouncingScrollPhysics(),
+                          itemBuilder: (context, index) {
+                            return Padding(
+                              padding: EdgeInsets.only(bottom: 15.0),
+                              child: DelayedDisplay(
+                                delay: Duration(milliseconds: 400),
+                                slidingBeginOffset: Offset(0, 0),
+                                child: Container(
+                                  padding: EdgeInsets.all(20),
+                                  width: double.infinity,
+                                  decoration: BoxDecoration(
+                                    color: AppColors.buttonColor,
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                  child: DelayedDisplay(
+                                    delay: Duration(milliseconds: 500),
+                                    slidingBeginOffset: Offset(0, -1),
+                                    child: Column(
+                                      children: [
+                                        Row(
+                                          children: [
+                                            CircleAvatar(
+                                              radius: 20,
+                                              backgroundImage: AssetImage(
+                                                  "assets/images/man1.jpg"),
                                             ),
-                                          ),
-                                        ],
-                                      ),
-                                      SizedBox(
-                                        height: 10,
-                                      ),
-                                      GoalDetailWidget(
-                                          icon: "assets/icons/home/date.png",
-                                          title: "Date",
-                                          data: DateFormat('yyyy-MM-dd').format(
-                                              _goalController.goalList[index]
-                                                      ['goalDate']
-                                                  .toDate())),
-                                      SizedBox(
-                                        height: 10,
-                                      ),
-                                      GoalDetailWidget(
-                                          icon: "assets/icons/home/time.png",
-                                          title: "Points to achieve",
-                                          data: _goalController.goalList[index]
-                                                  ['goalPoints'] ??
-                                              "0"),
-                                      SizedBox(
-                                        height: 20,
-                                      ),
-                                    ],
+                                            SizedBox(
+                                              width: 10,
+                                            ),
+                                            Expanded(
+                                              child: Text(
+                                                _goalController.goalList[index]
+                                                    ['goalTitle'],
+                                                style: headingMedium.copyWith(
+                                                    color: Colors.white),
+                                                maxLines: 2,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        SizedBox(
+                                          height: 10,
+                                        ),
+                                        GoalDetailWidget(
+                                            icon: "assets/icons/home/date.png",
+                                            title: "Date",
+                                            data: DateFormat('yyyy-MM-dd')
+                                                .format(_goalController
+                                                    .goalList[index]['goalDate']
+                                                    .toDate())),
+                                        SizedBox(
+                                          height: 10,
+                                        ),
+                                        GoalDetailWidget(
+                                            icon: "assets/icons/coin.png",
+                                            title: "Points to achieve",
+                                            data:
+                                                _goalController.goalList[index]
+                                                        ['goalPoints'] ??
+                                                    "0"),
+                                        SizedBox(
+                                          height: 20,
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
-                          );
-                        },
+                            );
+                          },
+                        ),
                       ),
-            Expanded(child: SizedBox()),
-            _goalController.groupList.isNotEmpty
-                ? DelayedDisplay(
-                    delay: Duration(milliseconds: 600),
-                    slidingBeginOffset: Offset(0, 0),
-                    child: CustomButton(
-                      onTap: () {
-                        Get.to(() => CreateNewTask());
-                      },
-                      buttonText: "Set Goal for your Group",
-                    ),
-                  )
+            _goalController.goalList.isEmpty
+                ? Expanded(child: SizedBox())
                 : SizedBox.shrink(),
-            Expanded(child: SizedBox()),
+            _goalController.groupList.isNotEmpty
+                ? _goalController.goalList.isEmpty
+                    ? DelayedDisplay(
+                        delay: Duration(milliseconds: 600),
+                        slidingBeginOffset: Offset(0, 0),
+                        child: CustomButton(
+                          onTap: () {
+                            Get.to(() => CreateNewTask());
+                          },
+                          buttonText: "Set Goal for your Group",
+                        ),
+                      )
+                    : SizedBox.shrink()
+                : SizedBox.shrink(),
+            _goalController.goalList.isEmpty
+                ? Expanded(child: SizedBox())
+                : SizedBox.shrink(),
           ],
         ),
       ),
+      floatingActionButton: isLoading
+          ? null
+          : _goalController.goalList.isEmpty
+              ? null
+              : FloatingActionButton(
+                  backgroundColor: AppColors.buttonColor,
+                  onPressed: () {
+                    Get.to(() => CreateNewTask());
+                  },
+                  child: Icon(Icons.add),
+                ),
     );
   }
 }

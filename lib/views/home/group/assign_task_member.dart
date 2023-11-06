@@ -69,7 +69,7 @@ class _AssignMemberState extends State<AssignMember> {
                 ? Center(
                     child: Padding(
                     padding: EdgeInsets.only(top: 25.h),
-                    child: CircularProgressIndicator(),
+                    child: CircularProgressIndicator(color: Colors.white),
                   ))
                 : _dataController.userList[0]['membersList'].isEmpty
                     ? Center(

@@ -1,9 +1,7 @@
-import 'package:avatar_stack/avatar_stack.dart';
 import 'package:delayed_display/delayed_display.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:huistaak/views/home/widgets/task_detail_widget.dart';
-import 'package:huistaak/widgets/like_bar_widget.dart';
 import 'package:intl/intl.dart';
 import 'package:sizer/sizer.dart';
 
@@ -72,7 +70,7 @@ class _GroupTaskListState extends State<GroupTaskList> {
                   ? Center(
                       child: Padding(
                       padding: EdgeInsets.only(top: 35.h),
-                      child: CircularProgressIndicator(),
+                      child: CircularProgressIndicator(color: Colors.white),
                     ))
                   : _groupSettingController.taskList.isEmpty
                       ? Center(
@@ -131,7 +129,13 @@ class _GroupTaskListState extends State<GroupTaskList> {
                                         TaskDetailWidget(
                                             icon: "assets/icons/home/time.png",
                                             title: "Time",
-                                            data: "10 am to 05 pm"),
+                                            data: _groupSettingController
+                                                        .taskList[index]
+                                                    ['startTime'] +
+                                                " to " +
+                                                _groupSettingController
+                                                        .taskList[index]
+                                                    ['endTime']),
                                         SizedBox(
                                           height: 10,
                                         ),
@@ -149,61 +153,6 @@ class _GroupTaskListState extends State<GroupTaskList> {
                                             title: "Task Score Points",
                                             data: _groupSettingController
                                                 .taskList[index]['taskScore']),
-                                        SizedBox(
-                                          height: 20,
-                                        ),
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Text(
-                                              "Task assigned to:",
-                                              style: headingSmall.copyWith(
-                                                  color: Colors.white),
-                                            ),
-                                            SizedBox(
-                                              width: 74,
-                                              child: AvatarStack(
-                                                height: 34,
-                                                avatars: [
-                                                  for (var n = 0;
-                                                      n <
-                                                          _groupSettingController
-                                                              .taskList[0][
-                                                                  'assignMembers']
-                                                              .length;
-                                                      n++)
-                                                    AssetImage(
-                                                        "assets/images/man1.jpg"),
-                                                ],
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        LikeBarWidget(
-                                          image: "assets/images/man1.jpg",
-                                          count: "10",
-                                          percent: 0.8,
-                                          TotalCount: "15",
-                                        ),
-                                        SizedBox(
-                                          height: 10,
-                                        ),
-                                        LikeBarWidget(
-                                          image: "assets/images/man1.jpg",
-                                          count: "10",
-                                          percent: 0.8,
-                                          TotalCount: "15",
-                                        ),
-                                        SizedBox(
-                                          height: 10,
-                                        ),
-                                        LikeBarWidget(
-                                          image: "assets/images/man1.jpg",
-                                          count: "10",
-                                          percent: 0.8,
-                                          TotalCount: "15",
-                                        ),
                                         SizedBox(
                                           height: 20,
                                         ),

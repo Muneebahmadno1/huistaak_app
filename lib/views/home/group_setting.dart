@@ -72,7 +72,7 @@ class _GroupSettingState extends State<GroupSetting> {
               ? Center(
                   child: Padding(
                   padding: EdgeInsets.only(top: 25.h),
-                  child: CircularProgressIndicator(),
+                  child: CircularProgressIndicator(color: Colors.white),
                 ))
               : Column(
                   children: [
@@ -492,7 +492,9 @@ class _GroupSettingState extends State<GroupSetting> {
                           ),
                           child: Center(
                             child: Loading
-                                ? Center(child: CircularProgressIndicator())
+                                ? Center(
+                                    child: CircularProgressIndicator(
+                                        color: Colors.white))
                                 : Text(
                                     "Leave this group",
                                     style: headingSmall.copyWith(

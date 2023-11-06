@@ -9,6 +9,7 @@ class GroupSettingController extends GetxController {
   List<Map<String, dynamic>> groupInfo = [];
 
   getGroupTaskList(groupID) async {
+    taskList.clear();
     QuerySnapshot querySnapshot = await Collections.GROUPS
         .doc(groupID)
         .collection(Collections.TASKS)

@@ -38,11 +38,11 @@ class _SplashScreenState extends State<SplashScreen>
           userData = UserModel.fromDocument(value.data());
         });
       });
-      Future.delayed(const Duration(milliseconds: 5000), () {
+      Future.delayed(const Duration(milliseconds: 3000), () {
         PageTransition.pageProperNavigation(page: CustomBottomNavBar());
       });
     } else {
-      Future.delayed(const Duration(milliseconds: 5000), () {
+      Future.delayed(const Duration(milliseconds: 3000), () {
         PageTransition.pageProperNavigation(page: const WelcomeScreen());
       });
     }

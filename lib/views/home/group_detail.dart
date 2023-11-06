@@ -13,6 +13,7 @@ import '../../controllers/data_controller.dart';
 import '../../controllers/general_controller.dart';
 import '../../controllers/group_controller.dart';
 import '../../helper/page_navigation.dart';
+import '../../widgets/custom_widgets.dart';
 import '../../widgets/like_bar_widget.dart';
 import 'bottom_nav_bar.dart';
 import 'group/create_new_group_task.dart';
@@ -63,7 +64,7 @@ class _GroupDetailState extends State<GroupDetail> {
           ? Center(
               child: Padding(
               padding: EdgeInsets.only(top: 25.h),
-              child: CircularProgressIndicator(),
+              child: CircularProgressIndicator(color: Colors.white),
             ))
           : Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -122,57 +123,78 @@ class _GroupDetailState extends State<GroupDetail> {
                                   SizedBox(
                                     height: 4,
                                   ),
-                                  _groupController.groupInfo[0]['membersList']
-                                              .length >
-                                          0
-                                      ? _groupController
-                                                  .groupInfo[0]['membersList']
-                                                  .length >
-                                              1
-                                          ? SizedBox(
-                                              width: 150,
-                                              child: Text(
-                                                "You, " +
-                                                    _groupController
-                                                                .groupInfo[0]
-                                                            ['membersList'][0]
-                                                        ['displayName'] +
-                                                    " , " +
-                                                    _groupController
-                                                                .groupInfo[0]
-                                                            ['membersList'][1]
-                                                        ['displayName'] +
-                                                    "...",
-                                                style: bodySmall.copyWith(
-                                                    color: Colors.white),
-                                                maxLines: 1,
-                                                overflow: TextOverflow.ellipsis,
-                                              ),
-                                            )
-                                          : SizedBox(
-                                              width: 150,
-                                              child: Text(
-                                                "You, " +
-                                                    _groupController
-                                                                .groupInfo[0]
-                                                            ['membersList'][0]
-                                                        ['displayName'],
-                                                style: bodySmall.copyWith(
-                                                    color: Colors.white),
-                                                maxLines: 1,
-                                                overflow: TextOverflow.ellipsis,
-                                              ),
-                                            )
-                                      : SizedBox(
-                                          width: 150,
-                                          child: Text(
-                                            "You ",
-                                            style: bodySmall.copyWith(
-                                                color: Colors.white),
+                                  Row(
+                                    children: [
+                                      Text(
+                                        "Group Id : ",
+                                        style: bodySmall.copyWith(
+                                            color: Colors.white),
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                      Container(
+                                        width: 40.w,
+                                        child: SelectableText(
+                                            widget.groupID.toString(),
                                             maxLines: 1,
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
-                                        ),
+                                            style: bodySmall.copyWith(
+                                                color: Colors.white,
+                                                fontFamily:
+                                                    "MontserratSemiBold")),
+                                      ),
+                                    ],
+                                  ),
+                                  // _groupController.groupInfo[0]['membersList']
+                                  //             .length >
+                                  //         0
+                                  //     ? _groupController
+                                  //                 .groupInfo[0]['membersList']
+                                  //                 .length >
+                                  //             1
+                                  //         ? SizedBox(
+                                  //             width: 150,
+                                  //             child: Text(
+                                  //               "You, " +
+                                  //                   _groupController
+                                  //                               .groupInfo[0]
+                                  //                           ['membersList'][0]
+                                  //                       ['displayName'] +
+                                  //                   " , " +
+                                  //                   _groupController
+                                  //                               .groupInfo[0]
+                                  //                           ['membersList'][1]
+                                  //                       ['displayName'] +
+                                  //                   "...",
+                                  //               style: bodySmall.copyWith(
+                                  //                   color: Colors.white),
+                                  //               maxLines: 1,
+                                  //               overflow: TextOverflow.ellipsis,
+                                  //             ),
+                                  //           )
+                                  //         : SizedBox(
+                                  //             width: 150,
+                                  //             child: Text(
+                                  //               "You, " +
+                                  //                   _groupController
+                                  //                               .groupInfo[0]
+                                  //                           ['membersList'][0]
+                                  //                       ['displayName'],
+                                  //               style: bodySmall.copyWith(
+                                  //                   color: Colors.white),
+                                  //               maxLines: 1,
+                                  //               overflow: TextOverflow.ellipsis,
+                                  //             ),
+                                  //           )
+                                  //     : SizedBox(
+                                  //         width: 150,
+                                  //         child: Text(
+                                  //           "You ",
+                                  //           style: bodySmall.copyWith(
+                                  //               color: Colors.white),
+                                  //           maxLines: 1,
+                                  //           overflow: TextOverflow.ellipsis,
+                                  //         ),
+                                  //       ),
                                 ],
                               ),
                             ],
@@ -513,6 +535,7 @@ class _GroupDetailState extends State<GroupDetail> {
                                                                                 double.parse(_groupController.taskList[index]['duration'].toString()) * 60,
                                                                                 _groupController.taskList[index]['taskScore'],
                                                                                 widget.groupTitle);
+                                                                            setState(() {});
                                                                             getData();
                                                                           },
                                                                           onLongTap:
@@ -560,6 +583,44 @@ class _GroupDetailState extends State<GroupDetail> {
                                   },
                                 ),
                               ),
+                        _groupController.groupInfo[0]['adminsList'].any(
+                                (user) =>
+                                    user["userID"].toString() ==
+                                    userData.userID.toString())
+                            ? _groupController.taskList.isEmpty
+                                ? SizedBox(
+                                    height: 20.h,
+                                  )
+                                : SizedBox.shrink()
+                            : SizedBox.shrink(),
+                        _groupController.groupInfo[0]['adminsList'].any(
+                                (user) =>
+                                    user["userID"].toString() ==
+                                    userData.userID.toString())
+                            ? _groupController.taskList.isEmpty
+                                ? DelayedDisplay(
+                                    delay: Duration(milliseconds: 600),
+                                    slidingBeginOffset: Offset(0, 0),
+                                    child: CustomButton(
+                                      onTap: () {
+                                        Get.to(() => CreateNewGroupTask(
+                                              groupID: widget.groupID,
+                                              groupTitle: widget.groupTitle,
+                                            ));
+                                      },
+                                      buttonText: "Create a new task",
+                                    ),
+                                  )
+                                : SizedBox.shrink()
+                            : SizedBox.shrink(),
+                        _groupController.groupInfo[0]['adminsList'].any(
+                                (user) =>
+                                    user["userID"].toString() ==
+                                    userData.userID.toString())
+                            ? _groupController.taskList.isEmpty
+                                ? SizedBox()
+                                : SizedBox.shrink()
+                            : SizedBox.shrink(),
                         SizedBox(
                           height: 15,
                         ),
@@ -573,16 +634,18 @@ class _GroupDetailState extends State<GroupDetail> {
           ? SizedBox.shrink()
           : _groupController.groupInfo[0]['adminsList'].any((user) =>
                   user["userID"].toString() == userData.userID.toString())
-              ? FloatingActionButton(
-                  backgroundColor: AppColors.buttonColor,
-                  onPressed: () {
-                    Get.to(() => CreateNewGroupTask(
-                          groupID: widget.groupID,
-                          groupTitle: widget.groupTitle,
-                        ));
-                  },
-                  child: Icon(Icons.add),
-                )
+              ? _groupController.taskList.isNotEmpty
+                  ? FloatingActionButton(
+                      backgroundColor: AppColors.buttonColor,
+                      onPressed: () {
+                        Get.to(() => CreateNewGroupTask(
+                              groupID: widget.groupID,
+                              groupTitle: widget.groupTitle,
+                            ));
+                      },
+                      child: Icon(Icons.add),
+                    )
+                  : SizedBox.shrink()
               : SizedBox.shrink(),
     );
   }
