@@ -23,6 +23,7 @@ class GroupController extends GetxController {
     QuerySnapshot querySnapshot = await Collections.GROUPS
         .doc(groupID)
         .collection(Collections.TASKS)
+        .orderBy("taskDate", descending: true)
         .get();
     for (int i = 0; i < querySnapshot.docs.length; i++) {
       var a = querySnapshot.docs[i].data() as Map;

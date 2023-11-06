@@ -116,33 +116,30 @@ class _CreateNewGroupTaskState extends State<CreateNewGroupTask> {
                     )),
                 const SizedBox(height: 20),
                 DelayedDisplay(
-                  delay: Duration(milliseconds: 700),
-                  slidingBeginOffset: Offset(0, -1),
-                  child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      "Time for task",
-                      style:
-                          headingSmall.copyWith(color: AppColors.buttonColor),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 10),
-                DelayedDisplay(
                   delay: Duration(milliseconds: 800),
                   slidingBeginOffset: Offset(0, 0),
                   child: Row(
                     children: [
                       Expanded(
-                        child: Container(
-                          height: 56,
-                          decoration: BoxDecoration(
-                            color: AppColors.buttonColor.withOpacity(0.2),
-                            borderRadius: BorderRadius.circular(40),
-                          ),
-                          child: CustomDropDown(
-                            dropDownTitle: "Start Time",
-                          ),
+                        child: Column(
+                          children: [
+                            Text(
+                              "wsaz",
+                              style: headingSmall.copyWith(
+                                  color: AppColors.buttonColor),
+                            ),
+                            const SizedBox(height: 10),
+                            Container(
+                              height: 56,
+                              decoration: BoxDecoration(
+                                color: AppColors.buttonColor.withOpacity(0.2),
+                                borderRadius: BorderRadius.circular(40),
+                              ),
+                              child: CustomDropDown(
+                                dropDownTitle: "Start Time",
+                              ),
+                            ),
+                          ],
                         ),
                         // TimePickerWidget(
                         //   index: 1,
@@ -153,15 +150,25 @@ class _CreateNewGroupTaskState extends State<CreateNewGroupTask> {
                         width: 10,
                       ),
                       Expanded(
-                        child: Container(
-                          height: 56,
-                          decoration: BoxDecoration(
-                            color: AppColors.buttonColor.withOpacity(0.2),
-                            borderRadius: BorderRadius.circular(40),
-                          ),
-                          child: CustomDropDown(
-                            dropDownTitle: "End Time",
-                          ),
+                        child: Column(
+                          children: [
+                            Text(
+                              "wsaz",
+                              style: headingSmall.copyWith(
+                                  color: AppColors.buttonColor),
+                            ),
+                            const SizedBox(height: 10),
+                            Container(
+                              height: 56,
+                              decoration: BoxDecoration(
+                                color: AppColors.buttonColor.withOpacity(0.2),
+                                borderRadius: BorderRadius.circular(40),
+                              ),
+                              child: CustomDropDown(
+                                dropDownTitle: "End Time",
+                              ),
+                            ),
+                          ],
                         ),
                         // TimePickerWidget(
                         //   index: 2,
@@ -361,7 +368,8 @@ class _CreateNewGroupTaskState extends State<CreateNewGroupTask> {
                             await _notiController.sendNotification(
                                 _dataController.assignTaskMember[i]['userID']
                                     .toString(),
-                                _dataController.endTime.toString());
+                                _dataController.endTime.toString(),
+                                widget.groupTitle);
                           }
 
                           _dataController.assignTaskMember.clear();
@@ -387,7 +395,9 @@ class _CreateNewGroupTaskState extends State<CreateNewGroupTask> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           isLoading
-                              ? Center(child: CircularProgressIndicator())
+                              ? Center(
+                                  child: CircularProgressIndicator(
+                                      color: Colors.white))
                               : Text(
                                   "Add Task",
                                   style: headingSmall.copyWith(

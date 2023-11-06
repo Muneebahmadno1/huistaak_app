@@ -336,7 +336,9 @@ class _CreateNewGroupState extends State<CreateNewGroup> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           creatingGroup
-                              ? Center(child: CircularProgressIndicator())
+                              ? Center(
+                                  child: CircularProgressIndicator(
+                                      color: Colors.white))
                               : Text(
                                   "Create Group",
                                   style: headingSmall.copyWith(

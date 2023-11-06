@@ -65,9 +65,9 @@ Future<void> setupInteractedMessage() async {
   FirebaseMessaging.onMessageOpenedApp.listen(_handleMessage);
 }
 
-tz.TZDateTime _twoHoursBeforeUsualTime(time) {
+Future<tz.TZDateTime> _twoHoursBeforeUsualTime(time) async {
   tz.initializeTimeZones();
-  tz.Location location = tz.getLocation('Asia/Karachi');
+  tz.Location location = await tz.getLocation('Asia/Karachi');
   tz.TZDateTime now = tz.TZDateTime.from(DateTime.parse(time), location);
   tz.TZDateTime scheduledDate = now.subtract(const Duration(minutes: 30));
   print(scheduledDate);
@@ -100,7 +100,7 @@ void scheduleBeforeUsualTimeNotification(time) async {
     0,
     'Huistaak',
     'Your Task Duration will end in 30 minutes',
-    _twoHoursBeforeUsualTime(time),
+    _twoHoursBeforeUsualTime(time) as tz.TZDateTime,
     platformChannelSpecifics,
     androidAllowWhileIdle: true,
     uiLocalNotificationDateInterpretation:

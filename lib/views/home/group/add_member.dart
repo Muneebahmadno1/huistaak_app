@@ -63,7 +63,7 @@ class _AddMemberState extends State<AddMember> {
             ? Center(
                 child: Padding(
                 padding: EdgeInsets.only(top: 25.h),
-                child: CircularProgressIndicator(),
+                child: CircularProgressIndicator(color: Colors.white),
               ))
             : Column(
                 children: [

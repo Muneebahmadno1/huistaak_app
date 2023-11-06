@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:huistaak/widgets/custom_widgets.dart';
 import 'package:sizer/sizer.dart';
+import 'package:zoom_tap_animation/zoom_tap_animation.dart';
 
 import '../../constants/custom_validators.dart';
 import '../../constants/global_variables.dart';
@@ -29,6 +30,7 @@ class _CreateNewTaskState extends State<CreateNewTask> {
   TextEditingController goalNameEditingController = TextEditingController();
   TextEditingController goalPointsEditingController = TextEditingController();
   final GlobalKey<FormState> goalFormField = GlobalKey();
+  int points = 1;
   List<dynamic> groupList = [];
   late String _dropDownValue;
   bool isLoading = false;
@@ -91,7 +93,7 @@ class _CreateNewTaskState extends State<CreateNewTask> {
         ),
       ),
       body: isLoading
-          ? Center(child: CircularProgressIndicator())
+          ? Center(child: CircularProgressIndicator(color: Colors.white))
           : Form(
               key: goalFormField,
               child: Padding(
@@ -159,14 +161,68 @@ class _CreateNewTaskState extends State<CreateNewTask> {
                         ),
                       ),
                       const SizedBox(height: 10),
+                      // DelayedDisplay(
+                      //   delay: Duration(milliseconds: 400),
+                      //   slidingBeginOffset: Offset(0, 0),
+                      //   child: AuthTextField(
+                      //     isNumber: true,
+                      //     controller: goalPointsEditingController,
+                      //     validator: (value) => CustomValidator.isEmpty(value),
+                      //     hintText: "No. of points to achieve goal",
+                      //   ),
+                      // ),
                       DelayedDisplay(
-                        delay: Duration(milliseconds: 400),
+                        delay: Duration(milliseconds: 1000),
                         slidingBeginOffset: Offset(0, 0),
-                        child: AuthTextField(
-                          isNumber: true,
-                          controller: goalPointsEditingController,
-                          validator: (value) => CustomValidator.isEmpty(value),
-                          hintText: "No. of points to achieve goal",
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 50),
+                          width: double.infinity,
+                          height: 60,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(50),
+                            color: AppColors.buttonColor.withOpacity(0.2),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              ZoomTapAnimation(
+                                onTap: () {
+                                  if (points >= 2) {
+                                    setState(() {
+                                      points = points - 1;
+                                    });
+                                  }
+                                },
+                                child: SizedBox(
+                                  height: 40,
+                                  width: 40,
+                                  child: Icon(
+                                    Icons.arrow_back_ios_new,
+                                    color: AppColors.buttonColor,
+                                  ),
+                                ),
+                              ),
+                              Text(
+                                "$points Points",
+                                style: headingSmall,
+                              ),
+                              ZoomTapAnimation(
+                                onTap: () {
+                                  setState(() {
+                                    points = points + 1;
+                                  });
+                                },
+                                child: SizedBox(
+                                  height: 40,
+                                  width: 40,
+                                  child: Icon(
+                                    Icons.arrow_forward_ios,
+                                    color: AppColors.buttonColor,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                       const SizedBox(height: 20),
@@ -331,12 +387,13 @@ class _CreateNewTaskState extends State<CreateNewTask> {
                           onTap: () async {
                             if (goalFormField.currentState!.validate()) {
                               await _goalController.addGroupGoal(
-                                  _dropDownValue.toString(),
-                                  goalNameEditingController.text,
-                                  _dataController.selectedDate,
-                                  _dataController.startTime.toString(),
-                                  _dataController.assignGoalMember,
-                                  goalPointsEditingController.text.toString());
+                                _dropDownValue.toString(),
+                                goalNameEditingController.text,
+                                _dataController.selectedDate,
+                                _dataController.startTime.toString(),
+                                _dataController.assignGoalMember,
+                                points.toString(),
+                              );
                               _dataController.assignGoalMember.clear();
                               Get.find<GeneralController>()
                                   .onBottomBarTapped(1);

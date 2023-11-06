@@ -184,7 +184,9 @@ class _ConnectNewGroupState extends State<ConnectNewGroup> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         isLoading
-                            ? Center(child: CircularProgressIndicator())
+                            ? Center(
+                                child: CircularProgressIndicator(
+                                    color: Colors.white))
                             : Text(
                                 "Join Now",
                                 style:

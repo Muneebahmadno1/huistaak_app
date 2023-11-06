@@ -34,7 +34,8 @@ class _ForgotPasswordState extends State<ForgotPassword> {
         title: CustomAppBar(
           pageTitle: "",
           onTap: () {
-            Get.off(() => LoginScreen());
+            // Get.off(() => LoginScreen());
+            Get.back();
           },
           leadingButton: Icon(
             Icons.arrow_back_ios,
@@ -134,7 +135,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                     padding: const EdgeInsets.symmetric(
                         horizontal: 22.0, vertical: 8),
                     child: CustomButton(
-                      buttonText: "Reset Link",
+                      buttonText: "Send link to reset Password",
                       onTap: () async {
                         if (key.currentState!.validate()) {
                           setState(() {
