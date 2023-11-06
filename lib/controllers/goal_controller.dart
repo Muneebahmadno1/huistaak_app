@@ -61,6 +61,7 @@ class GoalController extends GetxController {
         var a = querySnapshot1.docs[i].data() as Map;
 
         goalList.add({
+          "goalGroup": a['goalGroup'],
           "goalTitle": a['goalTitle'],
           "goalDate": a['goalDate'],
           "goalTime": a['goalTime'],
@@ -71,6 +72,14 @@ class GoalController extends GetxController {
     }
   }
 
+  deleteGoal(goalGroup, goalID) async {
+    await Collections.GROUPS
+        .doc(goalGroup)
+        .collection(Collections.GOALS)
+        .doc(goalID)
+        .delete();
+  }
+
   addGroupGoal(
       groupID, goalTitle, goalDate, time, goalMembers, goalPoints) async {
     var doc = await Collections.GROUPS
@@ -78,6 +87,7 @@ class GoalController extends GetxController {
         .collection(Collections.GOALS)
         .doc();
     doc.set({
+      "goalGroup": groupID.toString(),
       "goalID": doc.id,
       "goalTitle": goalTitle,
       "goalDate": goalDate,

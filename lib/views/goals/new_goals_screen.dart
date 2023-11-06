@@ -9,6 +9,7 @@ import 'package:intl/intl.dart';
 import 'package:sizer/sizer.dart';
 
 import '../../controllers/goal_controller.dart';
+import '../../widgets/like_bar_widget.dart';
 
 class NewGoalsScreen extends StatefulWidget {
   const NewGoalsScreen({super.key});
@@ -20,6 +21,7 @@ class NewGoalsScreen extends StatefulWidget {
 class _NewGoalsScreenState extends State<NewGoalsScreen> {
   final GoalController _goalController = Get.find<GoalController>();
   bool isLoading = false;
+
   getData() async {
     setState(() {
       isLoading = true;
@@ -121,6 +123,33 @@ class _NewGoalsScreenState extends State<NewGoalsScreen> {
                                                 maxLines: 2,
                                               ),
                                             ),
+                                            _goalController.groupList.isNotEmpty
+                                                ? InkWell(
+                                                    onTap: () {
+                                                      confirmPopUp(context,
+                                                          "Are you sure,you want to delete ?",
+                                                          () {
+                                                        _goalController
+                                                            .deleteGoal(
+                                                          _goalController
+                                                              .goalList[index]
+                                                                  ['goalGroup']
+                                                              .toString(),
+                                                          _goalController
+                                                              .goalList[index]
+                                                                  ['goalID']
+                                                              .toString(),
+                                                        );
+                                                        getData();
+                                                        Navigator.pop(context);
+                                                      });
+                                                    },
+                                                    child: Icon(
+                                                      Icons.delete,
+                                                      color: Colors.white,
+                                                    ),
+                                                  )
+                                                : SizedBox.shrink()
                                           ],
                                         ),
                                         SizedBox(
@@ -144,7 +173,22 @@ class _NewGoalsScreenState extends State<NewGoalsScreen> {
                                                         ['goalPoints'] ??
                                                     "0"),
                                         SizedBox(
-                                          height: 20,
+                                          height: 10,
+                                        ),
+                                        LikeBarWidget(
+                                            image: "assets/images/man1.jpg",
+                                            count: userData.points.toString(),
+                                            percent: int.parse(userData.points
+                                                    .toString()) /
+                                                int.parse(_goalController
+                                                    .goalList[index]
+                                                        ['goalPoints']
+                                                    .toString()),
+                                            TotalCount: _goalController
+                                                .goalList[index]['goalPoints']
+                                                .toString()),
+                                        SizedBox(
+                                          height: 10,
                                         ),
                                       ],
                                     ),
@@ -180,15 +224,17 @@ class _NewGoalsScreenState extends State<NewGoalsScreen> {
       ),
       floatingActionButton: isLoading
           ? null
-          : _goalController.goalList.isEmpty
-              ? null
-              : FloatingActionButton(
-                  backgroundColor: AppColors.buttonColor,
-                  onPressed: () {
-                    Get.to(() => CreateNewTask());
-                  },
-                  child: Icon(Icons.add),
-                ),
+          : _goalController.groupList.isNotEmpty
+              ? _goalController.goalList.isEmpty
+                  ? null
+                  : FloatingActionButton(
+                      backgroundColor: AppColors.buttonColor,
+                      onPressed: () {
+                        Get.to(() => CreateNewTask());
+                      },
+                      child: Icon(Icons.add),
+                    )
+              : null,
     );
   }
 }

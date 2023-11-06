@@ -63,8 +63,8 @@ class _GroupDetailState extends State<GroupDetail> {
       body: isLoading
           ? Center(
               child: Padding(
-              padding: EdgeInsets.only(top: 25.h),
-              child: CircularProgressIndicator(color: Colors.white),
+              padding: EdgeInsets.only(top: 20.h),
+              child: CircularProgressIndicator(),
             ))
           : Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -226,20 +226,6 @@ class _GroupDetailState extends State<GroupDetail> {
                         SizedBox(
                           height: 20,
                         ),
-                        // DelayedDisplay(
-                        //   delay: Duration(milliseconds: 400),
-                        //   slidingBeginOffset: Offset(0, 0),
-                        //   child: Align(
-                        //     alignment: Alignment.center,
-                        //     child: Text(
-                        //       "Today's Task",
-                        //       style: bodyNormal.copyWith(color: Colors.black54),
-                        //     ),
-                        //   ),
-                        // ),
-                        // SizedBox(
-                        //   height: 6,
-                        // ),
                         _groupController.taskList.isEmpty
                             ? Center(
                                 child: Padding(
@@ -275,18 +261,61 @@ class _GroupDetailState extends State<GroupDetail> {
                                             slidingBeginOffset: Offset(0, -1),
                                             child: Column(
                                               children: [
-                                                Align(
-                                                  alignment:
-                                                      Alignment.centerLeft,
-                                                  child: Text(
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: [
+                                                    Align(
+                                                      alignment:
+                                                          Alignment.centerLeft,
+                                                      child: Text(
+                                                        _groupController
+                                                                .taskList[index]
+                                                            ['taskTitle'],
+                                                        style: headingLarge
+                                                            .copyWith(
+                                                                color: Colors
+                                                                    .white),
+                                                      ),
+                                                    ),
                                                     _groupController
-                                                            .taskList[index]
-                                                        ['taskTitle'],
-                                                    style:
-                                                        headingLarge.copyWith(
-                                                            color:
-                                                                Colors.white),
-                                                  ),
+                                                            .groupInfo[0]
+                                                                ['adminsList']
+                                                            .any((user) =>
+                                                                user["userID"]
+                                                                    .toString() ==
+                                                                userData.userID
+                                                                    .toString())
+                                                        ? InkWell(
+                                                            onTap: () {
+                                                              confirmPopUp(
+                                                                  context,
+                                                                  "Are you sure,you want to delete ?",
+                                                                  () {
+                                                                _groupController
+                                                                    .deleteTask(
+                                                                  widget.groupID
+                                                                      .toString(),
+                                                                  _groupController
+                                                                      .taskList[
+                                                                          index]
+                                                                          ['id']
+                                                                      .toString(),
+                                                                );
+                                                                getData();
+                                                                Navigator.pop(
+                                                                    context);
+                                                              });
+                                                            },
+                                                            child: Icon(
+                                                              Icons.delete,
+                                                              color:
+                                                                  Colors.white,
+                                                            ),
+                                                          )
+                                                        : SizedBox.shrink()
+                                                  ],
                                                 ),
                                                 SizedBox(
                                                   height: 10,
@@ -528,15 +557,27 @@ class _GroupDetailState extends State<GroupDetail> {
                                                                             ZoomTapAnimation(
                                                                           onTap:
                                                                               () async {
+                                                                            setState(() {
+                                                                              isLoading = true;
+                                                                            });
                                                                             await _groupController.endTask(
                                                                                 widget.groupID.toString(),
                                                                                 _groupController.taskList[index]['id'].toString(),
                                                                                 _groupController.taskList[index]['assignMembers'],
                                                                                 double.parse(_groupController.taskList[index]['duration'].toString()) * 60,
                                                                                 _groupController.taskList[index]['taskScore'],
-                                                                                widget.groupTitle);
-                                                                            setState(() {});
-                                                                            getData();
+                                                                                widget.groupTitle,
+                                                                                _groupController.groupInfo[0]['adminsList']);
+                                                                            Future.delayed(const Duration(milliseconds: 1000),
+                                                                                () {
+                                                                              print(_groupController.taskList[index]['assignMembers'].any((map) => map['startTask'] == null));
+                                                                              print(widget.groupTitle.toString());
+                                                                            });
+                                                                            Future.delayed(const Duration(milliseconds: 3000),
+                                                                                () async {
+                                                                              setState(() {});
+                                                                              await getData();
+                                                                            });
                                                                           },
                                                                           onLongTap:
                                                                               () {},

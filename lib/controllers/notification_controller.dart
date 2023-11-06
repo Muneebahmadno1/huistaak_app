@@ -27,7 +27,7 @@ class NotificationController extends GetxController {
         "notiID": a['notiID'],
         "groupToJoinID": a['groupToJoinID'],
         "Time": a['Time'],
-        "userToJoin": List.from(a['userToJoin']),
+        "userToJoin": List.from(a['userToJoin'] ?? null),
       });
     }
   }

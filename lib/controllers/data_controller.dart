@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 
 import '../constants/global_variables.dart';
 import '../helper/collections.dart';
-import '../models/user_model.dart';
 import 'notification_controller.dart';
 
 class HomeController extends GetxController {
@@ -69,33 +68,8 @@ class HomeController extends GetxController {
         "membersList": List.from(querySnapshot2['membersList']),
       });
 
-      var notiID = Collections.USERS
-          .doc(adminList[0]['adminsList'][0]['userID'])
-          .collection(Collections.NOTIFICATIONS)
-          .doc();
-      notiID.set({
-        "read": false,
-        "notificationType": 1,
-        "notification":
-            userData.displayName.toString() + " requested to join group",
-        "userToJoin": FieldValue.arrayUnion([newMap]),
-        "groupToJoinID": groupID,
-        "Time": DateTime.now(),
-        "notiID": notiID.id,
-      });
-      Collections.USERS
-          .doc(adminList[0]['adminsList'][0]['userID'].toString())
-          .get()
-          .then((value) async {
-        UserModel notiUserData = UserModel.fromDocument(value.data());
-        var data = {
-          'type': "request",
-          'end_time': DateTime.now().toString(),
-        };
-        _notiController.sendNotifications(
-            notiUserData.fcmToken.toString(),
-            userData.displayName.toString() + " requested to join group ",
-            data);
+      await Collections.GROUPS.doc(groupID).update({
+        "membersList": FieldValue.arrayUnion([newMap])
       });
       return true;
     } catch (e) {
