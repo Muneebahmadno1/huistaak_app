@@ -11,11 +11,17 @@ class GroupController extends GetxController {
   final NotificationController _notiController =
       Get.find<NotificationController>();
   List<Map<String, dynamic>> taskList = [];
+  List<Map<String, dynamic>> toBeCompletedTaskList = [];
+  List<Map<String, dynamic>> completedTaskList = [];
+  List<Map<String, dynamic>> notCompletedTaskList = [];
   List<Map<String, dynamic>> groupInfo = [];
 
   getGroupDetails(groupID, groupTitle) async {
     groupInfo.clear();
     taskList.clear();
+    toBeCompletedTaskList.clear();
+    notCompletedTaskList.clear();
+    completedTaskList.clear();
     var querySnapshot1 = await Collections.GROUPS.doc(groupID).get();
     groupInfo.add({
       "groupImage": querySnapshot1['groupImage'],
@@ -42,6 +48,20 @@ class GroupController extends GetxController {
         "id": a['id'],
       });
     }
+
+    for (int j = 0; j < taskList.length; j++) {
+      taskList[j]['assignMembers'].any((map) =>
+              map['userID'].toString() == userData.userID.toString() &&
+              ((map['startTask'] != null && map['endTask'] == null) ||
+                  (map['startTask'] == null && map['endTask'] == null)))
+          ? toBeCompletedTaskList.add(taskList[j])
+          : taskList[j]['assignMembers'].any((map) =>
+                  map['userID'].toString() == userData.userID.toString() &&
+                  map['endTask'] != null)
+              ? completedTaskList.add(taskList[j])
+              : null;
+    }
+    return true;
   }
 
   deleteTask(groupID, taskID) async {
@@ -166,6 +186,8 @@ class GroupController extends GetxController {
               "Time": DateTime.now(),
               "notiID": notiID.id,
               "userToJoin": FieldValue.arrayUnion([]),
+              "groupID": groupID.toString(),
+              "groupName": groupTitle.toString(),
             });
             Collections.USERS
                 .doc(adminList[0]['userID'].toString())

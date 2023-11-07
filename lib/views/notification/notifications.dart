@@ -14,6 +14,7 @@ import '../../controllers/notification_controller.dart';
 import '../../helper/page_navigation.dart';
 import '../../widgets/custom_widgets.dart';
 import '../home/bottom_nav_bar.dart';
+import '../home/group_detail.dart';
 
 class Notifications extends StatefulWidget {
   const Notifications({Key? key}) : super(key: key);
@@ -143,7 +144,18 @@ class _NotificationsState extends State<Notifications> {
                                     ],
                                   ),
                                   child: InkWell(
-                                    onTap: () {},
+                                    onTap: () {
+                                      Get.to(() => GroupDetail(
+                                            groupID: _notiController
+                                                .notificationList[index]
+                                                    ['groupID']
+                                                .toString(),
+                                            groupTitle: _notiController
+                                                .notificationList[index]
+                                                    ['groupName']
+                                                .toString(),
+                                          ));
+                                    },
                                     child: DelayedDisplay(
                                       delay: const Duration(milliseconds: 150),
                                       slidingBeginOffset: const Offset(0, 1),

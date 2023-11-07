@@ -32,7 +32,6 @@ class _GroupSettingState extends State<GroupSetting> {
     setState(() {
       isLoading = true;
     });
-
     await _groupSettingController.getGroupInfo(widget.groupID.toString());
     setState(() {
       isLoading = false;
@@ -376,6 +375,13 @@ class _GroupSettingState extends State<GroupSetting> {
                                       ),
                                     ],
                                   ),
+                                  SizedBox(
+                                    width: 25.w,
+                                  ),
+                                  Icon(
+                                    Icons.admin_panel_settings_rounded,
+                                    color: AppColors.buttonColor,
+                                  )
                                 ],
                               ),
                             ),
@@ -428,6 +434,69 @@ class _GroupSettingState extends State<GroupSetting> {
                                       style: headingMedium,
                                     ),
                                   ),
+                                  SizedBox(
+                                    width: 40.w,
+                                  ),
+                                  _groupSettingController.groupInfo[0]
+                                              ['adminsList']
+                                          .any((map) =>
+                                              map['userID'].toString() ==
+                                              userData.userID.toString())
+                                      ? InkWell(
+                                          onTap: () async {
+                                            confirmPopUp(context,
+                                                "Aru you sure , you want to remove member",
+                                                () async {
+                                              await _groupSettingController
+                                                  .removeMember(
+                                                _groupSettingController
+                                                            .groupInfo[0]
+                                                        ['membersList'][j]
+                                                    ['userID'],
+                                                widget.groupID.toString(),
+                                              );
+                                              getData();
+                                              Navigator.pop(context);
+                                            });
+                                          },
+                                          child: Icon(
+                                            Icons.delete,
+                                            color: Colors.red,
+                                          ))
+                                      : SizedBox.shrink(),
+                                  SizedBox(
+                                    width: 5.0,
+                                  ),
+                                  _groupSettingController.groupInfo[0]
+                                              ['adminsList']
+                                          .any((map) =>
+                                              map['userID'].toString() ==
+                                              userData.userID.toString())
+                                      ? InkWell(
+                                          onTap: () async {
+                                            confirmPopUp(context,
+                                                "Aru you sure , you want to make member admin",
+                                                () async {
+                                              await _groupSettingController
+                                                  .makeAdmin(
+                                                      _groupSettingController
+                                                                  .groupInfo[0]
+                                                              ['membersList'][j]
+                                                          ['userID'],
+                                                      widget.groupID.toString(),
+                                                      _groupSettingController
+                                                          .groupInfo[0]
+                                                              ['groupName']
+                                                          .toString());
+                                              getData();
+                                              Navigator.pop(context);
+                                            });
+                                          },
+                                          child: Icon(
+                                            Icons.admin_panel_settings_rounded,
+                                            color: AppColors.buttonColor,
+                                          ))
+                                      : SizedBox.shrink(),
                                 ],
                               ),
                             ),
@@ -473,8 +542,10 @@ class _GroupSettingState extends State<GroupSetting> {
                           setState(() {
                             Loading = true;
                           });
-                          await _groupSettingController
-                              .leaveGroup(widget.groupID.toString());
+                          await _groupSettingController.leaveGroup(
+                              widget.groupID.toString(),
+                              _groupSettingController.groupInfo[0]['groupName']
+                                  .toString());
                           Get.find<GeneralController>().onBottomBarTapped(0);
                           PageTransition.pageProperNavigation(
                               page: CustomBottomNavBar());
@@ -553,58 +624,5 @@ class _GroupSettingState extends State<GroupSetting> {
         ),
       );
     }
-  }
-
-  void _showPopup(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title:
-              Align(alignment: Alignment.center, child: Text('Group Members')),
-          content: SizedBox(
-            width: 90.w,
-            height: 50.h,
-            child: ListView.builder(
-              itemCount: 14,
-              shrinkWrap: true,
-              padding: EdgeInsets.only(top: 16),
-              physics: BouncingScrollPhysics(),
-              itemBuilder: (context, index) {
-                return Padding(
-                  padding: const EdgeInsets.only(bottom: 14.0),
-                  child: Row(
-                    children: [
-                      CircleAvatar(
-                        radius: 20,
-                        backgroundImage: AssetImage("assets/images/man1.jpg"),
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          "Cameron Williamson",
-                          style: TextStyle(fontSize: 14),
-                        ),
-                      ),
-                    ],
-                  ),
-                );
-              },
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text('Close'),
-            ),
-          ],
-        );
-      },
-    );
   }
 }

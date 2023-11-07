@@ -27,6 +27,8 @@ class NotificationController extends GetxController {
         "notiID": a['notiID'],
         "groupToJoinID": a['groupToJoinID'],
         "Time": a['Time'],
+        "groupID": a['groupID'],
+        "groupName": a['groupName'],
         "userToJoin": List.from(a['userToJoin'] ?? null),
       });
     }
@@ -40,7 +42,7 @@ class NotificationController extends GetxController {
         .delete();
   }
 
-  sendNotification(docID, endTime, groupName) {
+  sendNotification(docID, endTime, groupName, groupID) {
     var notiID = Collections.USERS
         .doc(docID.toString())
         .collection(Collections.NOTIFICATIONS)
@@ -54,6 +56,8 @@ class NotificationController extends GetxController {
       "userToJoin": FieldValue.arrayUnion([]),
       "Time": DateTime.now(),
       "notiID": notiID.id,
+      "groupID": groupID.toString(),
+      "groupName": groupName.toString(),
     });
     Collections.USERS.doc(docID.toString()).get().then((value) async {
       UserModel notiUserData = UserModel.fromDocument(value.data());

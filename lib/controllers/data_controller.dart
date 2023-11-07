@@ -100,10 +100,43 @@ class HomeController extends GetxController {
 
   getTaskMember(groupID) async {
     userList.clear();
-    var querySnapshot = await Collections.GROUPS.doc(groupID.toString()).get();
+    DocumentSnapshot querySnapshot =
+        await Collections.GROUPS.doc(groupID.toString()).get();
 
-    userList.add({
-      "membersList": List.from(querySnapshot['membersList']),
-    });
+    if (querySnapshot.exists) {
+      var data = querySnapshot.data() as Map<String, dynamic>;
+
+      if (data.containsKey('membersList')) {
+        List<dynamic> membersList = data['membersList'];
+
+        for (int i = 0; i < membersList.length; i++) {
+          var memberData = membersList[i] as Map<String, dynamic>;
+
+          userList.add({
+            "displayName": memberData['displayName'],
+            "imageUrl": memberData['imageUrl'],
+            "userID": memberData['userID'],
+          });
+        }
+      }
+      if (data.containsKey('adminsList')) {
+        List<dynamic> membersList = data['adminsList'];
+
+        for (int i = 0; i < membersList.length; i++) {
+          var memberData = membersList[i] as Map<String, dynamic>;
+
+          userList.add({
+            "displayName": memberData['displayName'],
+            "imageUrl": memberData['imageUrl'],
+            "userID": memberData['userID'],
+          });
+        }
+      }
+    }
+
+    // userList.add({
+    //   "membersList": List.from(querySnapshot['membersList']),
+    //   "adminsList": List.from(querySnapshot['adminsList']),
+    // });
   }
 }

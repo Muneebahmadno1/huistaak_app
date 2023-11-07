@@ -374,7 +374,8 @@ class _CreateNewGroupTaskState extends State<CreateNewGroupTask> {
                                 _dataController.assignTaskMember[i]['userID']
                                     .toString(),
                                 _dataController.endTime.toString(),
-                                widget.groupTitle);
+                                widget.groupTitle,
+                                widget.groupID);
                           }
 
                           _dataController.assignTaskMember.clear();

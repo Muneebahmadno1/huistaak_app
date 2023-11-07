@@ -69,7 +69,7 @@ class _NewGoalsScreenState extends State<NewGoalsScreen> {
                 ? Center(
                     child: Padding(
                     padding: EdgeInsets.only(top: 30.h),
-                    child: CircularProgressIndicator(color: Colors.white),
+                    child: CircularProgressIndicator(),
                   ))
                 : _goalController.goalList.isEmpty
                     ? Center(
