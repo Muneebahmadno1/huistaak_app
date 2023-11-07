@@ -12,6 +12,7 @@ import '../helper/page_navigation.dart';
 class CustomButton extends StatefulWidget {
   final String? buttonText;
   final Function onTap;
+
   const CustomButton({Key? key, this.buttonText, required this.onTap})
       : super(key: key);
 
@@ -60,6 +61,7 @@ class CustomAppBar extends StatefulWidget {
   final String pageTitle;
   final Function onTap;
   final Widget? leadingButton;
+
   const CustomAppBar(
       {Key? key,
       required this.pageTitle,
@@ -111,6 +113,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
 
 class CustomDropDown extends StatefulWidget {
   final String dropDownTitle;
+
   const CustomDropDown({Key? key, required this.dropDownTitle})
       : super(key: key);
 
@@ -234,6 +237,101 @@ class _CustomDropDownState extends State<CustomDropDown> {
       ),
     );
   }
+}
+
+confirmPopUp(BuildContext context, message, VoidCallback? yesTap) {
+  // set up the AlertDialog
+  return showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        return StatefulBuilder(builder: (context, setState) {
+          return AlertDialog(
+            backgroundColor: Colors.white,
+            elevation: 0,
+            contentPadding: EdgeInsets.zero,
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(13)),
+            // title: Text("Notice"),
+            // content: Text("Launching this missile will destroy the entire universe. Is this what you intended to do?"),
+            actions: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                      decoration: const BoxDecoration(
+                        color: Colors.white,
+                      ),
+                      alignment: Alignment.center,
+                      child: Padding(
+                        padding: const EdgeInsets.all(18.0),
+                        child: Column(
+                          children: [
+                            Image.asset(
+                              "assets/icons/icon_blue.png",
+                              color: AppColors.buttonColor,
+                              height: 5.h,
+                            ),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(left: 15.0, right: 15.0),
+                              child: Text(
+                                message.toString(),
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  height: 1.4,
+                                  fontWeight: FontWeight.w600,
+                                  fontFamily: 'Poppins',
+                                  color: Colors.black,
+                                  fontSize: 17,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                TextButton(
+                                  child: Text(
+                                    "No",
+                                    style:
+                                        bodyNormal.copyWith(color: Colors.red),
+                                  ),
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                ),
+                                TextButton(
+                                  child: Text(
+                                    "Yes",
+                                    style:
+                                        bodyNormal.copyWith(color: Colors.red),
+                                  ),
+                                  onPressed: yesTap,
+                                ),
+                              ],
+                            )
+                            // CustomButton(
+                            //   buttonText: 'yes',
+                            //   onTap: () {
+                            //     setState(() {});
+                            //     yesTap;
+                            //     Navigator.pop(context);
+                            //   },
+                            // )
+                          ],
+                        ),
+                      )),
+                ],
+              ),
+            ],
+          );
+        });
+      });
 }
 
 successPopUp(BuildContext context, page, message) {

@@ -124,7 +124,7 @@ class _CreateNewGroupTaskState extends State<CreateNewGroupTask> {
                         child: Column(
                           children: [
                             Text(
-                              "wsaz",
+                              "Start Time",
                               style: headingSmall.copyWith(
                                   color: AppColors.buttonColor),
                             ),
@@ -153,7 +153,7 @@ class _CreateNewGroupTaskState extends State<CreateNewGroupTask> {
                         child: Column(
                           children: [
                             Text(
-                              "wsaz",
+                              "End Time",
                               style: headingSmall.copyWith(
                                   color: AppColors.buttonColor),
                             ),
@@ -287,24 +287,29 @@ class _CreateNewGroupTaskState extends State<CreateNewGroupTask> {
                         for (int a = 0;
                             a < _dataController.assignTaskMember.length;
                             a++)
-                          SizedBox(
-                            height: 70,
-                            width: 70,
-                            child: Stack(
-                              alignment: Alignment.center,
-                              children: [
-                                Container(
-                                  height: 60,
-                                  width: 60,
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    image: DecorationImage(
-                                        image: AssetImage(
-                                            "assets/images/man1.jpg"),
-                                        fit: BoxFit.cover),
+                          InkWell(
+                            onTap: () {
+                              _dataController.assignTaskMember.removeAt(a);
+                            },
+                            child: SizedBox(
+                              height: 70,
+                              width: 70,
+                              child: Stack(
+                                alignment: Alignment.center,
+                                children: [
+                                  Container(
+                                    height: 60,
+                                    width: 60,
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      image: DecorationImage(
+                                          image: AssetImage(
+                                              "assets/images/man1.jpg"),
+                                          fit: BoxFit.cover),
+                                    ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
                           ),
                         SizedBox(
@@ -369,7 +374,8 @@ class _CreateNewGroupTaskState extends State<CreateNewGroupTask> {
                                 _dataController.assignTaskMember[i]['userID']
                                     .toString(),
                                 _dataController.endTime.toString(),
-                                widget.groupTitle);
+                                widget.groupTitle,
+                                widget.groupID);
                           }
 
                           _dataController.assignTaskMember.clear();

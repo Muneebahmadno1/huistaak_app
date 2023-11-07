@@ -59,7 +59,7 @@ class _ConnectedGroupScreenState extends State<ConnectedGroupScreen> {
           ? Center(
               child: Padding(
               padding: EdgeInsets.only(top: 25.h),
-              child: CircularProgressIndicator(color: Colors.white),
+              child: CircularProgressIndicator(),
             ))
           : Padding(
               padding: const EdgeInsets.symmetric(horizontal: 22.0),

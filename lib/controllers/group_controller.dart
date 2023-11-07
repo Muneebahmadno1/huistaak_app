@@ -5,14 +5,23 @@ import 'package:intl/intl.dart';
 import '../constants/global_variables.dart';
 import '../helper/collections.dart';
 import '../models/user_model.dart';
+import 'notification_controller.dart';
 
 class GroupController extends GetxController {
+  final NotificationController _notiController =
+      Get.find<NotificationController>();
   List<Map<String, dynamic>> taskList = [];
+  List<Map<String, dynamic>> toBeCompletedTaskList = [];
+  List<Map<String, dynamic>> completedTaskList = [];
+  List<Map<String, dynamic>> notCompletedTaskList = [];
   List<Map<String, dynamic>> groupInfo = [];
 
   getGroupDetails(groupID, groupTitle) async {
     groupInfo.clear();
     taskList.clear();
+    toBeCompletedTaskList.clear();
+    notCompletedTaskList.clear();
+    completedTaskList.clear();
     var querySnapshot1 = await Collections.GROUPS.doc(groupID).get();
     groupInfo.add({
       "groupImage": querySnapshot1['groupImage'],
@@ -39,10 +48,32 @@ class GroupController extends GetxController {
         "id": a['id'],
       });
     }
+
+    for (int j = 0; j < taskList.length; j++) {
+      taskList[j]['assignMembers'].any((map) =>
+              map['userID'].toString() == userData.userID.toString() &&
+              ((map['startTask'] != null && map['endTask'] == null) ||
+                  (map['startTask'] == null && map['endTask'] == null)))
+          ? toBeCompletedTaskList.add(taskList[j])
+          : taskList[j]['assignMembers'].any((map) =>
+                  map['userID'].toString() == userData.userID.toString() &&
+                  map['endTask'] != null)
+              ? completedTaskList.add(taskList[j])
+              : null;
+    }
+    return true;
   }
 
-  startTask(groupID, taskID, groupTitle) {
-    final DocumentReference documentReference = Collections.GROUPS
+  deleteTask(groupID, taskID) async {
+    await Collections.GROUPS
+        .doc(groupID)
+        .collection(Collections.TASKS)
+        .doc(taskID)
+        .delete();
+  }
+
+  startTask(groupID, taskID, groupTitle) async {
+    final DocumentReference documentReference = await Collections.GROUPS
         .doc(groupID)
         .collection(Collections.TASKS)
         .doc(taskID);
@@ -83,8 +114,9 @@ class GroupController extends GetxController {
     });
   }
 
-  endTask(groupID, taskID, StartTime, taskDurationInMin, points, groupTitle) {
-    final DocumentReference documentReference = Collections.GROUPS
+  endTask(groupID, taskID, StartTime, taskDurationInMin, points, groupTitle,
+      adminList) async {
+    final DocumentReference documentReference = await Collections.GROUPS
         .doc(groupID)
         .collection(Collections.TASKS)
         .doc(taskID);
@@ -107,22 +139,14 @@ class GroupController extends GetxController {
           int differenceInMinutes = DateTime.now()
               .difference(StartTime[index]['startTask'].toDate())
               .inMinutes;
-          print("differenceInMinutes");
-          print(differenceInMinutes);
           var pointPerMinute = taskDurationInMin / double.parse(points);
-          print("pointPerMinute");
-          print(pointPerMinute);
           var userPoint;
           for (int i = 0; i < int.parse(points); i++) {
             if (differenceInMinutes < pointPerMinute * (i + 1)) {
-              print("dd");
               userPoint = double.parse(points) - double.parse(i.toString());
               break;
             }
           }
-          print("userPoint");
-          print(userPoint);
-          print(userPoint.ceil());
           Map<String, dynamic> newVariable = {
             'endTask': DateTime.now(),
             'pointsEarned':
@@ -140,7 +164,7 @@ class GroupController extends GetxController {
           await Collections.USERS
               .doc(userData.userID.toString())
               .update({'points': newValue});
-          Collections.USERS
+          await Collections.USERS
               .doc(userData.userID.toString())
               .get()
               .then((value) async {
@@ -149,6 +173,38 @@ class GroupController extends GetxController {
           documentReference.update({
             'assignMembers': existingArray,
           }).then((_) {
+            var notiID = Collections.USERS
+                .doc(adminList[0]['userID'])
+                .collection(Collections.NOTIFICATIONS)
+                .doc();
+            notiID.set({
+              "read": false,
+              "notificationType": 3,
+              "notification": userData.displayName.toString() +
+                  " has completed the task in " +
+                  groupTitle.toString(),
+              "Time": DateTime.now(),
+              "notiID": notiID.id,
+              "userToJoin": FieldValue.arrayUnion([]),
+              "groupID": groupID.toString(),
+              "groupName": groupTitle.toString(),
+            });
+            Collections.USERS
+                .doc(adminList[0]['userID'].toString())
+                .get()
+                .then((value) async {
+              UserModel notiUserData = UserModel.fromDocument(value.data());
+              var data = {
+                'type': "request",
+                'end_time': DateTime.now().toString(),
+              };
+              _notiController.sendNotifications(
+                  notiUserData.fcmToken.toString(),
+                  userData.displayName.toString() +
+                      " has completed the task in " +
+                      groupTitle.toString(),
+                  data);
+            });
             print('Document updated successfully');
           }).catchError((error) {
             print('Error updating document: $error');

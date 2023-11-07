@@ -71,7 +71,7 @@ class _AssignMemberState extends State<AssignMember> {
                     padding: EdgeInsets.only(top: 25.h),
                     child: CircularProgressIndicator(color: Colors.white),
                   ))
-                : _dataController.userList[0]['membersList'].isEmpty
+                : _dataController.userList.isEmpty
                     ? Center(
                         child: Padding(
                           padding: EdgeInsets.only(top: 25.h),
@@ -82,32 +82,27 @@ class _AssignMemberState extends State<AssignMember> {
                       )
                     : Expanded(
                         child: ListView.builder(
-                            itemCount: _dataController
-                                .userList[0]['membersList'].length,
+                            itemCount: _dataController.userList.length,
                             itemBuilder: (c, i) {
                               return InkWell(
                                 onTap: () {
-                                  print("_dataController.assignTaskMember");
-                                  print(_dataController.assignTaskMember);
                                   if (widget.from == "groupTask"
                                       ? _dataController.assignTaskMember.any(
                                           (map) =>
                                               map['userID'] ==
-                                              _dataController.userList[0]
-                                                  ['membersList'][i]['userID'])
+                                              _dataController.userList[i]
+                                                  ['userID'])
                                       : _dataController.assignGoalMember.any(
                                           (map) =>
                                               map['userID'] ==
                                               _dataController.userList[0]
                                                       ['membersList'][i]
                                                   ['userID'])) {
-                                    print("abc");
                                     widget.from == "groupTask"
                                         ? _dataController.assignTaskMember
                                             .removeWhere((map) =>
                                                 map['userID'] ==
-                                                _dataController.userList[0]
-                                                        ['membersList'][i]
+                                                _dataController.userList[i]
                                                     ['userID'])
                                         : _dataController.assignGoalMember
                                             .removeWhere((map) =>
@@ -116,18 +111,14 @@ class _AssignMemberState extends State<AssignMember> {
                                                         ['membersList'][i]
                                                     ['userID']);
                                   } else {
-                                    print("abc1");
                                     widget.from == "groupTask"
                                         ? _dataController.assignTaskMember.add({
                                             'userID': _dataController
-                                                    .userList[0]['membersList']
-                                                [i]['userID'],
+                                                .userList[i]['userID'],
                                             'displayName': _dataController
-                                                    .userList[0]['membersList']
-                                                [i]['displayName'],
+                                                .userList[i]['displayName'],
                                             'imageUrl': _dataController
-                                                    .userList[0]['membersList']
-                                                [i]['imageUrl']
+                                                .userList[i]['imageUrl']
                                           })
                                         : _dataController.assignGoalMember.add({
                                             'userID': _dataController
@@ -141,15 +132,6 @@ class _AssignMemberState extends State<AssignMember> {
                                                 [i]['imageUrl']
                                           });
                                   }
-                                  print("fhf");
-                                  print(_dataController.assignTaskMember);
-                                  print(_dataController.userList[0]
-                                      ['membersList'][i]['userID']);
-                                  print(_dataController.assignTaskMember.any(
-                                      (person) =>
-                                          person['userID'] ==
-                                          _dataController.userList[0]
-                                              ['membersList'][i]['userID']));
                                   setState(() {});
                                 },
                                 child: AddMemberWidget(
@@ -157,10 +139,11 @@ class _AssignMemberState extends State<AssignMember> {
                                   isActive: _dataController.assignTaskMember
                                       .any((person) =>
                                           person['userID'] ==
-                                          _dataController.userList[0]
-                                              ['membersList'][i]['userID']),
-                                  title: _dataController.userList[0]
-                                      ['membersList'][i]['displayName'],
+                                          _dataController.userList[i]
+                                              ['userID']),
+                                  title: _dataController.userList[i]
+                                          ['displayName']
+                                      .toString(),
                                 ),
                               );
                             }),
