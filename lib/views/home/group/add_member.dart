@@ -134,7 +134,7 @@ class _AddMemberState extends State<AddMember> {
                                     });
                                   },
                                   child: AddMemberWidget(
-                                    suffixIcon: "assets/images/man1.jpg",
+                                    suffixIcon: "assets/images/man1.png",
                                     isActive: selectedIndex.contains(i),
                                     title: _dataController.userList[i]
                                         ['displayName'],

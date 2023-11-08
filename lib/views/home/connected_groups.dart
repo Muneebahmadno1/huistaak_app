@@ -12,6 +12,7 @@ import '../../constants/global_variables.dart';
 import '../../controllers/data_controller.dart';
 import '../../controllers/notification_controller.dart';
 import '../../widgets/custom_widgets.dart';
+import '../../widgets/intro_widget.dart';
 import '../../widgets/text_form_fields.dart';
 
 class ConnectedGroupScreen extends StatefulWidget {
@@ -21,6 +22,7 @@ class ConnectedGroupScreen extends StatefulWidget {
 
 class _ConnectedGroupScreenState extends State<ConnectedGroupScreen> {
   bool isLoading = false;
+  late Intro intro;
   TextEditingController searchController = TextEditingController();
   bool isUnreadNotificationPresent = false;
   final HomeController _dataController = Get.find<HomeController>();
@@ -35,6 +37,25 @@ class _ConnectedGroupScreenState extends State<ConnectedGroupScreen> {
     await _notiController.getNotifications();
     isUnreadNotificationPresent = _notiController.notificationList
         .any((element) => element["read"] == false);
+    // intro = Intro(
+    //   stepCount: 2,
+    //   maskClosable: true,
+    //   onHighlightWidgetTap: (introStatus) {
+    //     print(introStatus);
+    //   },
+    //
+    //   /// use defaultTheme
+    //   widgetBuilder: StepWidgetBuilder.useDefaultTheme(
+    //     texts: [
+    //       "Languages.of(context)!.HOME_GUIDE_1",
+    //     ],
+    //     buttonTextBuilder: (currPage, totalPage) {
+    //       return currPage < totalPage - 1 ? "Next" : "Finish";
+    //     },
+    //   ),
+    // );
+    // intro.setStepConfig(0, borderRadius: BorderRadius.circular(5));
+    // intro.start(context);
     setState(() {
       isLoading = false;
     });
@@ -84,7 +105,7 @@ class _ConnectedGroupScreenState extends State<ConnectedGroupScreen> {
                                   : NetworkImage(
                                       userData.imageUrl,
                                     ) as ImageProvider,
-                              // AssetImage("assets/images/man1.jpg"),
+                              // AssetImage("assets/images/man1.png"),
                             ),
                             SizedBox(
                               width: 10,
@@ -103,6 +124,7 @@ class _ConnectedGroupScreenState extends State<ConnectedGroupScreen> {
                             Get.to(() => Notifications());
                           },
                           child: SizedBox(
+                            // key: intro.keys[1],
                             width: 22,
                             child: Stack(
                               children: [
@@ -199,7 +221,7 @@ class _ConnectedGroupScreenState extends State<ConnectedGroupScreen> {
                                         imageUrl:
                                             _dataController.chatUsers[index]
                                                     ['groupImage'] ??
-                                                "assets/images/man1.jpg",
+                                                "assets/images/man1.png",
                                         time: _dataController.chatUsers[index]
                                                     ['date'] ==
                                                 null
@@ -241,6 +263,7 @@ class _ConnectedGroupScreenState extends State<ConnectedGroupScreen> {
           : _dataController.chatUsers.isEmpty
               ? null
               : FloatingActionButton(
+                  // key: intro.keys[0],
                   backgroundColor: AppColors.buttonColor,
                   onPressed: () {
                     Get.to(() => ConnectNewGroup());

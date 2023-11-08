@@ -61,7 +61,7 @@ class _ConnectNewGroupState extends State<ConnectNewGroup> {
                     children: [
                       CircleAvatar(
                         radius: 20,
-                        backgroundImage: AssetImage("assets/images/man1.jpg"),
+                        backgroundImage: AssetImage("assets/images/man1.png"),
                       ),
                       SizedBox(
                         width: 10,

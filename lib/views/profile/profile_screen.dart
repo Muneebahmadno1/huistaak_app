@@ -20,6 +20,28 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+  int totalPoints = 0;
+
+  getData() {
+    if (userData.points.isNotEmpty) {
+      // Calculate the sum of 'point' variables for the desired 'GroupID'
+
+      for (var pointEntry in userData.points) {
+        totalPoints = (int.parse(totalPoints.toString()) +
+            int.parse(pointEntry['point'].toString()));
+      }
+    }
+    print(totalPoints);
+    setState(() {});
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getData();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -96,7 +118,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 height: 6,
                               ),
                               Text(
-                                userData.points + " points",
+                                totalPoints.toString() + " points",
                                 style: bodySmall.copyWith(
                                     color: AppColors.buttonColor, fontSize: 12),
                               ),

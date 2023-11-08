@@ -206,7 +206,7 @@ class _CreateNewGroupState extends State<CreateNewGroup> {
                 //             child: CircleAvatar(
                 //               radius: 20,
                 //               backgroundImage:
-                //                   AssetImage("assets/images/man1.jpg"),
+                //                   AssetImage("assets/images/man1.png"),
                 //             ),
                 //           ),
                 //         // ZoomTapAnimation(
@@ -268,7 +268,7 @@ class _CreateNewGroupState extends State<CreateNewGroup> {
                 //             child: CircleAvatar(
                 //               radius: 20,
                 //               backgroundImage:
-                //                   AssetImage("assets/images/man1.jpg"),
+                //                   AssetImage("assets/images/man1.png"),
                 //             ),
                 //           ),
                 //         ZoomTapAnimation(

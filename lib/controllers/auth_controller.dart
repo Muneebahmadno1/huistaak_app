@@ -27,7 +27,7 @@ class AuthController extends GetxController {
         "displayName": map['displayName'].toString(),
         "email": emails,
         "imageUrl": "",
-        "points": "0",
+        "points": [],
         "postalCode": map['postalCode'].toString(),
         "fcmToken": fcmToken.value,
       });
