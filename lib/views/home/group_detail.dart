@@ -37,6 +37,7 @@ class _GroupDetailState extends State<GroupDetail> {
   bool isFinish = false;
   int selectedContainer = 0;
   int selectedIndex = 0;
+  int achievedPoints = 0;
 
   getData() async {
     setState(() {
@@ -44,6 +45,12 @@ class _GroupDetailState extends State<GroupDetail> {
     });
     await _groupController.getGroupDetails(
         widget.groupID.toString(), widget.groupTitle.toString());
+    for (int index = 0; index < userData.points.length; index++) {
+      if (userData.points[index]['groupID'] == widget.groupID) {
+        achievedPoints = int.parse(userData.points[index]['point']);
+        break; // Stop searching once a match is found
+      }
+    }
     setState(() {
       isLoading = false;
     });
@@ -144,7 +151,7 @@ class _GroupDetailState extends State<GroupDetail> {
                                 backgroundImage: _groupController.groupInfo[0]
                                             ['groupImage'] ==
                                         null
-                                    ? AssetImage("assets/images/man1.jpg")
+                                    ? AssetImage("assets/images/man1.png")
                                     : NetworkImage(_groupController.groupInfo[0]
                                         ['groupImage']) as ImageProvider,
                               ),
@@ -257,16 +264,20 @@ class _GroupDetailState extends State<GroupDetail> {
                     ),
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Align(
-                    alignment: Alignment.center,
-                    child: Text(
-                      "Achieved points : " + userData.points.toString(),
-                      style: bodyNormal.copyWith(color: AppColors.buttonColor),
-                    ),
-                  ),
-                ),
+                userData.points.toString() == "[]"
+                    ? SizedBox.shrink()
+                    : Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Align(
+                          alignment: Alignment.center,
+                          child: Text(
+                            "Achieved points : " + achievedPoints.toString(),
+                            maxLines: 1,
+                            style: bodyNormal.copyWith(
+                                color: AppColors.buttonColor),
+                          ),
+                        ),
+                      ),
                 Padding(
                   padding:
                       EdgeInsets.only(left: 10.0.w, right: 10.0.w, top: 5.0),
@@ -366,7 +377,7 @@ class _GroupDetailState extends State<GroupDetail> {
                                                                     onTap: () {
                                                                       confirmPopUp(
                                                                           context,
-                                                                          "Are you sure,you want to delete ?",
+                                                                          "Are you sure ,you want to delete task?",
                                                                           () {
                                                                         _groupController
                                                                             .deleteTask(
@@ -490,7 +501,7 @@ class _GroupDetailState extends State<GroupDetail> {
                                                                                 0;
                                                                             n < _groupController.toBeCompletedTaskList[index]['assignMembers'].length;
                                                                             n++)
-                                                                          AssetImage("assets/images/man1.jpg"),
+                                                                          _groupController.toBeCompletedTaskList[index]['assignMembers'][n]['imageUrl'] == "" ? AssetImage("assets/images/man1.png") : NetworkImage(_groupController.toBeCompletedTaskList[index]['assignMembers'][n]['imageUrl'].toString()) as ImageProvider,
                                                                       ],
                                                                     ),
                                                                   )
@@ -517,7 +528,7 @@ class _GroupDetailState extends State<GroupDetail> {
                                                                   .shrink()
                                                               : LikeBarWidget(
                                                                   image:
-                                                                      "assets/images/man1.jpg",
+                                                                      "assets/images/man1.png",
                                                                   count: _groupController.toBeCompletedTaskList[index]['assignMembers']
                                                                               [
                                                                               i]
@@ -646,8 +657,6 @@ class _GroupDetailState extends State<GroupDetail> {
                                                                                 });
                                                                                 await _groupController.endTask(widget.groupID.toString(), _groupController.toBeCompletedTaskList[index]['id'].toString(), _groupController.toBeCompletedTaskList[index]['assignMembers'], double.parse(_groupController.toBeCompletedTaskList[index]['duration'].toString()) * 60, _groupController.toBeCompletedTaskList[index]['taskScore'], widget.groupTitle, _groupController.groupInfo[0]['adminsList']);
                                                                                 Future.delayed(const Duration(milliseconds: 1000), () {
-                                                                                  print(_groupController.toBeCompletedTaskList[index]['assignMembers'].any((map) => map['startTask'] == null));
-                                                                                  print(widget.groupTitle.toString());
                                                                                   setState(() {
                                                                                     isFinish = false;
                                                                                   });
@@ -779,7 +788,7 @@ class _GroupDetailState extends State<GroupDetail> {
                                                                             () {
                                                                           confirmPopUp(
                                                                               context,
-                                                                              "Are you sure,you want to delete ?",
+                                                                              "Are you sure ,you want to delete task?",
                                                                               () {
                                                                             _groupController.deleteTask(
                                                                               widget.groupID.toString(),
@@ -894,7 +903,7 @@ class _GroupDetailState extends State<GroupDetail> {
                                                                             for (var n = 0;
                                                                                 n < _groupController.completedTaskList[index]['assignMembers'].length;
                                                                                 n++)
-                                                                              AssetImage("assets/images/man1.jpg"),
+                                                                              _groupController.completedTaskList[index]['assignMembers'][n]['imageUrl'] == "" ? AssetImage("assets/images/man1.png") : NetworkImage(_groupController.completedTaskList[index]['assignMembers'][n]['imageUrl'].toString()) as ImageProvider,
                                                                           ],
                                                                         ),
                                                                       )
@@ -923,7 +932,7 @@ class _GroupDetailState extends State<GroupDetail> {
                                                                       .shrink()
                                                                   : LikeBarWidget(
                                                                       image:
-                                                                          "assets/images/man1.jpg",
+                                                                          "assets/images/man1.png",
                                                                       count: _groupController.completedTaskList[index]['assignMembers'][i]
                                                                               [
                                                                               'pointsEarned'] ??
@@ -1144,7 +1153,7 @@ class _GroupDetailState extends State<GroupDetail> {
                                                                             () {
                                                                           confirmPopUp(
                                                                               context,
-                                                                              "Are you sure,you want to delete ?",
+                                                                              "Are you sure ,you want to delete task?",
                                                                               () {
                                                                             _groupController.deleteTask(
                                                                               widget.groupID.toString(),
@@ -1259,7 +1268,7 @@ class _GroupDetailState extends State<GroupDetail> {
                                                                             for (var n = 0;
                                                                                 n < _groupController.toBeCompletedTaskList[index]['assignMembers'].length;
                                                                                 n++)
-                                                                              AssetImage("assets/images/man1.jpg"),
+                                                                              AssetImage("assets/images/man1.png"),
                                                                           ],
                                                                         ),
                                                                       )
@@ -1288,7 +1297,7 @@ class _GroupDetailState extends State<GroupDetail> {
                                                                       .shrink()
                                                                   : LikeBarWidget(
                                                                       image:
-                                                                          "assets/images/man1.jpg",
+                                                                          "assets/images/man1.png",
                                                                       count: _groupController.toBeCompletedTaskList[index]['assignMembers'][i]
                                                                               [
                                                                               'pointsEarned'] ??

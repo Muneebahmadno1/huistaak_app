@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
 import 'package:zoom_tap_animation/zoom_tap_animation.dart';
 
+import '../constants/app_images.dart';
 import '../constants/global_variables.dart';
 import '../controllers/data_controller.dart';
 import '../helper/page_navigation.dart';
@@ -267,11 +268,16 @@ confirmPopUp(BuildContext context, message, VoidCallback? yesTap) {
                         padding: const EdgeInsets.all(18.0),
                         child: Column(
                           children: [
-                            Image.asset(
-                              "assets/icons/icon_blue.png",
+                            Icon(
+                              Icons.delete,
                               color: AppColors.buttonColor,
-                              height: 5.h,
+                              size: 5.h,
                             ),
+                            // Image.asset(
+                            //   AppImages.logo1,
+                            //   color: AppColors.buttonColor,
+                            //   height: 5.h,
+                            // ),
                             const SizedBox(
                               height: 20,
                             ),
@@ -363,7 +369,7 @@ successPopUp(BuildContext context, page, message) {
                         child: Column(
                           children: [
                             Image.asset(
-                              "assets/icons/icon_blue.png",
+                              AppImages.logo1,
                               color: AppColors.buttonColor,
                               height: 5.h,
                             ),

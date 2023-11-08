@@ -98,7 +98,7 @@ class GroupSettingController extends GetxController {
           "read": false,
           "notificationType": 4,
           "notification":
-              "you have been made admin of " + groupTitle.toString(),
+              "you have been made admin of " + groupTitle.toString() + " group",
           "Time": DateTime.now(),
           "notiID": notiID.id,
           "userToJoin": FieldValue.arrayUnion([]),
@@ -114,14 +114,42 @@ class GroupSettingController extends GetxController {
             'type': "request",
             'end_time': DateTime.now().toString(),
           };
-          _notiController.sendNotifications(notiUserData.fcmToken.toString(),
-              "you have been made admin of " + groupTitle.toString(), data);
+          _notiController.sendNotifications(
+              notiUserData.fcmToken.toString(),
+              "you have been made admin of " + groupTitle.toString() + " group",
+              data);
         });
       } else if (groupInfo[0]['adminsList'].isEmpty) {
         Collections.GROUPS
             .doc(groupID.toString())
             .update({'adminsList': groupInfo[0]['adminsList']});
       }
+    }
+
+    final userDocRef = Collections.USERS.doc(userData.userID.toString());
+
+    final userDoc = await userDocRef.get();
+
+    if (userDoc.exists) {
+      final List<Map<String, dynamic>> pointsList =
+          List<Map<String, dynamic>>.from(userDoc.get('points') ?? []);
+
+      final groupIDToRemove =
+          groupID.toString(); // The 'groupID' you want to remove
+
+      // Remove items where 'groupID' matches
+      pointsList.removeWhere((pointEntry) {
+        return pointEntry['groupID'] == groupIDToRemove;
+      });
+
+      // Update the Firestore document with the modified array
+      await userDocRef.update({'points': pointsList});
+      Collections.USERS
+          .doc(userData.userID.toString())
+          .get()
+          .then((value) async {
+        userData = UserModel.fromDocument(value.data());
+      });
     }
   }
 

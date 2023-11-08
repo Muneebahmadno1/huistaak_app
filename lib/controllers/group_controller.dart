@@ -116,11 +116,11 @@ class GroupController extends GetxController {
 
   endTask(groupID, taskID, StartTime, taskDurationInMin, points, groupTitle,
       adminList) async {
+    print("sdxx");
     final DocumentReference documentReference = await Collections.GROUPS
         .doc(groupID)
         .collection(Collections.TASKS)
         .doc(taskID);
-
 // Fetch the existing data from the document
     documentReference.get().then((documentSnapshot) async {
       if (documentSnapshot.exists) {
@@ -152,18 +152,44 @@ class GroupController extends GetxController {
             'pointsEarned':
                 userPoint.ceil().toString(), // Add the 4th variable here
           };
-
           existingArray[index]['endTask'] = newVariable['endTask'];
           existingArray[index]['pointsEarned'] = newVariable['pointsEarned'];
           // Update the document with the modified array
+          final newMap = {
+            'point': userPoint.ceil().toString(),
+            'groupID': groupID.toString(),
+          };
 
-          String newValue = (int.parse(userData.points.toString()) +
-                  int.parse(userPoint.ceil().toString()))
-              .toString();
+          final userDocRef = Collections.USERS.doc(userData.userID.toString());
+          final userDoc = await userDocRef.get();
 
-          await Collections.USERS
-              .doc(userData.userID.toString())
-              .update({'points': newValue});
+          if (userDoc.exists) {
+            List<dynamic> pointsList =
+                userDoc.get('points') ?? <Map<String, dynamic>>[];
+
+            // Check if the 'points' array is empty, and add newMap in that case.
+            if (pointsList.isEmpty) {
+              pointsList.add(newMap);
+            } else {
+              bool groupIDMatch = false;
+              for (var i = 0; i < pointsList.length; i++) {
+                if (pointsList[i]['groupID'] == newMap['groupID']) {
+                  // If 'groupID' already exists in the array, add 'point' to the existing value.
+                  pointsList[i]['point'] =
+                      (int.parse(userPoint.ceil().toString()) +
+                          int.parse(pointsList[i]['point']));
+                  groupIDMatch = true;
+                  break;
+                }
+              }
+
+              // If 'groupID' doesn't match with any existing entry, add newMap to the list.
+              if (!groupIDMatch) {
+                pointsList.add(newMap);
+              }
+            }
+            await userDocRef.update({'points': pointsList});
+          }
           await Collections.USERS
               .doc(userData.userID.toString())
               .get()

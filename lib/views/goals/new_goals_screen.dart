@@ -87,6 +87,21 @@ class _NewGoalsScreenState extends State<NewGoalsScreen> {
                           padding: EdgeInsets.only(top: 16),
                           physics: BouncingScrollPhysics(),
                           itemBuilder: (context, index) {
+                            int achievedPoints = 0;
+                            for (int index = 0;
+                                index < userData.points.length;
+                                index++) {
+                              if (userData.points[index]['groupID'] ==
+                                  _goalController.goalList[index]
+                                      ['goalGroup']) {
+                                userData.points[index]['point'].toString() ==
+                                        "[]"
+                                    ? achievedPoints = 0
+                                    : achievedPoints = int.parse(
+                                        userData.points[index]['point']);
+                                break; // Stop searching once a match is found
+                              }
+                            }
                             return Padding(
                               padding: EdgeInsets.only(bottom: 15.0),
                               child: DelayedDisplay(
@@ -109,7 +124,7 @@ class _NewGoalsScreenState extends State<NewGoalsScreen> {
                                             CircleAvatar(
                                               radius: 20,
                                               backgroundImage: AssetImage(
-                                                  "assets/images/man1.jpg"),
+                                                  "assets/images/man1.png"),
                                             ),
                                             SizedBox(
                                               width: 10,
@@ -127,7 +142,7 @@ class _NewGoalsScreenState extends State<NewGoalsScreen> {
                                                 ? InkWell(
                                                     onTap: () {
                                                       confirmPopUp(context,
-                                                          "Are you sure,you want to delete ?",
+                                                          "Are you sure ,you want to delete goal?",
                                                           () {
                                                         _goalController
                                                             .deleteGoal(
@@ -176,10 +191,9 @@ class _NewGoalsScreenState extends State<NewGoalsScreen> {
                                           height: 10,
                                         ),
                                         LikeBarWidget(
-                                            image: "assets/images/man1.jpg",
-                                            count: userData.points.toString(),
-                                            percent: int.parse(userData.points
-                                                    .toString()) /
+                                            image: "assets/images/man1.png",
+                                            count: achievedPoints.toString(),
+                                            percent: achievedPoints /
                                                 int.parse(_goalController
                                                     .goalList[index]
                                                         ['goalPoints']

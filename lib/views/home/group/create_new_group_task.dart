@@ -304,7 +304,7 @@ class _CreateNewGroupTaskState extends State<CreateNewGroupTask> {
                                       shape: BoxShape.circle,
                                       image: DecorationImage(
                                           image: AssetImage(
-                                              "assets/images/man1.jpg"),
+                                              "assets/images/man1.png"),
                                           fit: BoxFit.cover),
                                     ),
                                   ),

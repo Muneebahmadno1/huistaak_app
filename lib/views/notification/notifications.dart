@@ -111,11 +111,15 @@ class _NotificationsState extends State<Notifications> {
 
                                     // A pane can dismiss the Slidable.
                                     dismissible:
-                                        DismissiblePane(onDismissed: () {
+                                        DismissiblePane(onDismissed: () async {
                                       _notiController.deleteNotification(
                                           _notiController
                                               .notificationList[index]['notiID']
                                               .toString());
+                                      setState(() {
+                                        _notiController.notificationList
+                                            .removeAt(index);
+                                      });
                                     }),
 
                                     // All actions are defined in the children parameter.
@@ -126,21 +130,19 @@ class _NotificationsState extends State<Notifications> {
                                         foregroundColor: Colors.white,
                                         icon: Icons.delete,
                                         label: 'Delete',
-                                        onPressed: (BuildContext context) {
+                                        onPressed:
+                                            (BuildContext context) async {
                                           _notiController.deleteNotification(
                                               _notiController
                                                   .notificationList[index]
                                                       ['notiID']
                                                   .toString());
+                                          setState(() {
+                                            _notiController.notificationList
+                                                .removeAt(index);
+                                          });
                                         },
                                       ),
-                                      // SlidableAction(
-                                      //   backgroundColor: Color(0xFF21B7CA),
-                                      //   foregroundColor: Colors.white,
-                                      //   icon: Icons.share,
-                                      //   label: 'Share',
-                                      //   onPressed: (BuildContext context) {},
-                                      // ),
                                     ],
                                   ),
                                   child: InkWell(

@@ -42,7 +42,7 @@ class _ConnectedGroupListState extends State<ConnectedGroupList> {
               child: Row(
                 children: <Widget>[
                   CircleAvatar(
-                    backgroundImage: widget.imageUrl == "assets/images/man1.jpg"
+                    backgroundImage: widget.imageUrl == "assets/images/man1.png"
                         ? AssetImage(widget.imageUrl)
                         : NetworkImage(widget.imageUrl) as ImageProvider,
                     maxRadius: 28,

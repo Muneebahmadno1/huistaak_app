@@ -189,7 +189,7 @@ class _GroupSettingState extends State<GroupSetting> {
                         backgroundImage: _groupSettingController.groupInfo[0]
                                     ['groupImage'] ==
                                 null
-                            ? AssetImage("assets/images/man1.jpg")
+                            ? AssetImage("assets/images/man1.png")
                             : NetworkImage(_groupSettingController.groupInfo[0]
                                 ['groupImage']) as ImageProvider,
                       ),
@@ -354,7 +354,7 @@ class _GroupSettingState extends State<GroupSetting> {
                                   CircleAvatar(
                                     radius: 30,
                                     backgroundImage:
-                                        AssetImage("assets/images/man1.jpg"),
+                                        AssetImage("assets/images/man1.png"),
                                   ),
                                   SizedBox(
                                     width: 20,
@@ -421,7 +421,7 @@ class _GroupSettingState extends State<GroupSetting> {
                                   CircleAvatar(
                                     radius: 30,
                                     backgroundImage:
-                                        AssetImage("assets/images/man1.jpg"),
+                                        AssetImage("assets/images/man1.png"),
                                   ),
                                   SizedBox(
                                     width: 20,
@@ -445,7 +445,7 @@ class _GroupSettingState extends State<GroupSetting> {
                                       ? InkWell(
                                           onTap: () async {
                                             confirmPopUp(context,
-                                                "Aru you sure , you want to remove member",
+                                                "Are you sure , you want to remove member",
                                                 () async {
                                               await _groupSettingController
                                                   .removeMember(
@@ -475,7 +475,7 @@ class _GroupSettingState extends State<GroupSetting> {
                                       ? InkWell(
                                           onTap: () async {
                                             confirmPopUp(context,
-                                                "Aru you sure , you want to make member admin",
+                                                "Are you sure , you want to make member admin",
                                                 () async {
                                               await _groupSettingController
                                                   .makeAdmin(

@@ -135,7 +135,7 @@ class _AssignMemberState extends State<AssignMember> {
                                   setState(() {});
                                 },
                                 child: AddMemberWidget(
-                                  suffixIcon: "assets/images/man1.jpg",
+                                  suffixIcon: "assets/images/man1.png",
                                   isActive: _dataController.assignTaskMember
                                       .any((person) =>
                                           person['userID'] ==

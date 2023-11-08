@@ -1,6 +1,7 @@
 class AppImages {
   ///Splash
   static const logo = "assets/images/logo.png";
+  static const logo1 = "assets/icons/icon_blue.png";
 
   ///Auth
   static const emailIcon = "assets/icons/email_icon.png";
@@ -15,7 +16,7 @@ class AppImages {
   static const findJobIcon = "assets/icons/briefcase.png";
 
   ///Home
-  static const profileImage = "assets/images/man1.jpg";
+  static const profileImage = "assets/images/man1.png";
   static const successIcon = "assets/icons/success.png";
 
   ///Buttons

@@ -343,7 +343,7 @@ class _CreateNewTaskState extends State<CreateNewTask> {
                       //                     shape: BoxShape.circle,
                       //                     image: DecorationImage(
                       //                         image: AssetImage(
-                      //                             "assets/images/man1.jpg"),
+                      //                             "assets/images/man1.png"),
                       //                         fit: BoxFit.cover),
                       //                   ),
                       //                 ),
@@ -389,7 +389,7 @@ class _CreateNewTaskState extends State<CreateNewTask> {
                               await _goalController.addGroupGoal(
                                 _dropDownValue.toString(),
                                 goalNameEditingController.text,
-                                _dataController.selectedDate,
+                                _dataController.goalSelectedDate,
                                 _dataController.startTime.toString(),
                                 _dataController.assignGoalMember,
                                 points.toString(),
