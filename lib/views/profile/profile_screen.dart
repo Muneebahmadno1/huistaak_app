@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:delayed_display/delayed_display.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -84,17 +85,28 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         delay: Duration(milliseconds: 400),
                         slidingBeginOffset: Offset(0, 0),
                         child: CircleAvatar(
-                          radius: 37,
-                          backgroundColor: Colors.black,
-                          child: CircleAvatar(
-                            radius: 36,
-                            backgroundImage: userData.imageUrl == ""
-                                ? AssetImage(
-                                    AppImages.profileImage,
-                                  )
-                                : NetworkImage(
-                                    userData.imageUrl,
-                                  ) as ImageProvider,
+                          radius: 37, // Adjust the radius as needed
+                          backgroundColor: Colors
+                              .grey, // You can set a default background color
+                          child: ClipOval(
+                            child: SizedBox(
+                              height: 37 * 2,
+                              width: 37 * 2,
+                              child: userData.imageUrl == ""
+                                  ? Image.asset(
+                                      AppImages
+                                          .profileImage, // Replace with your asset image path
+                                      fit: BoxFit.cover,
+                                    )
+                                  : CachedNetworkImage(
+                                      imageUrl: userData.imageUrl,
+                                      placeholder: (context, url) =>
+                                          CircularProgressIndicator(),
+                                      errorWidget: (context, url, error) =>
+                                          Icon(Icons.error),
+                                      fit: BoxFit.fill,
+                                    ),
+                            ),
                           ),
                         ),
                       ),

@@ -10,8 +10,8 @@ class HomeController extends GetxController {
       Get.find<NotificationController>();
   DateTime? selectedDate = DateTime.now();
   DateTime? goalSelectedDate = DateTime.now();
-  RxString startTime = '09:00 AM'.obs;
-  RxString endTime = '10:00 AM'.obs;
+  RxString startTime = ''.obs;
+  RxString endTime = ''.obs;
   List<dynamic> chatUsers = [];
   List<Map<String, dynamic>> adminList = [];
   RxList<Map<String, dynamic>> groupAdmins = <Map<String, dynamic>>[].obs;
@@ -49,8 +49,6 @@ class HomeController extends GetxController {
           });
         }
     }
-    print("_dataController.chatUsers");
-    print(chatUsers);
   }
 
   joinGroupRequest(groupID) async {
@@ -60,17 +58,31 @@ class HomeController extends GetxController {
         'imageUrl': userData.imageUrl.toString(),
         'userID': userData.userID.toString(),
       };
-      var querySnapshot2 =
-          await Collections.GROUPS.doc(groupID.toString()).get();
+      var querySnapshot2 = await Collections.GROUPS
+          .where("groupCode", isEqualTo: groupID.toString())
+          .get();
+      if (querySnapshot2.docs.isNotEmpty) {
+        // Get the first document (assuming there's only one match)
+        var documentSnapshot = querySnapshot2.docs.first;
 
-      adminList.add({
-        "adminsList": List.from(querySnapshot2['adminsList']),
-        "membersList": List.from(querySnapshot2['membersList']),
+        // Retrieve data and add it to the adminList
+        adminList.add({
+          "adminsList": List.from(documentSnapshot['adminsList']),
+          "membersList": List.from(documentSnapshot['membersList']),
+        });
+      }
+      await Collections.GROUPS
+          .where("groupCode", isEqualTo: groupID.toString())
+          .get()
+          .then((QuerySnapshot querySnapshot) {
+        querySnapshot.docs.forEach((QueryDocumentSnapshot doc) {
+          // Update the document using the doc reference
+          Collections.GROUPS.doc(doc.id).update({
+            "membersList": FieldValue.arrayUnion([newMap])
+          });
+        });
       });
 
-      await Collections.GROUPS.doc(groupID).update({
-        "membersList": FieldValue.arrayUnion([newMap])
-      });
       return true;
     } catch (e) {
       return false;
