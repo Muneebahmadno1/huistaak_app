@@ -37,6 +37,7 @@ class GroupSettingController extends GetxController {
     groupInfo.clear();
     var querySnapshot = await Collections.GROUPS.doc(groupID).get();
     groupInfo.add({
+      "groupCode": querySnapshot['groupCode'],
       "groupImage": querySnapshot['groupImage'],
       "groupName": querySnapshot['groupName'],
       "adminsList": List.from(querySnapshot['adminsList']),

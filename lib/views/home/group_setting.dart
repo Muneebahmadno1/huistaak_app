@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:delayed_display/delayed_display.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -7,6 +8,7 @@ import 'package:sizer/sizer.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:zoom_tap_animation/zoom_tap_animation.dart';
 
+import '../../constants/app_images.dart';
 import '../../controllers/general_controller.dart';
 import '../../controllers/group_setting_controller.dart';
 import '../../helper/page_navigation.dart';
@@ -160,7 +162,9 @@ class _GroupSettingState extends State<GroupSetting> {
                     //   // CustomTextField(
                     //   //     hintText: groupInfo[0]['groupName'])
                     // ),
-                    SelectableText(widget.groupID.toString(),
+                    SelectableText(
+                        _groupSettingController.groupInfo[0]['groupCode']
+                            .toString(),
                         style: bodyNormal.copyWith(
                             color: Colors.black,
                             fontFamily: "MontserratSemiBold")),
@@ -185,13 +189,32 @@ class _GroupSettingState extends State<GroupSetting> {
                       delay: Duration(milliseconds: 400),
                       slidingBeginOffset: Offset(0, 0),
                       child: CircleAvatar(
-                        radius: 70,
-                        backgroundImage: _groupSettingController.groupInfo[0]
-                                    ['groupImage'] ==
-                                null
-                            ? AssetImage("assets/images/man1.png")
-                            : NetworkImage(_groupSettingController.groupInfo[0]
-                                ['groupImage']) as ImageProvider,
+                        radius: 70, // Adjust the radius as needed
+                        backgroundColor: Colors
+                            .grey, // You can set a default background color
+                        child: ClipOval(
+                          child: SizedBox(
+                            height: 70 * 2,
+                            width: 70 * 2,
+                            child: _groupSettingController.groupInfo[0]
+                                        ['groupImage'] ==
+                                    null
+                                ? Image.asset(
+                                    AppImages
+                                        .profileImage, // Replace with your asset image path
+                                    fit: BoxFit.cover,
+                                  )
+                                : CachedNetworkImage(
+                                    imageUrl: _groupSettingController
+                                        .groupInfo[0]['groupImage'],
+                                    placeholder: (context, url) =>
+                                        CircularProgressIndicator(),
+                                    errorWidget: (context, url, error) =>
+                                        Icon(Icons.error),
+                                    fit: BoxFit.fill,
+                                  ),
+                          ),
+                        ),
                       ),
                     ),
                     SizedBox(
@@ -354,7 +377,7 @@ class _GroupSettingState extends State<GroupSetting> {
                                   CircleAvatar(
                                     radius: 30,
                                     backgroundImage:
-                                        AssetImage("assets/images/man1.png"),
+                                        AssetImage(AppImages.profileImage),
                                   ),
                                   SizedBox(
                                     width: 20,
@@ -583,7 +606,9 @@ class _GroupSettingState extends State<GroupSetting> {
                       slidingBeginOffset: Offset(0, 0),
                       child: ZoomTapAnimation(
                         onTap: () async {
-                          openWhatsApp(widget.groupID.toString());
+                          openWhatsApp(_groupSettingController.groupInfo[0]
+                                  ['groupCode']
+                              .toString());
                         },
                         child: Container(
                           padding: const EdgeInsets.symmetric(horizontal: 20),

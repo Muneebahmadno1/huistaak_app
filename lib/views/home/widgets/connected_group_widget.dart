@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:huistaak/views/home/group_detail.dart';
@@ -42,10 +43,29 @@ class _ConnectedGroupListState extends State<ConnectedGroupList> {
               child: Row(
                 children: <Widget>[
                   CircleAvatar(
-                    backgroundImage: widget.imageUrl == "assets/images/man1.png"
-                        ? AssetImage(widget.imageUrl)
-                        : NetworkImage(widget.imageUrl) as ImageProvider,
-                    maxRadius: 28,
+                    radius: 28, // Adjust the radius as needed
+                    backgroundColor:
+                        Colors.grey, // You can set a default background color
+                    child: ClipOval(
+                      child: SizedBox(
+                        height: 28 * 2,
+                        width: 28 * 2,
+                        child: widget.imageUrl == "assets/images/man1.png"
+                            ? Image.asset(
+                                widget
+                                    .imageUrl, // Replace with your asset image path
+                                fit: BoxFit.cover,
+                              )
+                            : CachedNetworkImage(
+                                imageUrl: widget.imageUrl,
+                                placeholder: (context, url) =>
+                                    CircularProgressIndicator(),
+                                errorWidget: (context, url, error) =>
+                                    Icon(Icons.error),
+                                fit: BoxFit.fill,
+                              ),
+                      ),
+                    ),
                   ),
                   SizedBox(
                     width: 16,

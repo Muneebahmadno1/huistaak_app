@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -24,6 +26,7 @@ class GroupController extends GetxController {
     completedTaskList.clear();
     var querySnapshot1 = await Collections.GROUPS.doc(groupID).get();
     groupInfo.add({
+      "groupCode": querySnapshot1['groupCode'],
       "groupImage": querySnapshot1['groupImage'],
       "groupName": querySnapshot1['groupName'],
       "adminsList": List.from(querySnapshot1['adminsList']),
@@ -51,15 +54,23 @@ class GroupController extends GetxController {
 
     for (int j = 0; j < taskList.length; j++) {
       taskList[j]['assignMembers'].any((map) =>
-              map['userID'].toString() == userData.userID.toString() &&
-              ((map['startTask'] != null && map['endTask'] == null) ||
-                  (map['startTask'] == null && map['endTask'] == null)))
-          ? toBeCompletedTaskList.add(taskList[j])
+              (map['userID'].toString() == userData.userID.toString()) &&
+              ((DateFormat('yyyy-MM-dd HH:mm')
+                      .parse(taskList[j]['endTime'])
+                      .isBefore((DateTime.now()))) &&
+                  ((map['startTask'] != null && map['endTask'] == null) ||
+                      (map['startTask'] == null && map['endTask'] == null))))
+          ? notCompletedTaskList.add(taskList[j])
           : taskList[j]['assignMembers'].any((map) =>
                   map['userID'].toString() == userData.userID.toString() &&
-                  map['endTask'] != null)
-              ? completedTaskList.add(taskList[j])
-              : null;
+                  ((map['startTask'] != null && map['endTask'] == null) ||
+                      (map['startTask'] == null && map['endTask'] == null)))
+              ? toBeCompletedTaskList.add(taskList[j])
+              : taskList[j]['assignMembers'].any((map) =>
+                      map['userID'].toString() == userData.userID.toString() &&
+                      map['endTask'] != null)
+                  ? completedTaskList.add(taskList[j])
+                  : null;
     }
     return true;
   }
@@ -116,7 +127,6 @@ class GroupController extends GetxController {
 
   endTask(groupID, taskID, StartTime, taskDurationInMin, points, groupTitle,
       adminList) async {
-    print("sdxx");
     final DocumentReference documentReference = await Collections.GROUPS
         .doc(groupID)
         .collection(Collections.TASKS)
@@ -162,11 +172,9 @@ class GroupController extends GetxController {
 
           final userDocRef = Collections.USERS.doc(userData.userID.toString());
           final userDoc = await userDocRef.get();
-
           if (userDoc.exists) {
             List<dynamic> pointsList =
                 userDoc.get('points') ?? <Map<String, dynamic>>[];
-
             // Check if the 'points' array is empty, and add newMap in that case.
             if (pointsList.isEmpty) {
               pointsList.add(newMap);
@@ -177,7 +185,7 @@ class GroupController extends GetxController {
                   // If 'groupID' already exists in the array, add 'point' to the existing value.
                   pointsList[i]['point'] =
                       (int.parse(userPoint.ceil().toString()) +
-                          int.parse(pointsList[i]['point']));
+                          int.parse(pointsList[i]['point'].toString()));
                   groupIDMatch = true;
                   break;
                 }
@@ -245,8 +253,11 @@ class GroupController extends GetxController {
   }
 
   createGroup(groupName, groupImage, adminsList, membersList) async {
+    Random random = Random();
+    int groupCode = 10000 + random.nextInt(90000);
     var groupID = Collections.GROUPS.doc().id;
     await Collections.GROUPS.doc(groupID).set({
+      "groupCode": groupCode.toString(),
       "groupName": groupName,
       "groupImage": groupImage,
       "groupID": groupID.toString(),
@@ -259,6 +270,7 @@ class GroupController extends GetxController {
         .collection(Collections.MYGROUPS)
         .doc()
         .set({
+      "groupCode": groupCode.toString(),
       "groupID": groupID,
       "groupName": groupName,
       "groupImage": groupImage,
@@ -268,7 +280,7 @@ class GroupController extends GetxController {
 
   addGroupTask(groupID, taskTitle, taskDate, String startTimeT, String endTimeT,
       taskScore, assignMembers) async {
-    final DateFormat format = DateFormat('hh:mm a');
+    final DateFormat format = DateFormat('yyyy-MM-dd HH:mm');
 
     // Parse the time strings into DateTime objects
     DateTime startTime = format.parse(startTimeT);

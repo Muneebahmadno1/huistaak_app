@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:avatar_stack/avatar_stack.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:delayed_display/delayed_display.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -9,6 +12,7 @@ import 'package:lottie/lottie.dart';
 import 'package:sizer/sizer.dart';
 import 'package:zoom_tap_animation/zoom_tap_animation.dart';
 
+import '../../constants/app_images.dart';
 import '../../constants/global_variables.dart';
 import '../../controllers/data_controller.dart';
 import '../../controllers/general_controller.dart';
@@ -47,7 +51,7 @@ class _GroupDetailState extends State<GroupDetail> {
         widget.groupID.toString(), widget.groupTitle.toString());
     for (int index = 0; index < userData.points.length; index++) {
       if (userData.points[index]['groupID'] == widget.groupID) {
-        achievedPoints = int.parse(userData.points[index]['point']);
+        achievedPoints = int.parse(userData.points[index]['point'].toString());
         break; // Stop searching once a match is found
       }
     }
@@ -91,11 +95,32 @@ class _GroupDetailState extends State<GroupDetail> {
     );
   }
 
+  double _progressValue = 0.0;
+  late DateTime _startTime;
+  late DateTime _endTime;
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     getData();
+  }
+
+  void _updateProgress() {
+    DateTime now = DateTime.now();
+    double progress = now.difference(_startTime).inMilliseconds /
+        _endTime.difference(_startTime).inMilliseconds;
+
+    // Ensure progress is between 0.0 and 1.0
+    if (progress > 1.0) {
+      progress = 1.0;
+      // Optionally, you can stop the timer here if needed
+      // timer.cancel();
+    }
+
+    setState(() {
+      _progressValue = progress;
+    });
   }
 
   @override
@@ -147,13 +172,33 @@ class _GroupDetailState extends State<GroupDetail> {
                                 width: 8,
                               ),
                               CircleAvatar(
-                                radius: 20,
-                                backgroundImage: _groupController.groupInfo[0]
-                                            ['groupImage'] ==
-                                        null
-                                    ? AssetImage("assets/images/man1.png")
-                                    : NetworkImage(_groupController.groupInfo[0]
-                                        ['groupImage']) as ImageProvider,
+                                radius: 20, // Adjust the radius as needed
+                                backgroundColor: Colors
+                                    .grey, // You can set a default background color
+                                child: ClipOval(
+                                  child: SizedBox(
+                                    height: 20 * 2,
+                                    width: 20 * 2,
+                                    child: _groupController.groupInfo[0]
+                                                ['groupImage'] ==
+                                            null
+                                        ? Image.asset(
+                                            AppImages
+                                                .profileImage, // Replace with your asset image path
+                                            fit: BoxFit.cover,
+                                          )
+                                        : CachedNetworkImage(
+                                            imageUrl: _groupController
+                                                .groupInfo[0]['groupImage'],
+                                            placeholder: (context, url) =>
+                                                CircularProgressIndicator(),
+                                            errorWidget:
+                                                (context, url, error) =>
+                                                    Icon(Icons.error),
+                                            fit: BoxFit.fill,
+                                          ),
+                                  ),
+                                ),
                               ),
                               SizedBox(
                                 width: 10,
@@ -181,7 +226,9 @@ class _GroupDetailState extends State<GroupDetail> {
                                       Container(
                                         width: 40.w,
                                         child: SelectableText(
-                                            widget.groupID.toString(),
+                                            _groupController.groupInfo[0]
+                                                    ['groupCode']
+                                                .toString(),
                                             maxLines: 1,
                                             style: bodySmall.copyWith(
                                                 color: Colors.white,
@@ -319,6 +366,32 @@ class _GroupDetailState extends State<GroupDetail> {
                                           padding: EdgeInsets.only(top: 16),
                                           physics: BouncingScrollPhysics(),
                                           itemBuilder: (context, index) {
+                                            // var a = double.parse(
+                                            //     _groupController
+                                            //         .toBeCompletedTaskList[
+                                            //             index]['duration']
+                                            //         .toString());
+                                            // _startTime =
+                                            //     DateFormat('yyyy-MM-dd HH:mm')
+                                            //         .parse(_groupController
+                                            //             .toBeCompletedTaskList[
+                                            //                 index]['startTime']
+                                            //             .toString());
+                                            //
+                                            // _endTime = _startTime.add(Duration(
+                                            //     hours: a
+                                            //         .toInt())); // Adjust the duration as needed
+                                            //
+                                            // if (_startTime
+                                            //     .isBefore(DateTime.now())) {
+                                            //   // Start the timer to update the progress
+                                            //   Timer.periodic(
+                                            //       Duration(seconds: 1),
+                                            //       (Timer timer) {
+                                            //     _updateProgress();
+                                            //   });
+                                            // }
+
                                             return Padding(
                                               padding:
                                                   EdgeInsets.only(bottom: 15.0),
@@ -462,6 +535,22 @@ class _GroupDetailState extends State<GroupDetail> {
                                                         SizedBox(
                                                           height: 20,
                                                         ),
+                                                        // _startTime.isBefore(
+                                                        //         DateTime.now())
+                                                        //     ? LinearProgressIndicator(
+                                                        //         value:
+                                                        //             _progressValue,
+                                                        //         backgroundColor:
+                                                        //             Colors
+                                                        //                 .white,
+                                                        //         valueColor:
+                                                        //             AlwaysStoppedAnimation<
+                                                        //                     Color>(
+                                                        //                 Colors
+                                                        //                     .blue),
+                                                        //       )
+                                                        //     : SizedBox.shrink(),
+                                                        SizedBox(height: 10),
                                                         Row(
                                                           mainAxisAlignment:
                                                               MainAxisAlignment
@@ -1032,6 +1121,7 @@ class _GroupDetailState extends State<GroupDetail> {
                                                                                       setState(() {
                                                                                         isFinish = true;
                                                                                       });
+                                                                                      successPopUp(context, "", "Task completed");
                                                                                       Future.delayed(const Duration(milliseconds: 3000), () async {
                                                                                         setState(() {
                                                                                           isFinish = false;
@@ -1131,7 +1221,7 @@ class _GroupDetailState extends State<GroupDetail> {
                                                                           .centerLeft,
                                                                   child: Text(
                                                                     _groupController
-                                                                            .toBeCompletedTaskList[index]
+                                                                            .notCompletedTaskList[index]
                                                                         [
                                                                         'taskTitle'],
                                                                     style: headingLarge
@@ -1157,7 +1247,7 @@ class _GroupDetailState extends State<GroupDetail> {
                                                                               () {
                                                                             _groupController.deleteTask(
                                                                               widget.groupID.toString(),
-                                                                              _groupController.toBeCompletedTaskList[index]['id'].toString(),
+                                                                              _groupController.notCompletedTaskList[index]['id'].toString(),
                                                                             );
                                                                             getData();
                                                                             Navigator.pop(context);
@@ -1185,7 +1275,7 @@ class _GroupDetailState extends State<GroupDetail> {
                                                                 data: DateFormat(
                                                                         'yyyy-MM-dd')
                                                                     .format(_groupController
-                                                                        .toBeCompletedTaskList[
+                                                                        .notCompletedTaskList[
                                                                             index]
                                                                             [
                                                                             'taskDate']
@@ -1198,12 +1288,12 @@ class _GroupDetailState extends State<GroupDetail> {
                                                                     "assets/icons/home/time.png",
                                                                 title: "Time",
                                                                 data: _groupController
-                                                                            .toBeCompletedTaskList[index]
+                                                                            .notCompletedTaskList[index]
                                                                         [
                                                                         'startTime'] +
                                                                     " to " +
                                                                     _groupController
-                                                                            .toBeCompletedTaskList[index]
+                                                                            .notCompletedTaskList[index]
                                                                         [
                                                                         'endTime']),
                                                             SizedBox(
@@ -1215,7 +1305,7 @@ class _GroupDetailState extends State<GroupDetail> {
                                                                 title:
                                                                     "Task Duration",
                                                                 data: _groupController
-                                                                            .toBeCompletedTaskList[index]
+                                                                            .notCompletedTaskList[index]
                                                                         [
                                                                         'duration'] +
                                                                     " hours"),
@@ -1228,7 +1318,7 @@ class _GroupDetailState extends State<GroupDetail> {
                                                                 title:
                                                                     "Task Score Points",
                                                                 data: _groupController
-                                                                            .toBeCompletedTaskList[
+                                                                            .notCompletedTaskList[
                                                                         index][
                                                                     'taskScore']),
                                                             SizedBox(
@@ -1240,7 +1330,7 @@ class _GroupDetailState extends State<GroupDetail> {
                                                                       .spaceBetween,
                                                               children: [
                                                                 _groupController
-                                                                            .toBeCompletedTaskList[index][
+                                                                            .notCompletedTaskList[index][
                                                                                 'assignMembers']
                                                                             .length >
                                                                         0
@@ -1253,7 +1343,7 @@ class _GroupDetailState extends State<GroupDetail> {
                                                                     : SizedBox
                                                                         .shrink(),
                                                                 _groupController
-                                                                            .toBeCompletedTaskList[index][
+                                                                            .notCompletedTaskList[index][
                                                                                 'assignMembers']
                                                                             .length >
                                                                         0
@@ -1266,7 +1356,7 @@ class _GroupDetailState extends State<GroupDetail> {
                                                                               34,
                                                                           avatars: [
                                                                             for (var n = 0;
-                                                                                n < _groupController.toBeCompletedTaskList[index]['assignMembers'].length;
+                                                                                n < _groupController.notCompletedTaskList[index]['assignMembers'].length;
                                                                                 n++)
                                                                               AssetImage("assets/images/man1.png"),
                                                                           ],
@@ -1276,162 +1366,9 @@ class _GroupDetailState extends State<GroupDetail> {
                                                                         .shrink(),
                                                               ],
                                                             ),
-                                                            for (int i = 0;
-                                                                i <
-                                                                    _groupController
-                                                                        .toBeCompletedTaskList[
-                                                                            index]
-                                                                            [
-                                                                            'assignMembers']
-                                                                        .length;
-                                                                i++)
-                                                              !_groupController
-                                                                      .toBeCompletedTaskList[
-                                                                          index]
-                                                                          [
-                                                                          'assignMembers']
-                                                                          [i]
-                                                                      .containsKey(
-                                                                          "endTask")
-                                                                  ? SizedBox
-                                                                      .shrink()
-                                                                  : LikeBarWidget(
-                                                                      image:
-                                                                          "assets/images/man1.png",
-                                                                      count: _groupController.toBeCompletedTaskList[index]['assignMembers'][i]
-                                                                              [
-                                                                              'pointsEarned'] ??
-                                                                          "0",
-                                                                      percent: (double.parse(_groupController.toBeCompletedTaskList[index]['assignMembers'][i]
-                                                                              [
-                                                                              'pointsEarned']) /
-                                                                          double.parse(_groupController.toBeCompletedTaskList[index]
-                                                                              [
-                                                                              'taskScore'])),
-                                                                      TotalCount:
-                                                                          _groupController.toBeCompletedTaskList[index]
-                                                                              [
-                                                                              'taskScore'],
-                                                                    ),
                                                             SizedBox(
                                                               height: 10,
                                                             ),
-                                                            _groupController
-                                                                    .toBeCompletedTaskList[
-                                                                        index][
-                                                                        'assignMembers']
-                                                                    .any((user) =>
-                                                                        user["userID"]
-                                                                            .toString() ==
-                                                                        userData
-                                                                            .userID
-                                                                            .toString())
-                                                                ? _groupController
-                                                                        .toBeCompletedTaskList[
-                                                                            index]
-                                                                            [
-                                                                            'assignMembers']
-                                                                        .any((map) =>
-                                                                            map['endTask'] ==
-                                                                            null)
-                                                                    ? Row(
-                                                                        children: [
-                                                                          _groupController.toBeCompletedTaskList[index]['assignMembers'].any((map) => map['startTask'] != null)
-                                                                              ? SizedBox.shrink()
-                                                                              : Expanded(
-                                                                                  child: Padding(
-                                                                                    padding: const EdgeInsets.symmetric(vertical: 8),
-                                                                                    child: ZoomTapAnimation(
-                                                                                      onTap: () async {
-                                                                                        await _groupController.startTask(widget.groupID.toString(), _groupController.toBeCompletedTaskList[index]['id'].toString(), widget.groupTitle);
-                                                                                        getData();
-                                                                                      },
-                                                                                      onLongTap: () {},
-                                                                                      enableLongTapRepeatEvent: false,
-                                                                                      longTapRepeatDuration: const Duration(milliseconds: 100),
-                                                                                      begin: 1.0,
-                                                                                      end: 0.93,
-                                                                                      beginDuration: const Duration(milliseconds: 20),
-                                                                                      endDuration: const Duration(milliseconds: 120),
-                                                                                      beginCurve: Curves.decelerate,
-                                                                                      endCurve: Curves.fastOutSlowIn,
-                                                                                      child: Container(
-                                                                                          padding: const EdgeInsets.symmetric(horizontal: 20),
-                                                                                          width: double.infinity,
-                                                                                          height: 50,
-                                                                                          decoration: BoxDecoration(
-                                                                                            color: Colors.white,
-                                                                                            borderRadius: BorderRadius.circular(50),
-                                                                                          ),
-                                                                                          child: Center(
-                                                                                            child: Text("Start", style: bodyLarge.copyWith(color: AppColors.buttonColor, fontWeight: FontWeight.bold)),
-                                                                                          )),
-                                                                                    ),
-                                                                                  ),
-                                                                                ),
-                                                                          SizedBox(
-                                                                            width:
-                                                                                10,
-                                                                          ),
-                                                                          _groupController.toBeCompletedTaskList[index]['assignMembers'].any((map) => map['startTask'] == null)
-                                                                              ? SizedBox.shrink()
-                                                                              : Expanded(
-                                                                                  child: Padding(
-                                                                                    padding: const EdgeInsets.symmetric(vertical: 8),
-                                                                                    child: ZoomTapAnimation(
-                                                                                      onTap: () async {
-                                                                                        setState(() {
-                                                                                          isLoading = true;
-                                                                                        });
-                                                                                        await _groupController.endTask(widget.groupID.toString(), _groupController.toBeCompletedTaskList[index]['id'].toString(), _groupController.toBeCompletedTaskList[index]['assignMembers'], double.parse(_groupController.toBeCompletedTaskList[index]['duration'].toString()) * 60, _groupController.toBeCompletedTaskList[index]['taskScore'], widget.groupTitle, _groupController.groupInfo[0]['adminsList']);
-                                                                                        Future.delayed(const Duration(milliseconds: 1000), () {
-                                                                                          print(_groupController.toBeCompletedTaskList[index]['assignMembers'].any((map) => map['startTask'] == null));
-                                                                                          print(widget.groupTitle.toString());
-                                                                                          setState(() {
-                                                                                            isFinish = false;
-                                                                                          });
-                                                                                        });
-                                                                                        Future.delayed(const Duration(milliseconds: 3000), () async {
-                                                                                          setState(() {});
-                                                                                          await getData();
-                                                                                          setState(() {
-                                                                                            isFinish = true;
-                                                                                          });
-                                                                                          Future.delayed(const Duration(milliseconds: 3000), () async {
-                                                                                            setState(() {
-                                                                                              isFinish = false;
-                                                                                            });
-                                                                                          });
-                                                                                        });
-                                                                                      },
-                                                                                      onLongTap: () {},
-                                                                                      enableLongTapRepeatEvent: false,
-                                                                                      longTapRepeatDuration: const Duration(milliseconds: 100),
-                                                                                      begin: 1.0,
-                                                                                      end: 0.93,
-                                                                                      beginDuration: const Duration(milliseconds: 20),
-                                                                                      endDuration: const Duration(milliseconds: 120),
-                                                                                      beginCurve: Curves.decelerate,
-                                                                                      endCurve: Curves.fastOutSlowIn,
-                                                                                      child: Container(
-                                                                                          padding: const EdgeInsets.symmetric(horizontal: 20),
-                                                                                          width: double.infinity,
-                                                                                          height: 50,
-                                                                                          decoration: BoxDecoration(
-                                                                                            color: Colors.white.withOpacity(0.5),
-                                                                                            borderRadius: BorderRadius.circular(50),
-                                                                                          ),
-                                                                                          child: Center(
-                                                                                            child: Text("Finish", style: bodyLarge.copyWith(color: Colors.white, fontWeight: FontWeight.bold)),
-                                                                                          )),
-                                                                                    ),
-                                                                                  ),
-                                                                                ),
-                                                                        ],
-                                                                      )
-                                                                    : SizedBox
-                                                                        .shrink()
-                                                                : SizedBox.shrink(),
                                                           ],
                                                         ),
                                                       ),

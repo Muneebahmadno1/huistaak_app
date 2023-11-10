@@ -398,14 +398,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.0"
-  flutter_intro:
-    dependency: "direct main"
-    description:
-      name: flutter_intro
-      sha256: e655d87742d1e520c507c77fa99b89dce57a8e2ec14b1667c5b794e55b1db397
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.0.3"
   flutter_launcher_icons:
     dependency: "direct main"
     description:

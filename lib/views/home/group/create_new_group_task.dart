@@ -1,7 +1,6 @@
 import 'package:delayed_display/delayed_display.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:huistaak/helper/page_navigation.dart';
 import 'package:huistaak/widgets/custom_widgets.dart';
 import 'package:zoom_tap_animation/zoom_tap_animation.dart';
 
@@ -10,6 +9,7 @@ import '../../../constants/global_variables.dart';
 import '../../../controllers/data_controller.dart';
 import '../../../controllers/group_controller.dart';
 import '../../../controllers/notification_controller.dart';
+import '../../../helper/page_navigation.dart';
 import '../../../widgets/date_picker.dart';
 import '../../../widgets/text_form_fields.dart';
 import '../group_detail.dart';
@@ -348,9 +348,13 @@ class _CreateNewGroupTaskState extends State<CreateNewGroupTask> {
                   slidingBeginOffset: Offset(0, 0),
                   child: ZoomTapAnimation(
                     onTap: () async {
+                      print(_dataController.startTime.value);
+                      print(_dataController.endTime.value);
                       if (taskFormField.currentState!.validate()) {
                         if (_dataController.startTime.value ==
-                            _dataController.endTime.value) {
+                                _dataController.endTime.value ||
+                            _dataController.startTime.value == "" ||
+                            _dataController.endTime.value == "") {
                           setState(() {
                             timeError = true;
                           });

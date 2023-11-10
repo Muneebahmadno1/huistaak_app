@@ -2,6 +2,7 @@ import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:sizer/sizer.dart';
 import 'package:zoom_tap_animation/zoom_tap_animation.dart';
 
@@ -124,40 +125,20 @@ class CustomDropDown extends StatefulWidget {
 
 class _CustomDropDownState extends State<CustomDropDown> {
   final HomeController _dataController = Get.find<HomeController>();
-  final List<String> items = [
-    '09:00 AM',
-    '10:00 AM',
-    '11:00 AM',
-    '12:00 PM',
-    '01:00 PM',
-    '02:00 PM',
-    '03:00 PM',
-    '04:00 PM',
-    '05:00 PM',
-    '06:00 PM',
-    '07:00 PM',
-    '08:00 PM',
-    '09:00 PM',
-    '10:00 PM',
-    '11:00 PM',
-    '12:00 AM',
-    '01:00 AM',
-    '02:00 AM',
-    '03:00 AM',
-    '04:00 AM',
-    '05:00 AM',
-    '06:00 AM',
-    '07:00 AM',
-    '08:00 AM',
-  ];
+
+  final List<String> items = [];
   String? selectedValue;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    selectedValue =
-        widget.dropDownTitle == 'Start Time' ? "09:00 AM" : "10:00 AM";
+    _dataController.startTime.value = "";
+    _dataController.endTime.value = "";
+    for (int i = 1; i < 24; i++)
+      items.add(DateFormat('yyyy-MM-dd HH:mm')
+          .format(DateTime.now().add(Duration(hours: i))));
+    // print(items);
   }
 
   @override
@@ -398,7 +379,10 @@ successPopUp(BuildContext context, page, message) {
                               onTap: () {
                                 setState(() {});
                                 Navigator.pop(context);
-                                PageTransition.pageProperNavigation(page: page);
+                                page == ""
+                                    ? null
+                                    : PageTransition.pageProperNavigation(
+                                        page: page);
                               },
                             )
                           ],

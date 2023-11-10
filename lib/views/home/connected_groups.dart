@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:delayed_display/delayed_display.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -12,7 +13,6 @@ import '../../constants/global_variables.dart';
 import '../../controllers/data_controller.dart';
 import '../../controllers/notification_controller.dart';
 import '../../widgets/custom_widgets.dart';
-import '../../widgets/intro_widget.dart';
 import '../../widgets/text_form_fields.dart';
 
 class ConnectedGroupScreen extends StatefulWidget {
@@ -22,7 +22,6 @@ class ConnectedGroupScreen extends StatefulWidget {
 
 class _ConnectedGroupScreenState extends State<ConnectedGroupScreen> {
   bool isLoading = false;
-  late Intro intro;
   TextEditingController searchController = TextEditingController();
   bool isUnreadNotificationPresent = false;
   final HomeController _dataController = Get.find<HomeController>();
@@ -37,25 +36,6 @@ class _ConnectedGroupScreenState extends State<ConnectedGroupScreen> {
     await _notiController.getNotifications();
     isUnreadNotificationPresent = _notiController.notificationList
         .any((element) => element["read"] == false);
-    // intro = Intro(
-    //   stepCount: 2,
-    //   maskClosable: true,
-    //   onHighlightWidgetTap: (introStatus) {
-    //     print(introStatus);
-    //   },
-    //
-    //   /// use defaultTheme
-    //   widgetBuilder: StepWidgetBuilder.useDefaultTheme(
-    //     texts: [
-    //       "Languages.of(context)!.HOME_GUIDE_1",
-    //     ],
-    //     buttonTextBuilder: (currPage, totalPage) {
-    //       return currPage < totalPage - 1 ? "Next" : "Finish";
-    //     },
-    //   ),
-    // );
-    // intro.setStepConfig(0, borderRadius: BorderRadius.circular(5));
-    // intro.start(context);
     setState(() {
       isLoading = false;
     });
@@ -97,15 +77,29 @@ class _ConnectedGroupScreenState extends State<ConnectedGroupScreen> {
                         Row(
                           children: [
                             CircleAvatar(
-                              radius: 20,
-                              backgroundImage: userData.imageUrl == ""
-                                  ? AssetImage(
-                                      AppImages.profileImage,
-                                    )
-                                  : NetworkImage(
-                                      userData.imageUrl,
-                                    ) as ImageProvider,
-                              // AssetImage("assets/images/man1.png"),
+                              radius: 20, // Adjust the radius as needed
+                              backgroundColor: Colors
+                                  .grey, // You can set a default background color
+                              child: ClipOval(
+                                child: SizedBox(
+                                  height: 20 * 2,
+                                  width: 20 * 2,
+                                  child: userData.imageUrl == ""
+                                      ? Image.asset(
+                                          AppImages
+                                              .profileImage, // Replace with your asset image path
+                                          fit: BoxFit.cover,
+                                        )
+                                      : CachedNetworkImage(
+                                          imageUrl: userData.imageUrl,
+                                          placeholder: (context, url) =>
+                                              CircularProgressIndicator(),
+                                          errorWidget: (context, url, error) =>
+                                              Icon(Icons.error),
+                                          fit: BoxFit.fill,
+                                        ),
+                                ),
+                              ),
                             ),
                             SizedBox(
                               width: 10,
