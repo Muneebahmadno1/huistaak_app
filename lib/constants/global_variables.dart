@@ -69,6 +69,17 @@ Future getUserLoggedIn() async {
   return log;
 }
 
+void setUserFirstTime(bool key) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  prefs.setBool("FirstTime", key);
+}
+
+Future getUserFirstTime() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  var log = prefs.getBool("FirstTime") ?? false;
+  return log;
+}
+
 void saveUserData({@required userID}) async {
   SharedPreferences pref = await SharedPreferences.getInstance();
   await pref.setString("userID", userID);

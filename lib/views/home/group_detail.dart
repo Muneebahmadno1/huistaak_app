@@ -391,7 +391,6 @@ class _GroupDetailState extends State<GroupDetail> {
                                             //     _updateProgress();
                                             //   });
                                             // }
-
                                             return Padding(
                                               padding:
                                                   EdgeInsets.only(bottom: 15.0),
@@ -450,7 +449,7 @@ class _GroupDetailState extends State<GroupDetail> {
                                                                     onTap: () {
                                                                       confirmPopUp(
                                                                           context,
-                                                                          "Are you sure ,you want to delete task?",
+                                                                          "Are you sure, you want to delete task?",
                                                                           () {
                                                                         _groupController
                                                                             .deleteTask(
@@ -877,7 +876,7 @@ class _GroupDetailState extends State<GroupDetail> {
                                                                             () {
                                                                           confirmPopUp(
                                                                               context,
-                                                                              "Are you sure ,you want to delete task?",
+                                                                              "Are you sure, you want to delete task?",
                                                                               () {
                                                                             _groupController.deleteTask(
                                                                               widget.groupID.toString(),
@@ -1243,7 +1242,7 @@ class _GroupDetailState extends State<GroupDetail> {
                                                                             () {
                                                                           confirmPopUp(
                                                                               context,
-                                                                              "Are you sure ,you want to delete task?",
+                                                                              "Are you sure, you want to delete task?",
                                                                               () {
                                                                             _groupController.deleteTask(
                                                                               widget.groupID.toString(),

@@ -50,11 +50,11 @@ class _ConnectedGroupListState extends State<ConnectedGroupList> {
                       child: SizedBox(
                         height: 28 * 2,
                         width: 28 * 2,
-                        child: widget.imageUrl == "assets/images/man1.png"
+                        child: widget.imageUrl == "assets/images/groupIcon.png"
                             ? Image.asset(
                                 widget
                                     .imageUrl, // Replace with your asset image path
-                                fit: BoxFit.cover,
+                                fit: BoxFit.fitHeight,
                               )
                             : CachedNetworkImage(
                                 imageUrl: widget.imageUrl,

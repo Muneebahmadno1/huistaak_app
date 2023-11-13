@@ -135,7 +135,7 @@ class _CustomDropDownState extends State<CustomDropDown> {
     super.initState();
     _dataController.startTime.value = "";
     _dataController.endTime.value = "";
-    for (int i = 1; i < 24; i++)
+    for (int i = 0; i < 24; i++)
       items.add(DateFormat('yyyy-MM-dd HH:mm')
           .format(DateTime.now().add(Duration(hours: i))));
     // print(items);
@@ -280,13 +280,13 @@ confirmPopUp(BuildContext context, message, VoidCallback? yesTap) {
                               height: 20,
                             ),
                             Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
+                              mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 TextButton(
                                   child: Text(
                                     "No",
-                                    style:
-                                        bodyNormal.copyWith(color: Colors.red),
+                                    style: bodyNormal.copyWith(
+                                        color: Colors.black),
                                   ),
                                   onPressed: () {
                                     Navigator.pop(context);

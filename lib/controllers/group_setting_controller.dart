@@ -99,7 +99,7 @@ class GroupSettingController extends GetxController {
           "read": false,
           "notificationType": 4,
           "notification":
-              "you have been made admin of " + groupTitle.toString() + " group",
+              "You have been made admin of " + groupTitle.toString() + " group",
           "Time": DateTime.now(),
           "notiID": notiID.id,
           "userToJoin": FieldValue.arrayUnion([]),
@@ -117,7 +117,7 @@ class GroupSettingController extends GetxController {
           };
           _notiController.sendNotifications(
               notiUserData.fcmToken.toString(),
-              "you have been made admin of " + groupTitle.toString() + " group",
+              "You have been made admin of " + groupTitle.toString() + " group",
               data);
         });
       } else if (groupInfo[0]['adminsList'].isEmpty) {
@@ -197,7 +197,7 @@ class GroupSettingController extends GetxController {
     notiID.set({
       "read": false,
       "notificationType": 4,
-      "notification": "you have been made admin of " + groupTitle.toString(),
+      "notification": "You have been made admin of " + groupTitle.toString(),
       "Time": DateTime.now(),
       "notiID": notiID.id,
       "userToJoin": FieldValue.arrayUnion([]),
@@ -214,7 +214,7 @@ class GroupSettingController extends GetxController {
         'end_time': DateTime.now().toString(),
       };
       _notiController.sendNotifications(notiUserData.fcmToken.toString(),
-          "you have been made admin of " + groupTitle.toString(), data);
+          "You have been made admin of " + groupTitle.toString(), data);
     });
   }
 }

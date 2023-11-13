@@ -5,6 +5,8 @@ import 'package:get/get.dart';
 import 'package:huistaak/views/home/connect_new_group.dart';
 import 'package:huistaak/views/home/widgets/connected_group_widget.dart';
 import 'package:huistaak/views/notification/notifications.dart';
+import 'package:huistaak/widgets/show_case_widget.dart';
+import 'package:showcaseview/showcaseview.dart';
 import 'package:sizer/sizer.dart';
 import 'package:zoom_tap_animation/zoom_tap_animation.dart';
 
@@ -22,8 +24,11 @@ class ConnectedGroupScreen extends StatefulWidget {
 
 class _ConnectedGroupScreenState extends State<ConnectedGroupScreen> {
   bool isLoading = false;
+  final GlobalKey globalKeyOne = GlobalKey();
+  // final GlobalKey globalKeyFour = GlobalKey();
   TextEditingController searchController = TextEditingController();
   bool isUnreadNotificationPresent = false;
+  bool firstTime = false;
   final HomeController _dataController = Get.find<HomeController>();
   final NotificationController _notiController =
       Get.find<NotificationController>();
@@ -36,6 +41,12 @@ class _ConnectedGroupScreenState extends State<ConnectedGroupScreen> {
     await _notiController.getNotifications();
     isUnreadNotificationPresent = _notiController.notificationList
         .any((element) => element["read"] == false);
+    firstTime = await getUserFirstTime();
+    firstTime
+        ? null
+        : WidgetsBinding.instance.addPostFrameCallback(
+            (_) => ShowCaseWidget.of(context).startShowCase([globalKeyOne]));
+    setUserFirstTime(true);
     setState(() {
       isLoading = false;
     });
@@ -86,8 +97,8 @@ class _ConnectedGroupScreenState extends State<ConnectedGroupScreen> {
                                   width: 20 * 2,
                                   child: userData.imageUrl == ""
                                       ? Image.asset(
-                                          AppImages
-                                              .profileImage, // Replace with your asset image path
+                                          AppImages.profileImage,
+                                          // Replace with your asset image path
                                           fit: BoxFit.cover,
                                         )
                                       : CachedNetworkImage(
@@ -118,15 +129,9 @@ class _ConnectedGroupScreenState extends State<ConnectedGroupScreen> {
                             Get.to(() => Notifications());
                           },
                           child: SizedBox(
-                            // key: intro.keys[1],
                             width: 22,
                             child: Stack(
                               children: [
-                                SizedBox(
-                                    height: 20,
-                                    width: 20,
-                                    child: Image.asset(
-                                        "assets/icons/home/notification.png")),
                                 isUnreadNotificationPresent
                                     ? Positioned(
                                         right: 1,
@@ -137,6 +142,11 @@ class _ConnectedGroupScreenState extends State<ConnectedGroupScreen> {
                                         ),
                                       )
                                     : SizedBox.shrink(),
+                                SizedBox(
+                                    height: 20,
+                                    width: 20,
+                                    child: Image.asset(
+                                        "assets/icons/home/notification.png")),
                               ],
                             ),
                           ),
@@ -215,7 +225,7 @@ class _ConnectedGroupScreenState extends State<ConnectedGroupScreen> {
                                         imageUrl:
                                             _dataController.chatUsers[index]
                                                     ['groupImage'] ??
-                                                "assets/images/man1.png",
+                                                "assets/images/groupIcon.png",
                                         time: _dataController.chatUsers[index]
                                                     ['date'] ==
                                                 null
@@ -235,14 +245,20 @@ class _ConnectedGroupScreenState extends State<ConnectedGroupScreen> {
                       ? Expanded(child: SizedBox())
                       : SizedBox.shrink(),
                   _dataController.chatUsers.isEmpty
-                      ? DelayedDisplay(
-                          delay: Duration(milliseconds: 600),
-                          slidingBeginOffset: Offset(0, 0),
-                          child: CustomButton(
-                            onTap: () {
-                              Get.to(() => ConnectNewGroup());
-                            },
-                            buttonText: "Create a new Group",
+                      ? ShowCaseView(
+                          globalKey: globalKeyOne,
+                          title: 'Create or Join group',
+                          description:
+                              'Create or Join group by clicking this button.',
+                          child: DelayedDisplay(
+                            delay: Duration(milliseconds: 600),
+                            slidingBeginOffset: Offset(0, 0),
+                            child: CustomButton(
+                              onTap: () {
+                                Get.to(() => ConnectNewGroup());
+                              },
+                              buttonText: "Create a new Group",
+                            ),
                           ),
                         )
                       : SizedBox.shrink(),

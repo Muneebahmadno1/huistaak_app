@@ -17,6 +17,7 @@ class AppImages {
 
   ///Home
   static const profileImage = "assets/images/man1.png";
+  static const groupIcon = "assets/images/groupIcon.png";
   static const successIcon = "assets/icons/success.png";
 
   ///Buttons
