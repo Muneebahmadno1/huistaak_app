@@ -5,6 +5,7 @@ import 'package:huistaak/controllers/general_controller.dart';
 import 'package:huistaak/views/goals/new_goals_screen.dart';
 import 'package:huistaak/views/home/connected_groups.dart';
 import 'package:huistaak/views/profile/profile_screen.dart';
+import 'package:showcaseview/showcaseview.dart';
 import 'package:water_drop_nav_bar/water_drop_nav_bar.dart';
 
 class CustomBottomNavBar extends StatefulWidget {
@@ -33,32 +34,40 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
 
   @override
   Widget build(BuildContext context) {
-    return Obx(
-      () => Scaffold(
-        body: _pages[_generalController.currentIndex],
-        bottomNavigationBar: WaterDropNavBar(
-          backgroundColor: Colors.white,
-          waterDropColor: AppColors.buttonColor,
-          onItemSelected: (int index) {
-            _generalController.onBottomBarTapped(index);
-            setState(() {
-              selectedIndex = index;
-            });
-          },
-          selectedIndex: selectedIndex,
-          bottomPadding: 20,
-          barItems: <BarItem>[
-            BarItem(
-              filledIcon: Icons.home_filled,
-              outlinedIcon: Icons.home_outlined,
-            ),
-            BarItem(filledIcon: Icons.flag, outlinedIcon: Icons.flag_outlined),
-            BarItem(
-              filledIcon: Icons.person_2,
-              outlinedIcon: Icons.person_2_outlined,
-            ),
-          ],
+    return Scaffold(
+      body: Builder(
+        builder: (_) => ShowCaseWidget(
+          builder: Builder(
+              builder: (context) => _pages[_generalController.currentIndex]),
         ),
+      ),
+      // MaterialPageRoute(
+      //   builder: (_) => ShowCaseWidget(
+      //     builder: Builder(builder: (context) => ConnectedGroupScreen()),
+      //   ),
+      // ),
+      bottomNavigationBar: WaterDropNavBar(
+        backgroundColor: Colors.white,
+        waterDropColor: AppColors.buttonColor,
+        onItemSelected: (int index) {
+          _generalController.onBottomBarTapped(index);
+          setState(() {
+            selectedIndex = index;
+          });
+        },
+        selectedIndex: selectedIndex,
+        bottomPadding: 20,
+        barItems: <BarItem>[
+          BarItem(
+            filledIcon: Icons.home_filled,
+            outlinedIcon: Icons.home_outlined,
+          ),
+          BarItem(filledIcon: Icons.flag, outlinedIcon: Icons.flag_outlined),
+          BarItem(
+            filledIcon: Icons.person_2,
+            outlinedIcon: Icons.person_2_outlined,
+          ),
+        ],
       ),
     );
   }

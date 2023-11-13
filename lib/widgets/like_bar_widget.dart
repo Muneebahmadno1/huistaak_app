@@ -40,7 +40,7 @@ class _LikeBarWidgetState extends State<LikeBarWidget> {
           child: LinearPercentIndicator(
             padding: EdgeInsets.zero,
             lineHeight: 7.0,
-            percent: widget.percent,
+            percent: widget.percent >= 1.0 ? 1.0 : widget.percent,
             barRadius: Radius.circular(10),
             backgroundColor: Colors.white70,
             progressColor: AppColors.primaryColor,

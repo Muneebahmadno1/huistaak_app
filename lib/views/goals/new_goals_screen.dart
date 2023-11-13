@@ -97,8 +97,9 @@ class _NewGoalsScreenState extends State<NewGoalsScreen> {
                                 userData.points[index]['point'].toString() ==
                                         "[]"
                                     ? achievedPoints = 0
-                                    : achievedPoints = int.parse(
-                                        userData.points[index]['point']);
+                                    : achievedPoints = int.parse(userData
+                                        .points[index]['point']
+                                        .toString());
                                 break; // Stop searching once a match is found
                               }
                             }
@@ -142,7 +143,7 @@ class _NewGoalsScreenState extends State<NewGoalsScreen> {
                                                 ? InkWell(
                                                     onTap: () {
                                                       confirmPopUp(context,
-                                                          "Are you sure ,you want to delete goal?",
+                                                          "Are you sure, you want to delete goal?",
                                                           () {
                                                         _goalController
                                                             .deleteGoal(
@@ -193,11 +194,11 @@ class _NewGoalsScreenState extends State<NewGoalsScreen> {
                                         LikeBarWidget(
                                             image: "assets/images/man1.png",
                                             count: achievedPoints.toString(),
-                                            percent: achievedPoints /
+                                            percent: (achievedPoints /
                                                 int.parse(_goalController
                                                     .goalList[index]
                                                         ['goalPoints']
-                                                    .toString()),
+                                                    .toString())),
                                             TotalCount: _goalController
                                                 .goalList[index]['goalPoints']
                                                 .toString()),

@@ -51,7 +51,6 @@ class GroupController extends GetxController {
         "id": a['id'],
       });
     }
-
     for (int j = 0; j < taskList.length; j++) {
       taskList[j]['assignMembers'].any((map) =>
               (map['userID'].toString() == userData.userID.toString()) &&
@@ -70,7 +69,7 @@ class GroupController extends GetxController {
                       map['userID'].toString() == userData.userID.toString() &&
                       map['endTask'] != null)
                   ? completedTaskList.add(taskList[j])
-                  : null;
+                  : toBeCompletedTaskList.add(taskList[j]);
     }
     return true;
   }
@@ -215,7 +214,7 @@ class GroupController extends GetxController {
               "read": false,
               "notificationType": 3,
               "notification": userData.displayName.toString() +
-                  " has completed the task in " +
+                  "has completed the task in " +
                   groupTitle.toString(),
               "Time": DateTime.now(),
               "notiID": notiID.id,
@@ -235,7 +234,7 @@ class GroupController extends GetxController {
               _notiController.sendNotifications(
                   notiUserData.fcmToken.toString(),
                   userData.displayName.toString() +
-                      " has completed the task in " +
+                      "has completed the task in " +
                       groupTitle.toString(),
                   data);
             });

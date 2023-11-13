@@ -102,15 +102,18 @@ class _CreateNewGroupState extends State<CreateNewGroup> {
                     children: [
                       CircleAvatar(
                         radius: 60,
-                        backgroundColor: AppColors.buttonColor,
-                        child: CircleAvatar(
-                          radius: 58,
-                          backgroundImage: imageFile != null
-                              ? FileImage(imageFile!) as ImageProvider
-                              : AssetImage(
-                                  AppImages.profileImage,
+                        child: ClipOval(
+                            child: Container(
+                          height: 60 * 2,
+                          width: 60 * 2,
+                          color: Colors.grey,
+                          child: imageFile != null
+                              ? Image.file(imageFile!)
+                              : Image.asset(
+                                  AppImages.groupIcon,
+                                  fit: BoxFit.fitHeight,
                                 ),
-                        ),
+                        )),
                       ),
                       Positioned(
                         right: 0,

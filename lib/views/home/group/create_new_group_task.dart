@@ -2,6 +2,7 @@ import 'package:delayed_display/delayed_display.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:huistaak/widgets/custom_widgets.dart';
+import 'package:sizer/sizer.dart';
 import 'package:zoom_tap_animation/zoom_tap_animation.dart';
 
 import '../../../constants/custom_validators.dart';
@@ -13,7 +14,6 @@ import '../../../helper/page_navigation.dart';
 import '../../../widgets/date_picker.dart';
 import '../../../widgets/text_form_fields.dart';
 import '../group_detail.dart';
-import 'assign_task_member.dart';
 
 class CreateNewGroupTask extends StatefulWidget {
   final groupID;
@@ -37,10 +37,23 @@ class _CreateNewGroupTaskState extends State<CreateNewGroupTask> {
   bool isLoading = false;
   final GlobalKey<FormState> taskFormField = GlobalKey();
 
+  bool loading = false;
+
+  getData() async {
+    setState(() {
+      loading = true;
+    });
+    await _dataController.getTaskMember(widget.groupID);
+    setState(() {
+      loading = false;
+    });
+  }
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    getData();
   }
 
   @override
@@ -278,68 +291,123 @@ class _CreateNewGroupTaskState extends State<CreateNewGroupTask> {
                 SizedBox(
                   height: 20,
                 ),
-                DelayedDisplay(
-                  delay: Duration(milliseconds: 1200),
-                  slidingBeginOffset: Offset(1, 0),
-                  child: Obx(
-                    () => Row(
-                      children: [
-                        for (int a = 0;
-                            a < _dataController.assignTaskMember.length;
-                            a++)
-                          InkWell(
-                            onTap: () {
-                              _dataController.assignTaskMember.removeAt(a);
-                            },
-                            child: SizedBox(
-                              height: 70,
-                              width: 70,
-                              child: Stack(
-                                alignment: Alignment.center,
-                                children: [
-                                  Container(
-                                    height: 60,
-                                    width: 60,
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      image: DecorationImage(
-                                          image: AssetImage(
-                                              "assets/images/man1.png"),
-                                          fit: BoxFit.cover),
-                                    ),
+                loading
+                    ? SizedBox.shrink()
+                    : DelayedDisplay(
+                        delay: Duration(milliseconds: 1200),
+                        slidingBeginOffset: Offset(1, 0),
+                        child:
+                            // Obx(
+                            //   () =>
+                            Row(
+                          children: [
+                            for (int a = 0;
+                                a < _dataController.userList.length;
+                                a++)
+                              InkWell(
+                                onTap: () {
+                                  // _dataController.assignTaskMember.removeAt(a);
+
+                                  setState(() {
+                                    if (_dataController.assignTaskMember.any(
+                                        (map) =>
+                                            map['userID'] ==
+                                            _dataController.userList[a]
+                                                ['userID'])) {
+                                      _dataController.assignTaskMember
+                                          .removeWhere((map) =>
+                                              map['userID'] ==
+                                              _dataController.userList[a]
+                                                  ['userID']);
+                                    } else {
+                                      _dataController.assignTaskMember.add({
+                                        'userID': _dataController.userList[a]
+                                            ['userID'],
+                                        'displayName': _dataController
+                                            .userList[a]['displayName'],
+                                        'imageUrl': _dataController.userList[a]
+                                            ['imageUrl']
+                                      });
+                                    }
+                                  });
+                                },
+                                child: SizedBox(
+                                  height: 10.h,
+                                  width: 20.w,
+                                  child: Stack(
+                                    alignment: Alignment.center,
+                                    children: [
+                                      Column(
+                                        children: [
+                                          Container(
+                                            height: 60,
+                                            width: 60,
+                                            decoration: BoxDecoration(
+                                              shape: BoxShape.circle,
+                                              image: DecorationImage(
+                                                  image: AssetImage(
+                                                      "assets/images/man1.png"),
+                                                  fit: BoxFit.cover),
+                                            ),
+                                          ),
+                                          Text(_dataController.userList[a]
+                                                  ['displayName']
+                                              .toString()),
+                                        ],
+                                      ),
+                                      _dataController.assignTaskMember.any(
+                                              (person) =>
+                                                  person['userID'] ==
+                                                  _dataController.userList[a]
+                                                      ['userID'])
+                                          ? Positioned(
+                                              right: 2,
+                                              bottom: 20,
+                                              child: Image.asset(
+                                                "assets/images/added.png",
+                                                height: 20,
+                                              ),
+                                            )
+                                          : Positioned(
+                                              right: 2,
+                                              bottom: 20,
+                                              child: Image.asset(
+                                                "assets/images/addNow.png",
+                                                height: 20,
+                                              ),
+                                            )
+                                    ],
                                   ),
-                                ],
+                                ),
                               ),
+                            SizedBox(
+                              width: 10,
                             ),
-                          ),
-                        SizedBox(
-                          width: 10,
+                            // ZoomTapAnimation(
+                            //   onTap: () {
+                            //     Get.to(() => AssignMember(
+                            //           from: 'groupTask',
+                            //           groupID: widget.groupID,
+                            //         ));
+                            //   },
+                            //   child: Container(
+                            //       height: 56,
+                            //       width: 56,
+                            //       decoration: BoxDecoration(
+                            //           color: Colors.white,
+                            //           shape: BoxShape.circle,
+                            //           image: DecorationImage(
+                            //               image: AssetImage(
+                            //                   "assets/images/dotted_border.png"))),
+                            //       child: Icon(
+                            //         Icons.add,
+                            //         color: AppColors.buttonColor,
+                            //       )),
+                            // ),
+                          ],
                         ),
-                        ZoomTapAnimation(
-                          onTap: () {
-                            Get.to(() => AssignMember(
-                                  from: 'groupTask',
-                                  groupID: widget.groupID,
-                                ));
-                          },
-                          child: Container(
-                              height: 56,
-                              width: 56,
-                              decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  shape: BoxShape.circle,
-                                  image: DecorationImage(
-                                      image: AssetImage(
-                                          "assets/images/dotted_border.png"))),
-                              child: Icon(
-                                Icons.add,
-                                color: AppColors.buttonColor,
-                              )),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
+                        // ),
+                      ),
                 SizedBox(
                   height: 30,
                 ),

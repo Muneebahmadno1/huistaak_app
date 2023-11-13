@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:huistaak/widgets/custom_widgets.dart';
 import 'package:sizer/sizer.dart';
-import 'package:zoom_tap_animation/zoom_tap_animation.dart';
 
 import '../../constants/custom_validators.dart';
 import '../../constants/global_variables.dart';
@@ -161,70 +160,70 @@ class _CreateNewTaskState extends State<CreateNewTask> {
                         ),
                       ),
                       const SizedBox(height: 10),
-                      // DelayedDisplay(
-                      //   delay: Duration(milliseconds: 400),
-                      //   slidingBeginOffset: Offset(0, 0),
-                      //   child: AuthTextField(
-                      //     isNumber: true,
-                      //     controller: goalPointsEditingController,
-                      //     validator: (value) => CustomValidator.isEmpty(value),
-                      //     hintText: "No. of points to achieve goal",
-                      //   ),
-                      // ),
                       DelayedDisplay(
-                        delay: Duration(milliseconds: 1000),
+                        delay: Duration(milliseconds: 400),
                         slidingBeginOffset: Offset(0, 0),
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 50),
-                          width: double.infinity,
-                          height: 60,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(50),
-                            color: AppColors.buttonColor.withOpacity(0.2),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              ZoomTapAnimation(
-                                onTap: () {
-                                  if (points >= 2) {
-                                    setState(() {
-                                      points = points - 1;
-                                    });
-                                  }
-                                },
-                                child: SizedBox(
-                                  height: 40,
-                                  width: 40,
-                                  child: Icon(
-                                    Icons.arrow_back_ios_new,
-                                    color: AppColors.buttonColor,
-                                  ),
-                                ),
-                              ),
-                              Text(
-                                "$points Points",
-                                style: headingSmall,
-                              ),
-                              ZoomTapAnimation(
-                                onTap: () {
-                                  setState(() {
-                                    points = points + 1;
-                                  });
-                                },
-                                child: SizedBox(
-                                  height: 40,
-                                  width: 40,
-                                  child: Icon(
-                                    Icons.arrow_forward_ios,
-                                    color: AppColors.buttonColor,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
+                        child: AuthTextField(
+                          isNumber: true,
+                          controller: goalPointsEditingController,
+                          validator: (value) => CustomValidator.isEmpty(value),
+                          hintText: "No. of points to achieve goal",
                         ),
                       ),
+                      // DelayedDisplay(
+                      //   delay: Duration(milliseconds: 1000),
+                      //   slidingBeginOffset: Offset(0, 0),
+                      //   child: Container(
+                      //     padding: const EdgeInsets.symmetric(horizontal: 50),
+                      //     width: double.infinity,
+                      //     height: 60,
+                      //     decoration: BoxDecoration(
+                      //       borderRadius: BorderRadius.circular(50),
+                      //       color: AppColors.buttonColor.withOpacity(0.2),
+                      //     ),
+                      //     child: Row(
+                      //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      //       children: [
+                      //         ZoomTapAnimation(
+                      //           onTap: () {
+                      //             if (points >= 10) {
+                      //               setState(() {
+                      //                 points = points - 10;
+                      //               });
+                      //             }
+                      //           },
+                      //           child: SizedBox(
+                      //             height: 40,
+                      //             width: 40,
+                      //             child: Icon(
+                      //               Icons.arrow_back_ios_new,
+                      //               color: AppColors.buttonColor,
+                      //             ),
+                      //           ),
+                      //         ),
+                      //         Text(
+                      //           "$points Points",
+                      //           style: headingSmall,
+                      //         ),
+                      //         ZoomTapAnimation(
+                      //           onTap: () {
+                      //             setState(() {
+                      //               points = points + 10;
+                      //             });
+                      //           },
+                      //           child: SizedBox(
+                      //             height: 40,
+                      //             width: 40,
+                      //             child: Icon(
+                      //               Icons.arrow_forward_ios,
+                      //               color: AppColors.buttonColor,
+                      //             ),
+                      //           ),
+                      //         ),
+                      //       ],
+                      //     ),
+                      //   ),
+                      // ),
                       const SizedBox(height: 20),
                       DelayedDisplay(
                         delay: Duration(milliseconds: 500),
@@ -392,7 +391,7 @@ class _CreateNewTaskState extends State<CreateNewTask> {
                                 _dataController.goalSelectedDate,
                                 _dataController.startTime.toString(),
                                 _dataController.assignGoalMember,
-                                points.toString(),
+                                goalPointsEditingController.toString(),
                               );
                               _dataController.assignGoalMember.clear();
                               Get.find<GeneralController>()
