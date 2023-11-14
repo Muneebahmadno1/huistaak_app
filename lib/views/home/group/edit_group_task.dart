@@ -20,18 +20,22 @@ import '../../../models/user_model.dart';
 import '../../../widgets/text_form_fields.dart';
 import '../group_detail.dart';
 
-class CreateNewGroupTask extends StatefulWidget {
+class EditGroupTask extends StatefulWidget {
   final groupID;
   final groupTitle;
+  final taskDetails;
 
-  const CreateNewGroupTask(
-      {super.key, required this.groupID, required this.groupTitle});
+  const EditGroupTask(
+      {super.key,
+      required this.groupID,
+      required this.groupTitle,
+      required this.taskDetails});
 
   @override
-  State<CreateNewGroupTask> createState() => _CreateNewGroupTaskState();
+  State<EditGroupTask> createState() => _EditGroupTaskState();
 }
 
-class _CreateNewGroupTaskState extends State<CreateNewGroupTask> {
+class _EditGroupTaskState extends State<EditGroupTask> {
   final GroupController _groupController = Get.find<GroupController>();
   final HomeController _dataController = Get.find<HomeController>();
   final NotificationController _notiController =
@@ -42,8 +46,9 @@ class _CreateNewGroupTaskState extends State<CreateNewGroupTask> {
   int points = 1;
   bool timeError = false;
   bool isLoading = false;
-  final GlobalKey<FormState> taskFormField = GlobalKey();
   List<UserModel> memberList = [];
+  final GlobalKey<FormState> taskFormField = GlobalKey();
+
   bool loading = false;
 
   String? selectedValueStart;
@@ -59,14 +64,21 @@ class _CreateNewGroupTaskState extends State<CreateNewGroupTask> {
 
   getData() async {
     setState(() {
-      _dataController.startTime.value = "";
-      _dataController.endTime.value = "";
-      _dataController.selectedDate = DateTime.now();
       loading = true;
+      taskNameEditingController.text =
+          widget.taskDetails['taskTitle'].toString();
+      _dataController.selectedDate = widget.taskDetails['taskDate'].toDate();
+      points = int.parse(widget.taskDetails['taskScore']);
+
+      _dataController.startTime.value =
+          widget.taskDetails['startTime'].toString();
+      _dataController.endTime.value = widget.taskDetails['endTime'].toString();
+      for (int i = 0; i < widget.taskDetails['assignMembers'].length; i++)
+        _dataController.assignTaskMember
+            .addAll({widget.taskDetails['assignMembers'][i]});
     });
     getTimesDropDownData(DateTime.now());
     await _dataController.getTaskMember(widget.groupID);
-
     for (int i = 0; i < _dataController.userList.length; i++) {
       memberList.add(await _groupSettingController
           .fetchUser(_dataController.userList[i]['userID'].toString()));
@@ -91,8 +103,9 @@ class _CreateNewGroupTaskState extends State<CreateNewGroupTask> {
         backgroundColor: Colors.transparent,
         automaticallyImplyLeading: false,
         title: CustomAppBar(
-          pageTitle: "Create a new group task",
+          pageTitle: "Edit Group Task",
           onTap: () {
+            _dataController.assignTaskMember.clear();
             Get.back();
           },
           leadingButton: Icon(
@@ -217,19 +230,9 @@ class _CreateNewGroupTaskState extends State<CreateNewGroupTask> {
                                     isExpanded: true,
                                     hint: Row(
                                       children: [
-                                        // (widget.dropDownTitle == 'Start Time' ||
-                                        //     widget.dropDownTitle == 'End Time')
-                                        //     ?
-                                        Icon(Icons.access_time_outlined),
-                                        // : SizedBox.shrink(),
-                                        // (widget.dropDownTitle == 'Start Time' ||
-                                        //     widget.dropDownTitle == 'End Time')
-                                        //     ?
-                                        SizedBox(
-                                          width: 8,
-                                        ),
-                                        // : SizedBox.shrink(),
-                                        Text("Start Time",
+                                        Text(
+                                            widget.taskDetails['startTime']
+                                                .toString(),
                                             style: bodyNormal.copyWith(
                                                 fontSize: 12,
                                                 color: Colors.grey[700])),
@@ -309,8 +312,24 @@ class _CreateNewGroupTaskState extends State<CreateNewGroupTask> {
                               //   dropDownTitle: "Start Time",
                               // ),
                             ),
+                            // Container(
+                            //   height: 56,
+                            //   decoration: BoxDecoration(
+                            //     color: AppColors.buttonColor.withOpacity(0.2),
+                            //     borderRadius: BorderRadius.circular(40),
+                            //   ),
+                            //   child: CustomDropDown(
+                            //     dateForTime: _dataController.selectedDate!,
+                            //     dropDownTitle:
+                            //         widget.taskDetails['startTime'].toString(),
+                            //   ),
+                            // ),
                           ],
                         ),
+                        // TimePickerWidget(
+                        //   index: 1,
+                        //   title: 'Start Time',
+                        // ),
                       ),
                       SizedBox(
                         width: 10,
@@ -340,16 +359,18 @@ class _CreateNewGroupTaskState extends State<CreateNewGroupTask> {
                                         // (widget.dropDownTitle == 'Start Time' ||
                                         //     widget.dropDownTitle == 'End Time')
                                         //     ?
-                                        Icon(Icons.access_time_outlined),
+                                        // Icon(Icons.access_time_outlined),
                                         // : SizedBox.shrink(),
                                         // (widget.dropDownTitle == 'Start Time' ||
                                         //     widget.dropDownTitle == 'End Time')
                                         //     ?
-                                        SizedBox(
-                                          width: 8,
-                                        ),
+                                        // SizedBox(
+                                        //   width: 8,
+                                        // ),
                                         // : SizedBox.shrink(),
-                                        Text("End Time",
+                                        Text(
+                                            widget.taskDetails['endTime']
+                                                .toString(),
                                             style: bodyNormal.copyWith(
                                                 fontSize: 12,
                                                 color: Colors.grey[700])),
@@ -425,7 +446,8 @@ class _CreateNewGroupTaskState extends State<CreateNewGroupTask> {
                               ),
                               // CustomDropDown(
                               //   dateForTime: _dataController.selectedDate!,
-                              //   dropDownTitle: "End Time",
+                              //   dropDownTitle:
+                              //       widget.taskDetails['endTime'].toString(),
                               // ),
                             ),
                           ],
@@ -445,7 +467,7 @@ class _CreateNewGroupTaskState extends State<CreateNewGroupTask> {
                           Padding(
                             padding: const EdgeInsets.only(left: 18.0),
                             child: Text(
-                              "Error in Start/End Time",
+                              "Start and End Time can't be same",
                               style:
                                   TextStyle(color: Colors.red[800], height: 3),
                             ),
@@ -453,7 +475,7 @@ class _CreateNewGroupTaskState extends State<CreateNewGroupTask> {
                         ],
                       )
                     : SizedBox.shrink(),
-                const SizedBox(height: 20),
+                const SizedBox(height: 10),
                 DelayedDisplay(
                   delay: Duration(milliseconds: 900),
                   slidingBeginOffset: Offset(0, -1),
@@ -651,14 +673,10 @@ class _CreateNewGroupTaskState extends State<CreateNewGroupTask> {
                   slidingBeginOffset: Offset(0, 0),
                   child: ZoomTapAnimation(
                     onTap: () async {
-                      bool pastTime = true;
-                      if (_dataController.startTime.value != "" &&
-                          _dataController.endTime.value != "") {
-                        String startTime = _dataController.startTime.value;
-                        String endTime = _dataController.endTime.value;
-                        pastTime = DateTime.parse(startTime)
-                            .isAfter(DateTime.parse(endTime));
-                      }
+                      String startTime = _dataController.startTime.value;
+                      String endTime = _dataController.endTime.value;
+                      bool pastTime = DateTime.parse(startTime)
+                          .isBefore(DateTime.parse(endTime));
                       if (taskFormField.currentState!.validate()) {
                         if (_dataController.assignTaskMember.isNotEmpty) {
                           if (_dataController.startTime.value ==
@@ -674,7 +692,8 @@ class _CreateNewGroupTaskState extends State<CreateNewGroupTask> {
                               timeError = false;
                               isLoading = true;
                             });
-                            await _groupController.addGroupTask(
+                            await _groupController.editGroupTask(
+                                widget.taskDetails['id'].toString(),
                                 widget.groupID,
                                 taskNameEditingController.text,
                                 _dataController.selectedDate,
@@ -682,16 +701,16 @@ class _CreateNewGroupTaskState extends State<CreateNewGroupTask> {
                                 _dataController.endTime.toString(),
                                 points.toString(),
                                 _dataController.assignTaskMember);
-                            for (int i = 0;
-                                i < _dataController.assignTaskMember.length;
-                                i++) {
-                              await _notiController.sendNotification(
-                                  _dataController.assignTaskMember[i]['userID']
-                                      .toString(),
-                                  _dataController.endTime.toString(),
-                                  widget.groupTitle,
-                                  widget.groupID);
-                            }
+                            // for (int i = 0;
+                            //     i < _dataController.assignTaskMember.length;
+                            //     i++) {
+                            //   await _notiController.sendNotification(
+                            //       _dataController.assignTaskMember[i]['userID']
+                            //           .toString(),
+                            //       _dataController.endTime.toString(),
+                            //       widget.groupTitle,
+                            //       widget.groupID);
+                            // }
 
                             _dataController.assignTaskMember.clear();
                             PageTransition.pageBackNavigation(
@@ -724,7 +743,7 @@ class _CreateNewGroupTaskState extends State<CreateNewGroupTask> {
                                   child: CircularProgressIndicator(
                                       color: Colors.white))
                               : Text(
-                                  "Add Task",
+                                  "Edit Task",
                                   style: headingSmall.copyWith(
                                       color: Colors.white),
                                 ),

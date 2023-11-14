@@ -51,7 +51,7 @@ class NotificationController extends GetxController {
       "read": false,
       "notificationType": 2,
       "notification": userData.displayName.toString() +
-          "assigned you a task in " +
+          " assigned you a task in " +
           groupName.toString(),
       "userToJoin": FieldValue.arrayUnion([]),
       "Time": DateTime.now(),

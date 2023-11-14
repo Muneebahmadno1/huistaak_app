@@ -114,9 +114,11 @@ class _CustomAppBarState extends State<CustomAppBar> {
 }
 
 class CustomDropDown extends StatefulWidget {
+  final DateTime dateForTime;
   final String dropDownTitle;
 
-  const CustomDropDown({Key? key, required this.dropDownTitle})
+  const CustomDropDown(
+      {Key? key, required this.dropDownTitle, required this.dateForTime})
       : super(key: key);
 
   @override
@@ -126,19 +128,20 @@ class CustomDropDown extends StatefulWidget {
 class _CustomDropDownState extends State<CustomDropDown> {
   final HomeController _dataController = Get.find<HomeController>();
 
-  final List<String> items = [];
   String? selectedValue;
+
+  List<String> timeItems = [];
+  getTimesDropDownData() {
+    for (int i = 0; i < 24; i++)
+      timeItems.add(DateFormat('yyyy-MM-dd HH:mm')
+          .format(DateTime.now().add(Duration(hours: i))));
+  }
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    _dataController.startTime.value = "";
-    _dataController.endTime.value = "";
-    for (int i = 0; i < 24; i++)
-      items.add(DateFormat('yyyy-MM-dd HH:mm')
-          .format(DateTime.now().add(Duration(hours: i))));
-    // print(items);
+    getTimesDropDownData();
   }
 
   @override
@@ -150,15 +153,22 @@ class _CustomDropDownState extends State<CustomDropDown> {
           isExpanded: true,
           hint: Row(
             children: [
-              Icon(Icons.access_time_outlined),
-              SizedBox(
-                width: 8,
-              ),
+              (widget.dropDownTitle == 'Start Time' ||
+                      widget.dropDownTitle == 'End Time')
+                  ? Icon(Icons.access_time_outlined)
+                  : SizedBox.shrink(),
+              (widget.dropDownTitle == 'Start Time' ||
+                      widget.dropDownTitle == 'End Time')
+                  ? SizedBox(
+                      width: 8,
+                    )
+                  : SizedBox.shrink(),
               Text(widget.dropDownTitle,
-                  style: bodyNormal.copyWith(fontSize: 12)),
+                  style: bodyNormal.copyWith(
+                      fontSize: 12, color: Colors.grey[700])),
             ],
           ),
-          items: items
+          items: timeItems
               .map((item) => DropdownMenuItem<String>(
                     value: item,
                     child: Center(

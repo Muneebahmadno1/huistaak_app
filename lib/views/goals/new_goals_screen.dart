@@ -10,6 +10,7 @@ import 'package:sizer/sizer.dart';
 
 import '../../controllers/goal_controller.dart';
 import '../../widgets/like_bar_widget.dart';
+import 'edit_goal.dart';
 
 class NewGoalsScreen extends StatefulWidget {
   const NewGoalsScreen({super.key});
@@ -88,21 +89,24 @@ class _NewGoalsScreenState extends State<NewGoalsScreen> {
                           physics: BouncingScrollPhysics(),
                           itemBuilder: (context, index) {
                             int achievedPoints = 0;
-                            for (int index = 0;
-                                index < userData.points.length;
-                                index++) {
-                              if (userData.points[index]['groupID'] ==
-                                  _goalController.goalList[index]
-                                      ['goalGroup']) {
-                                userData.points[index]['point'].toString() ==
-                                        "[]"
-                                    ? achievedPoints = 0
-                                    : achievedPoints = int.parse(userData
-                                        .points[index]['point']
-                                        .toString());
-                                break; // Stop searching once a match is found
+                            for (int indexJ = 0;
+                                indexJ < userData.points.length;
+                                indexJ++)
+                              for (int index = 0;
+                                  index < _goalController.goalList.length;
+                                  index++) {
+                                if (userData.points[indexJ]['groupID'] ==
+                                    _goalController.goalList[index]
+                                        ['goalGroup']) {
+                                  userData.points[indexJ]['point'].toString() ==
+                                          "[]"
+                                      ? achievedPoints = 0
+                                      : achievedPoints = int.parse(userData
+                                          .points[indexJ]['point']
+                                          .toString());
+                                  break; // Stop searching once a match is found
+                                }
                               }
-                            }
                             return Padding(
                               padding: EdgeInsets.only(bottom: 15.0),
                               child: DelayedDisplay(
@@ -122,14 +126,6 @@ class _NewGoalsScreenState extends State<NewGoalsScreen> {
                                       children: [
                                         Row(
                                           children: [
-                                            CircleAvatar(
-                                              radius: 20,
-                                              backgroundImage: AssetImage(
-                                                  "assets/images/man1.png"),
-                                            ),
-                                            SizedBox(
-                                              width: 10,
-                                            ),
                                             Expanded(
                                               child: Text(
                                                 _goalController.goalList[index]
@@ -139,6 +135,22 @@ class _NewGoalsScreenState extends State<NewGoalsScreen> {
                                                 maxLines: 2,
                                               ),
                                             ),
+                                            _goalController.groupList.isNotEmpty
+                                                ? InkWell(
+                                                    onTap: () {
+                                                      Get.to(() => EditGoal(
+                                                            goalDetail:
+                                                                _goalController
+                                                                        .goalList[
+                                                                    index],
+                                                          ));
+                                                    },
+                                                    child: Icon(
+                                                      Icons.edit,
+                                                      color: Colors.white,
+                                                    ),
+                                                  )
+                                                : SizedBox.shrink(),
                                             _goalController.groupList.isNotEmpty
                                                 ? InkWell(
                                                     onTap: () {

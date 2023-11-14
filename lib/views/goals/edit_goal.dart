@@ -16,14 +16,16 @@ import '../../widgets/date_picker.dart';
 import '../../widgets/text_form_fields.dart';
 import '../home/bottom_nav_bar.dart';
 
-class CreateNewTask extends StatefulWidget {
-  const CreateNewTask({super.key});
+class EditGoal extends StatefulWidget {
+  final goalDetail;
+
+  const EditGoal({super.key, required this.goalDetail});
 
   @override
-  State<CreateNewTask> createState() => _CreateNewTaskState();
+  State<EditGoal> createState() => _EditGoalState();
 }
 
-class _CreateNewTaskState extends State<CreateNewTask> {
+class _EditGoalState extends State<EditGoal> {
   final GoalController _goalController = Get.find<GoalController>();
   final HomeController _dataController = Get.find<HomeController>();
   TextEditingController goalNameEditingController = TextEditingController();
@@ -36,8 +38,12 @@ class _CreateNewTaskState extends State<CreateNewTask> {
 
   getDataGoal() async {
     setState(() {
-      _dataController.goalSelectedDate = DateTime.now();
       isLoading = true;
+      goalNameEditingController.text =
+          widget.goalDetail['goalTitle'].toString();
+      goalPointsEditingController.text =
+          widget.goalDetail['goalPoints'].toString();
+      _dataController.goalSelectedDate = widget.goalDetail['goalDate'].toDate();
     });
     QuerySnapshot querySnapshot = await Collections.USERS
         .doc(userData.userID)
@@ -55,7 +61,8 @@ class _CreateNewTaskState extends State<CreateNewTask> {
     }
     setState(() {
       if (groupList.isNotEmpty) {
-        _dropDownValue = groupList[0]['groupID'];
+        _dropDownValue = widget.goalDetail['goalGroup'].toString();
+        ;
       } else {
         _dropDownValue = "567guhjk67";
       }
@@ -82,13 +89,13 @@ class _CreateNewTaskState extends State<CreateNewTask> {
         backgroundColor: Colors.transparent,
         automaticallyImplyLeading: false,
         title: CustomAppBar(
-          pageTitle: "Create a new goal",
+          pageTitle: "Edit goal",
           onTap: () {
             Get.back();
           },
           leadingButton: Icon(
             Icons.arrow_back_ios_new,
-            color: AppColors.buttonColor,
+            color: Colors.black,
           ),
         ),
       ),
@@ -392,7 +399,7 @@ class _CreateNewTaskState extends State<CreateNewTask> {
                                 _dataController.goalSelectedDate,
                                 _dataController.startTime.toString(),
                                 _dataController.assignGoalMember,
-                                goalPointsEditingController.text.toString(),
+                                goalPointsEditingController.toString(),
                               );
                               _dataController.assignGoalMember.clear();
                               Get.find<GeneralController>()
@@ -403,7 +410,7 @@ class _CreateNewTaskState extends State<CreateNewTask> {
                               ));
                             }
                           },
-                          buttonText: "Set Goal",
+                          buttonText: "Edit Goal",
                         ),
                       ),
                     ],

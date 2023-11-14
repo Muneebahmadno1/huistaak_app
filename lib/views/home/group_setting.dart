@@ -12,6 +12,8 @@ import '../../constants/app_images.dart';
 import '../../controllers/general_controller.dart';
 import '../../controllers/group_setting_controller.dart';
 import '../../helper/page_navigation.dart';
+import '../../helper/shimmers_loaders.dart';
+import '../../models/user_model.dart';
 import '../../widgets/custom_widgets.dart';
 import 'bottom_nav_bar.dart';
 
@@ -29,14 +31,41 @@ class _GroupSettingState extends State<GroupSetting> {
       Get.find<GroupSettingController>();
   bool isLoading = false;
   bool Loading = false;
+  bool adminLoading = false;
+  bool memberLoading = false;
+  List<UserModel> adminList = [];
+  List<UserModel> memberList = [];
 
   getData() async {
     setState(() {
+      adminList.clear();
+      memberList.clear();
       isLoading = true;
+      adminLoading = true;
+      memberLoading = true;
     });
     await _groupSettingController.getGroupInfo(widget.groupID.toString());
     setState(() {
       isLoading = false;
+    });
+
+    for (int i = 0;
+        i < _groupSettingController.groupInfo[0]['adminsList'].length;
+        i++) {
+      adminList.add(await _groupSettingController.fetchUser(
+          _groupSettingController.groupInfo[0]['adminsList'][i]['userID']
+              .toString()));
+    }
+    for (int i = 0;
+        i < _groupSettingController.groupInfo[0]['membersList'].length;
+        i++) {
+      memberList.add(await _groupSettingController.fetchUser(
+          _groupSettingController.groupInfo[0]['membersList'][i]['userID']
+              .toString()));
+    }
+    setState(() {
+      adminLoading = false;
+      memberLoading = false;
     });
   }
 
@@ -201,8 +230,8 @@ class _GroupSettingState extends State<GroupSetting> {
                                     null
                                 ? Image.asset(
                                     AppImages
-                                        .profileImage, // Replace with your asset image path
-                                    fit: BoxFit.cover,
+                                        .groupIcon, // Replace with your asset image path
+                                    fit: BoxFit.fitHeight,
                                   )
                                 : CachedNetworkImage(
                                     imageUrl: _groupSettingController
@@ -360,56 +389,88 @@ class _GroupSettingState extends State<GroupSetting> {
                     SizedBox(
                       height: 10,
                     ),
-                    ListView.builder(
-                        itemCount: _groupSettingController
-                            .groupInfo[0]['adminsList'].length,
-                        shrinkWrap: true,
-                        padding: EdgeInsets.only(top: 16),
-                        physics: BouncingScrollPhysics(),
-                        itemBuilder: (context, i) {
-                          return DelayedDisplay(
-                            delay: Duration(milliseconds: 800),
-                            slidingBeginOffset: Offset(0, -1),
-                            child: Padding(
-                              padding: const EdgeInsets.only(bottom: 14.0),
-                              child: Row(
-                                children: [
-                                  CircleAvatar(
-                                    radius: 30,
-                                    backgroundImage:
-                                        AssetImage(AppImages.profileImage),
-                                  ),
-                                  SizedBox(
-                                    width: 20,
-                                  ),
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                    adminLoading
+                        ? Shimmers.employeeListShimmer()
+                        : ListView.builder(
+                            itemCount: _groupSettingController
+                                .groupInfo[0]['adminsList'].length,
+                            shrinkWrap: true,
+                            padding: EdgeInsets.only(top: 16),
+                            physics: BouncingScrollPhysics(),
+                            itemBuilder: (context, i) {
+                              return DelayedDisplay(
+                                delay: Duration(milliseconds: 800),
+                                slidingBeginOffset: Offset(0, -1),
+                                child: Padding(
+                                  padding: const EdgeInsets.only(bottom: 14.0),
+                                  child: Row(
                                     children: [
-                                      Text(
-                                        _groupSettingController.groupInfo[0]
-                                            ['adminsList'][i]['displayName'],
-                                        style: headingMedium,
+                                      CircleAvatar(
+                                        radius: 30,
+                                        // Adjust the radius as needed
+                                        backgroundColor: Colors.grey,
+                                        // You can set a default background color
+                                        child: ClipOval(
+                                          child: SizedBox(
+                                            height: 30 * 2,
+                                            width: 30 * 2,
+                                            child: adminList[i].imageUrl == ""
+                                                ? Image.asset(
+                                                    AppImages.profileImage,
+                                                    // Replace with your asset image path
+                                                    fit: BoxFit.fitHeight,
+                                                  )
+                                                : CachedNetworkImage(
+                                                    imageUrl:
+                                                        adminList[i].imageUrl,
+                                                    placeholder: (context,
+                                                            url) =>
+                                                        CircularProgressIndicator(),
+                                                    errorWidget:
+                                                        (context, url, error) =>
+                                                            Icon(Icons.error),
+                                                    fit: BoxFit.fill,
+                                                  ),
+                                          ),
+                                        ),
                                       ),
-                                      Text(
-                                        "Group Admin",
-                                        style: bodyNormal.copyWith(
-                                            color: Colors.black26),
+                                      SizedBox(
+                                        width: 20,
                                       ),
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Container(
+                                            width: 25.w,
+                                            child: Text(
+                                              _groupSettingController
+                                                          .groupInfo[0]
+                                                      ['adminsList'][i]
+                                                  ['displayName'],
+                                              maxLines: 1,
+                                              style: headingMedium,
+                                            ),
+                                          ),
+                                          Text(
+                                            "Group Admin",
+                                            style: bodyNormal.copyWith(
+                                                color: Colors.black26),
+                                          ),
+                                        ],
+                                      ),
+                                      SizedBox(
+                                        width: 25.w,
+                                      ),
+                                      Icon(
+                                        Icons.admin_panel_settings_rounded,
+                                        color: AppColors.buttonColor,
+                                      )
                                     ],
                                   ),
-                                  SizedBox(
-                                    width: 25.w,
-                                  ),
-                                  Icon(
-                                    Icons.admin_panel_settings_rounded,
-                                    color: AppColors.buttonColor,
-                                  )
-                                ],
-                              ),
-                            ),
-                          );
-                        }),
+                                ),
+                              );
+                            }),
                     SizedBox(
                       height: 20,
                     ),
@@ -427,104 +488,157 @@ class _GroupSettingState extends State<GroupSetting> {
                     SizedBox(
                       height: 10,
                     ),
-                    ListView.builder(
-                        itemCount: _groupSettingController
-                            .groupInfo[0]['membersList'].length,
-                        shrinkWrap: true,
-                        padding: EdgeInsets.only(top: 16),
-                        physics: BouncingScrollPhysics(),
-                        itemBuilder: (context, j) {
-                          return DelayedDisplay(
-                            delay: Duration(milliseconds: 1000),
-                            slidingBeginOffset: Offset(0, -1),
-                            child: Padding(
-                              padding: const EdgeInsets.only(bottom: 14.0),
-                              child: Row(
-                                children: [
-                                  CircleAvatar(
-                                    radius: 30,
-                                    backgroundImage:
-                                        AssetImage("assets/images/man1.png"),
-                                  ),
-                                  SizedBox(
-                                    width: 20,
-                                  ),
-                                  Align(
-                                    alignment: Alignment.centerLeft,
-                                    child: Text(
-                                      _groupSettingController.groupInfo[0]
-                                          ['membersList'][j]['displayName'],
-                                      style: headingMedium,
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    width: 40.w,
-                                  ),
-                                  _groupSettingController.groupInfo[0]
-                                              ['adminsList']
-                                          .any((map) =>
-                                              map['userID'].toString() ==
-                                              userData.userID.toString())
-                                      ? InkWell(
-                                          onTap: () async {
-                                            confirmPopUp(context,
-                                                "Are you sure, you want to remove member",
-                                                () async {
-                                              await _groupSettingController
-                                                  .removeMember(
+                    memberLoading
+                        ? Shimmers.employeeListShimmer()
+                        : _groupSettingController
+                                .groupInfo[0]['membersList'].isEmpty
+                            ? Text(
+                                "No member have joined group yet.",
+                                style: bodySmall.copyWith(color: Colors.grey),
+                              )
+                            : ListView.builder(
+                                itemCount: _groupSettingController
+                                    .groupInfo[0]['membersList'].length,
+                                shrinkWrap: true,
+                                padding: EdgeInsets.only(top: 16),
+                                physics: BouncingScrollPhysics(),
+                                itemBuilder: (context, j) {
+                                  return DelayedDisplay(
+                                    delay: Duration(milliseconds: 1000),
+                                    slidingBeginOffset: Offset(0, -1),
+                                    child: Padding(
+                                      padding:
+                                          const EdgeInsets.only(bottom: 14.0),
+                                      child: Row(
+                                        children: [
+                                          CircleAvatar(
+                                            radius: 30,
+                                            // Adjust the radius as needed
+                                            backgroundColor: Colors.grey,
+                                            // You can set a default background color
+                                            child: ClipOval(
+                                              child: SizedBox(
+                                                height: 30 * 2,
+                                                width: 30 * 2,
+                                                child: _groupSettingController
+                                                                    .groupInfo[0]
+                                                                ['membersList']
+                                                            [j]['imageUrl'] ==
+                                                        ""
+                                                    ? Image.asset(
+                                                        AppImages.profileImage,
+                                                        // Replace with your asset image path
+                                                        fit: BoxFit.fitHeight,
+                                                      )
+                                                    : CachedNetworkImage(
+                                                        imageUrl: _groupSettingController
+                                                                    .groupInfo[0]
+                                                                ['membersList']
+                                                            [j]['imageUrl'],
+                                                        placeholder: (context,
+                                                                url) =>
+                                                            CircularProgressIndicator(),
+                                                        errorWidget: (context,
+                                                                url, error) =>
+                                                            Icon(Icons.error),
+                                                        fit: BoxFit.fill,
+                                                      ),
+                                              ),
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            width: 20,
+                                          ),
+                                          Align(
+                                            alignment: Alignment.centerLeft,
+                                            child: Container(
+                                              width: 25.w,
+                                              child: Text(
                                                 _groupSettingController
                                                             .groupInfo[0]
                                                         ['membersList'][j]
-                                                    ['userID'],
-                                                widget.groupID.toString(),
-                                              );
-                                              getData();
-                                              Navigator.pop(context);
-                                            });
-                                          },
-                                          child: Icon(
-                                            Icons.delete,
-                                            color: Colors.red,
-                                          ))
-                                      : SizedBox.shrink(),
-                                  SizedBox(
-                                    width: 5.0,
-                                  ),
-                                  _groupSettingController.groupInfo[0]
-                                              ['adminsList']
-                                          .any((map) =>
-                                              map['userID'].toString() ==
-                                              userData.userID.toString())
-                                      ? InkWell(
-                                          onTap: () async {
-                                            confirmPopUp(context,
-                                                "Are you sure, you want to make member admin",
-                                                () async {
-                                              await _groupSettingController
-                                                  .makeAdmin(
-                                                      _groupSettingController
-                                                                  .groupInfo[0]
-                                                              ['membersList'][j]
-                                                          ['userID'],
-                                                      widget.groupID.toString(),
-                                                      _groupSettingController
-                                                          .groupInfo[0]
-                                                              ['groupName']
-                                                          .toString());
-                                              getData();
-                                              Navigator.pop(context);
-                                            });
-                                          },
-                                          child: Icon(
-                                            Icons.admin_panel_settings_rounded,
-                                            color: AppColors.buttonColor,
-                                          ))
-                                      : SizedBox.shrink(),
-                                ],
-                              ),
-                            ),
-                          );
-                        }),
+                                                    ['displayName'],
+                                                maxLines: 1,
+                                                style: headingMedium,
+                                              ),
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            width: 25.w,
+                                          ),
+                                          _groupSettingController.groupInfo[0]
+                                                      ['adminsList']
+                                                  .any((map) =>
+                                                      map['userID']
+                                                          .toString() ==
+                                                      userData.userID
+                                                          .toString())
+                                              ? InkWell(
+                                                  onTap: () async {
+                                                    confirmPopUp(context,
+                                                        "Are you sure, you want to remove member",
+                                                        () async {
+                                                      await _groupSettingController
+                                                          .removeMember(
+                                                        _groupSettingController
+                                                                    .groupInfo[0]
+                                                                ['membersList']
+                                                            [j]['userID'],
+                                                        widget.groupID
+                                                            .toString(),
+                                                      );
+                                                      getData();
+                                                      Navigator.pop(context);
+                                                    });
+                                                  },
+                                                  child: Icon(
+                                                    Icons.delete,
+                                                    color: Colors.red,
+                                                  ))
+                                              : SizedBox.shrink(),
+                                          SizedBox(
+                                            width: 5.0,
+                                          ),
+                                          _groupSettingController.groupInfo[0]
+                                                      ['adminsList']
+                                                  .any((map) =>
+                                                      map['userID']
+                                                          .toString() ==
+                                                      userData.userID
+                                                          .toString())
+                                              ? InkWell(
+                                                  onTap: () async {
+                                                    confirmPopUp(context,
+                                                        "Are you sure, you want to make member admin",
+                                                        () async {
+                                                      await _groupSettingController.makeAdmin(
+                                                          _groupSettingController
+                                                                      .groupInfo[0]
+                                                                  [
+                                                                  'membersList']
+                                                              [j]['userID'],
+                                                          widget.groupID
+                                                              .toString(),
+                                                          _groupSettingController
+                                                              .groupInfo[0]
+                                                                  ['groupName']
+                                                              .toString());
+                                                      getData();
+                                                      Navigator.pop(context);
+                                                    });
+                                                  },
+                                                  child: Icon(
+                                                    Icons
+                                                        .admin_panel_settings_rounded,
+                                                    color:
+                                                        AppColors.buttonColor,
+                                                  ))
+                                              : SizedBox.shrink(),
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                }),
                     SizedBox(
                       height: 10,
                     ),

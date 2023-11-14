@@ -41,8 +41,8 @@ class _DatePickerWidgetState extends State<DatePickerWidget> {
           style: bodyNormal,
         ), // Format the date
         trailing: Icon(Icons.arrow_drop_down, color: Colors.black),
-        onTap: () {
-          _showDatePicker(context);
+        onTap: () async {
+          await _showDatePicker(context);
         },
       ),
     );

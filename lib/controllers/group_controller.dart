@@ -214,7 +214,7 @@ class GroupController extends GetxController {
               "read": false,
               "notificationType": 3,
               "notification": userData.displayName.toString() +
-                  "has completed the task in " +
+                  " has completed the task in " +
                   groupTitle.toString(),
               "Time": DateTime.now(),
               "notiID": notiID.id,
@@ -234,7 +234,7 @@ class GroupController extends GetxController {
               _notiController.sendNotifications(
                   notiUserData.fcmToken.toString(),
                   userData.displayName.toString() +
-                      "has completed the task in " +
+                      " has completed the task in " +
                       groupTitle.toString(),
                   data);
             });
@@ -311,6 +311,40 @@ class GroupController extends GetxController {
       "taskScore": taskScore,
       "assignMembers": assignMembers,
       "id": docId,
+    });
+    return;
+  }
+
+  editGroupTask(taskID, groupID, taskTitle, taskDate, String startTimeT,
+      String endTimeT, taskScore, assignMembers) async {
+    final DateFormat format = DateFormat('yyyy-MM-dd HH:mm');
+
+    // Parse the time strings into DateTime objects
+    DateTime startTime = format.parse(startTimeT);
+    DateTime endTime = format.parse(endTimeT);
+
+    // Check if end time is before start time (i.e., end time is on the next day)
+    if (endTime.isBefore(startTime)) {
+      endTime = endTime.add(Duration(days: 1));
+    }
+
+    // Calculate the time difference in hours
+    Duration difference = endTime.difference(startTime);
+    double hours = difference.inMinutes / 60;
+
+    await Collections.GROUPS
+        .doc(groupID)
+        .collection(Collections.TASKS)
+        .doc(taskID)
+        .update({
+      "taskTitle": taskTitle,
+      "taskDate": taskDate,
+      "startTime": startTimeT,
+      "endTime": endTimeT,
+      "duration": hours < 0 ? (-hours).toString() : (hours).toString(),
+      "taskScore": taskScore,
+      "assignMembers": assignMembers,
+      "id": taskID,
     });
     return;
   }

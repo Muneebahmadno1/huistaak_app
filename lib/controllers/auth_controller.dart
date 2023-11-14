@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
@@ -21,12 +23,21 @@ class AuthController extends GetxController {
           .createUserWithEmailAndPassword(email: emails, password: pass);
       await FirebaseAuth.instance.currentUser
           ?.updateDisplayName(map['displayName']);
-
+      Random random = new Random();
+      int randomNumber = random.nextInt(5);
       Collections.USERS.doc(user.user!.uid).set({
         "userID": user.user!.uid,
-        "displayName": map['displayName'].toString(),
+        "displayName": map['displayName'].trim().toString(),
         "email": emails,
-        "imageUrl": "",
+        "imageUrl": randomNumber == 1
+            ? "https://firebasestorage.googleapis.com/v0/b/huistaak-b26cd.appspot.com/o/Ellipse%20425.png?alt=media&token=39ef01fd-faeb-4237-aad0-229a71531287"
+            : randomNumber == 2
+                ? "https://firebasestorage.googleapis.com/v0/b/huistaak-b26cd.appspot.com/o/Ellipse%20426.png?alt=media&token=7d6999f8-71bd-4c2c-88ab-7da3cc00acdf"
+                : randomNumber == 3
+                    ? "https://firebasestorage.googleapis.com/v0/b/huistaak-b26cd.appspot.com/o/Ellipse%20427.png?alt=media&token=636deb05-21b2-4cac-92e1-3f803a0c109e"
+                    : randomNumber == 4
+                        ? "https://firebasestorage.googleapis.com/v0/b/huistaak-b26cd.appspot.com/o/Ellipse%20429.png?alt=media&token=51d206a1-2158-49cf-8821-5a79c644907b"
+                        : "https://firebasestorage.googleapis.com/v0/b/huistaak-b26cd.appspot.com/o/Ellipse%20428.png?alt=media&token=2f6c1518-fbd1-4a81-ad9d-8ca89809f896",
         "points": [],
         "postalCode": map['postalCode'].toString(),
         "fcmToken": fcmToken.value,
@@ -79,7 +90,7 @@ class AuthController extends GetxController {
         e.code == 'user-not-found'
             ? "User not found"
             : (e.code == 'INVALID_LOGIN_CREDENTIALS')
-                ? "The Email or Password you have entered is not correct"
+                ? "Your Email or Password is incorrect. Please try again."
                 : e.toString().replaceRange(0, 14, '').split(']')[1],
       );
     }
