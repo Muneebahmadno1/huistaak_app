@@ -129,11 +129,11 @@ class Shimmers {
   static employeeListShimmer() {
     return Shimmer.fromColors(
         baseColor: Colors.grey.shade300,
-        highlightColor: Colors.grey.shade500,
+        highlightColor: Colors.grey.shade400,
         child: ListView.builder(
           shrinkWrap: true,
           physics: BouncingScrollPhysics(),
-          itemCount: 10,
+          itemCount: 3,
           itemBuilder: (context, index) {
             return Padding(
               padding: const EdgeInsets.all(10.0),
@@ -141,7 +141,7 @@ class Shimmers {
                 children: [
                   Container(
                     height: 70,
-                    width: 85.w,
+                    width: 80.w,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(13),
                       color: Colors.white,

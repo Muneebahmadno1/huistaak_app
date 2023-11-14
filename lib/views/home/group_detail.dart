@@ -22,6 +22,7 @@ import '../../widgets/custom_widgets.dart';
 import '../../widgets/like_bar_widget.dart';
 import 'bottom_nav_bar.dart';
 import 'group/create_new_group_task.dart';
+import 'group/edit_group_task.dart';
 
 class GroupDetail extends StatefulWidget {
   final String groupID;
@@ -184,8 +185,8 @@ class _GroupDetailState extends State<GroupDetail> {
                                             null
                                         ? Image.asset(
                                             AppImages
-                                                .profileImage, // Replace with your asset image path
-                                            fit: BoxFit.cover,
+                                                .groupIcon, // Replace with your asset image path
+                                            fit: BoxFit.fitHeight,
                                           )
                                         : CachedNetworkImage(
                                             imageUrl: _groupController
@@ -366,6 +367,17 @@ class _GroupDetailState extends State<GroupDetail> {
                                           padding: EdgeInsets.only(top: 16),
                                           physics: BouncingScrollPhysics(),
                                           itemBuilder: (context, index) {
+                                            List<dynamic> assignMembers =
+                                                _groupController
+                                                        .toBeCompletedTaskList[
+                                                    index]['assignMembers'];
+
+                                            String assignedMembersString =
+                                                assignMembers
+                                                    .map((member) =>
+                                                        member['displayName'])
+                                                    .join(', ');
+
                                             // var a = double.parse(
                                             //     _groupController
                                             //         .toBeCompletedTaskList[
@@ -435,45 +447,71 @@ class _GroupDetailState extends State<GroupDetail> {
                                                                             .white),
                                                               ),
                                                             ),
-                                                            _groupController
-                                                                    .groupInfo[
-                                                                        0][
-                                                                        'adminsList']
-                                                                    .any((user) =>
-                                                                        user["userID"]
-                                                                            .toString() ==
-                                                                        userData
-                                                                            .userID
-                                                                            .toString())
-                                                                ? InkWell(
-                                                                    onTap: () {
-                                                                      confirmPopUp(
-                                                                          context,
-                                                                          "Are you sure, you want to delete task?",
-                                                                          () {
-                                                                        _groupController
-                                                                            .deleteTask(
-                                                                          widget
-                                                                              .groupID
-                                                                              .toString(),
-                                                                          _groupController
-                                                                              .toBeCompletedTaskList[index]['id']
-                                                                              .toString(),
-                                                                        );
-                                                                        getData();
-                                                                        Navigator.pop(
-                                                                            context);
-                                                                      });
-                                                                    },
-                                                                    child: Icon(
-                                                                      Icons
-                                                                          .delete,
-                                                                      color: Colors
-                                                                          .white,
-                                                                    ),
-                                                                  )
-                                                                : SizedBox
-                                                                    .shrink()
+                                                            Row(
+                                                              children: [
+                                                                _groupController
+                                                                        .groupInfo[
+                                                                            0][
+                                                                            'adminsList']
+                                                                        .any((user) =>
+                                                                            user["userID"].toString() ==
+                                                                            userData.userID
+                                                                                .toString())
+                                                                    ? InkWell(
+                                                                        onTap:
+                                                                            () {
+                                                                          Get.to(() =>
+                                                                              EditGroupTask(
+                                                                                groupID: widget.groupID,
+                                                                                groupTitle: widget.groupTitle,
+                                                                                taskDetails: _groupController.toBeCompletedTaskList[index],
+                                                                              ));
+                                                                        },
+                                                                        child:
+                                                                            Icon(
+                                                                          Icons
+                                                                              .edit,
+                                                                          color:
+                                                                              Colors.white,
+                                                                        ),
+                                                                      )
+                                                                    : SizedBox
+                                                                        .shrink(),
+                                                                _groupController
+                                                                        .groupInfo[
+                                                                            0][
+                                                                            'adminsList']
+                                                                        .any((user) =>
+                                                                            user["userID"].toString() ==
+                                                                            userData.userID
+                                                                                .toString())
+                                                                    ? InkWell(
+                                                                        onTap:
+                                                                            () {
+                                                                          confirmPopUp(
+                                                                              context,
+                                                                              "Are you sure, you want to delete task?",
+                                                                              () {
+                                                                            _groupController.deleteTask(
+                                                                              widget.groupID.toString(),
+                                                                              _groupController.toBeCompletedTaskList[index]['id'].toString(),
+                                                                            );
+                                                                            getData();
+                                                                            Navigator.pop(context);
+                                                                          });
+                                                                        },
+                                                                        child:
+                                                                            Icon(
+                                                                          Icons
+                                                                              .delete,
+                                                                          color:
+                                                                              Colors.white,
+                                                                        ),
+                                                                      )
+                                                                    : SizedBox
+                                                                        .shrink(),
+                                                              ],
+                                                            )
                                                           ],
                                                         ),
                                                         SizedBox(
@@ -581,16 +619,20 @@ class _GroupDetailState extends State<GroupDetail> {
                                                                 ? SizedBox(
                                                                     width: 74,
                                                                     child:
-                                                                        AvatarStack(
-                                                                      height:
-                                                                          34,
-                                                                      avatars: [
-                                                                        for (var n =
-                                                                                0;
-                                                                            n < _groupController.toBeCompletedTaskList[index]['assignMembers'].length;
-                                                                            n++)
-                                                                          _groupController.toBeCompletedTaskList[index]['assignMembers'][n]['imageUrl'] == "" ? AssetImage("assets/images/man1.png") : NetworkImage(_groupController.toBeCompletedTaskList[index]['assignMembers'][n]['imageUrl'].toString()) as ImageProvider,
-                                                                      ],
+                                                                        Tooltip(
+                                                                      message:
+                                                                          assignedMembersString,
+                                                                      child:
+                                                                          AvatarStack(
+                                                                        height:
+                                                                            34,
+                                                                        avatars: [
+                                                                          for (var n = 0;
+                                                                              n < _groupController.toBeCompletedTaskList[index]['assignMembers'].length;
+                                                                              n++)
+                                                                            _groupController.toBeCompletedTaskList[index]['assignMembers'][n]['imageUrl'] == "" ? AssetImage("assets/images/man1.png") : NetworkImage(_groupController.toBeCompletedTaskList[index]['assignMembers'][n]['imageUrl'].toString()) as ImageProvider,
+                                                                        ],
+                                                                      ),
                                                                     ),
                                                                   )
                                                                 : SizedBox
@@ -817,6 +859,17 @@ class _GroupDetailState extends State<GroupDetail> {
                                               padding: EdgeInsets.only(top: 16),
                                               physics: BouncingScrollPhysics(),
                                               itemBuilder: (context, index) {
+                                                List<dynamic> assignMembers =
+                                                    _groupController
+                                                            .completedTaskList[
+                                                        index]['assignMembers'];
+
+                                                String assignedMembersString =
+                                                    assignMembers
+                                                        .map((member) => member[
+                                                            'displayName'])
+                                                        .join(', ');
+
                                                 return Padding(
                                                   padding: EdgeInsets.only(
                                                       bottom: 15.0),
@@ -984,15 +1037,18 @@ class _GroupDetailState extends State<GroupDetail> {
                                                                         width:
                                                                             74,
                                                                         child:
-                                                                            AvatarStack(
-                                                                          height:
-                                                                              34,
-                                                                          avatars: [
-                                                                            for (var n = 0;
-                                                                                n < _groupController.completedTaskList[index]['assignMembers'].length;
-                                                                                n++)
-                                                                              _groupController.completedTaskList[index]['assignMembers'][n]['imageUrl'] == "" ? AssetImage("assets/images/man1.png") : NetworkImage(_groupController.completedTaskList[index]['assignMembers'][n]['imageUrl'].toString()) as ImageProvider,
-                                                                          ],
+                                                                            Tooltip(
+                                                                          message:
+                                                                              assignedMembersString,
+                                                                          child:
+                                                                              AvatarStack(
+                                                                            height:
+                                                                                34,
+                                                                            avatars: [
+                                                                              for (var n = 0; n < _groupController.completedTaskList[index]['assignMembers'].length; n++)
+                                                                                _groupController.completedTaskList[index]['assignMembers'][n]['imageUrl'] == "" ? AssetImage("assets/images/man1.png") : NetworkImage(_groupController.completedTaskList[index]['assignMembers'][n]['imageUrl'].toString()) as ImageProvider,
+                                                                            ],
+                                                                          ),
                                                                         ),
                                                                       )
                                                                     : SizedBox
@@ -1184,6 +1240,17 @@ class _GroupDetailState extends State<GroupDetail> {
                                               padding: EdgeInsets.only(top: 16),
                                               physics: BouncingScrollPhysics(),
                                               itemBuilder: (context, index) {
+                                                List<dynamic> assignMembers =
+                                                    _groupController
+                                                            .notCompletedTaskList[
+                                                        index]['assignMembers'];
+
+                                                String assignedMembersString =
+                                                    assignMembers
+                                                        .map((member) => member[
+                                                            'displayName'])
+                                                        .join(', ');
+
                                                 return Padding(
                                                   padding: EdgeInsets.only(
                                                       bottom: 15.0),
@@ -1350,15 +1417,18 @@ class _GroupDetailState extends State<GroupDetail> {
                                                                         width:
                                                                             74,
                                                                         child:
-                                                                            AvatarStack(
-                                                                          height:
-                                                                              34,
-                                                                          avatars: [
-                                                                            for (var n = 0;
-                                                                                n < _groupController.notCompletedTaskList[index]['assignMembers'].length;
-                                                                                n++)
-                                                                              AssetImage("assets/images/man1.png"),
-                                                                          ],
+                                                                            Tooltip(
+                                                                          message:
+                                                                              assignedMembersString,
+                                                                          child:
+                                                                              AvatarStack(
+                                                                            height:
+                                                                                34,
+                                                                            avatars: [
+                                                                              for (var n = 0; n < _groupController.notCompletedTaskList[index]['assignMembers'].length; n++)
+                                                                                AssetImage("assets/images/man1.png"),
+                                                                            ],
+                                                                          ),
                                                                         ),
                                                                       )
                                                                     : SizedBox

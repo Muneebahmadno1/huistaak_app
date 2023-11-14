@@ -23,7 +23,7 @@ class CustomValidator {
     if (value!.isEmpty) {
       return ' Password is required';
     } else if (value.length < 6) {
-      return ' Password should be greater then 6 digits';
+      return ' Password should be greater than 6 digits';
     }
     return null;
   }
@@ -40,7 +40,7 @@ class CustomValidator {
     if (value!.isEmpty) {
       return ' Confirm Password is required';
     } else if (value.length < 6) {
-      return ' Password should be greater then 6 digits';
+      return ' Password should be greater than 6 digits';
     } else if (value != oldPassword) {
       return ' Confirm Password is not matched';
     }

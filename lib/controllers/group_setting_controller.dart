@@ -217,4 +217,12 @@ class GroupSettingController extends GetxController {
           "You have been made admin of " + groupTitle.toString(), data);
     });
   }
+
+  fetchUser(userID) async {
+    var document = await Collections.USERS.doc(userID.toString()).get();
+    if (document.exists) {
+      final UserModel user = UserModel.fromDocument(document.data()!);
+      return user;
+    }
+  }
 }
