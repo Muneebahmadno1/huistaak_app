@@ -6,7 +6,6 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:sizer/sizer.dart';
 
-import '../../constants/app_images.dart';
 import '../../constants/global_variables.dart';
 import '../../controllers/data_controller.dart';
 import '../../controllers/general_controller.dart';
@@ -171,18 +170,6 @@ class _NotificationsState extends State<Notifications> {
                                             color: Colors.white12,
                                             child: Row(
                                               children: [
-                                                CircleAvatar(
-                                                  radius: 26,
-                                                  backgroundImage:
-                                                      userData.imageUrl == ""
-                                                          ? AssetImage(
-                                                              AppImages
-                                                                  .profileImage,
-                                                            )
-                                                          : NetworkImage(
-                                                              userData.imageUrl,
-                                                            ) as ImageProvider,
-                                                ),
                                                 Column(
                                                   mainAxisAlignment:
                                                       MainAxisAlignment.center,
@@ -201,22 +188,44 @@ class _NotificationsState extends State<Notifications> {
                                                           constraints:
                                                               BoxConstraints(
                                                                   maxWidth:
-                                                                      74.w,
+                                                                      84.w,
                                                                   maxHeight:
-                                                                      44),
+                                                                      40),
                                                           child: Align(
                                                             alignment: Alignment
                                                                 .centerLeft,
-                                                            child: Text(
-                                                              _notiController
-                                                                          .notificationList[
-                                                                      index][
-                                                                  'notification'],
-                                                              style: bodyNormal,
-                                                              overflow:
-                                                                  TextOverflow
-                                                                      .ellipsis,
-                                                              maxLines: 2,
+                                                            child: RichText(
+                                                              text: TextSpan(
+                                                                style:
+                                                                    TextStyle(
+                                                                  color: Colors
+                                                                      .black, // Change color as needed
+                                                                  fontSize:
+                                                                      18.0,
+                                                                ),
+                                                                children: <TextSpan>[
+                                                                  TextSpan(
+                                                                    text: _notiController.notificationList[index]['notificationType'] ==
+                                                                            4
+                                                                        ? 'Congratulations '
+                                                                        : "",
+                                                                    style:
+                                                                        TextStyle(
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold,
+                                                                    ),
+                                                                  ),
+                                                                  TextSpan(
+                                                                    text: _notiController
+                                                                            .notificationList[index]
+                                                                        [
+                                                                        'notification'],
+                                                                    style:
+                                                                        bodyNormal,
+                                                                  ),
+                                                                ],
+                                                              ),
                                                             ),
                                                           ),
                                                         ),

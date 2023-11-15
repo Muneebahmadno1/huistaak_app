@@ -91,22 +91,19 @@ class _NewGoalsScreenState extends State<NewGoalsScreen> {
                             int achievedPoints = 0;
                             for (int indexJ = 0;
                                 indexJ < userData.points.length;
-                                indexJ++)
-                              for (int index = 0;
-                                  index < _goalController.goalList.length;
-                                  index++) {
-                                if (userData.points[indexJ]['groupID'] ==
-                                    _goalController.goalList[index]
-                                        ['goalGroup']) {
-                                  userData.points[indexJ]['point'].toString() ==
-                                          "[]"
-                                      ? achievedPoints = 0
-                                      : achievedPoints = int.parse(userData
-                                          .points[indexJ]['point']
-                                          .toString());
-                                  break; // Stop searching once a match is found
-                                }
+                                indexJ++) {
+                              if (userData.points[indexJ]['groupID'] ==
+                                  _goalController.goalList[index]
+                                      ['goalGroup']) {
+                                userData.points[indexJ]['point'].toString() ==
+                                        "[]"
+                                    ? achievedPoints = 0
+                                    : achievedPoints = int.parse(userData
+                                        .points[indexJ]['point']
+                                        .toString());
+                                break; // Stop searching once a match is found
                               }
+                            }
                             return Padding(
                               padding: EdgeInsets.only(bottom: 15.0),
                               child: DelayedDisplay(
