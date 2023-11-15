@@ -9,11 +9,7 @@ class AppImages {
   static const lockIcon = "assets/icons/lock_icon.png";
   static const facebookButton = "assets/images/facebookButton.png";
   static const googleButton = "assets/images/googleButton.png";
-  static const facebookIcon = "assets/icons/facebook.png";
-  static const googleIcon = "assets/icons/google.png";
-  static const appleIcon = "assets/icons/apple.png";
   static const personIcon = "assets/icons/person_icon.png";
-  static const findJobIcon = "assets/icons/briefcase.png";
 
   ///Home
   static const profileImage = "assets/images/man1.png";
@@ -33,6 +29,4 @@ class AppImages {
   static const jobIcon = "assets/icons/jobs_icon.png";
   static const jobIconBlack = "assets/icons/jobs_icon.png";
   static const messageIcon = "assets/icons/message_icon.png";
-  static const profileIcon = "assets/icons/profile_icon.png";
-  static const profileIconBlack = "assets/icons/profile_icon_black.png";
 }
