@@ -96,9 +96,9 @@ class _GroupDetailState extends State<GroupDetail> {
     );
   }
 
-  double _progressValue = 0.0;
-  late DateTime _startTime;
-  late DateTime _endTime;
+  List<double> _progressValue = [];
+  List<DateTime> _startTime = [];
+  List<DateTime> _endTime = [];
 
   @override
   void initState() {
@@ -107,10 +107,12 @@ class _GroupDetailState extends State<GroupDetail> {
     getData();
   }
 
-  void _updateProgress() {
+  late Timer _timer;
+
+  void _updateProgress(index) {
     DateTime now = DateTime.now();
-    double progress = now.difference(_startTime).inMilliseconds /
-        _endTime.difference(_startTime).inMilliseconds;
+    double progress = now.difference(_startTime[index]).inMilliseconds /
+        _endTime[index].difference(_startTime[index]).inMilliseconds;
 
     // Ensure progress is between 0.0 and 1.0
     if (progress > 1.0) {
@@ -118,10 +120,19 @@ class _GroupDetailState extends State<GroupDetail> {
       // Optionally, you can stop the timer here if needed
       // timer.cancel();
     }
-
+    if (!mounted) {
+      return;
+    }
     setState(() {
-      _progressValue = progress;
+      _progressValue[index] = progress;
     });
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    _timer.cancel();
+    super.dispose();
   }
 
   @override
@@ -184,8 +195,8 @@ class _GroupDetailState extends State<GroupDetail> {
                                                 ['groupImage'] ==
                                             null
                                         ? Image.asset(
-                                            AppImages
-                                                .groupIcon, // Replace with your asset image path
+                                            AppImages.groupIcon,
+                                            // Replace with your asset image path
                                             fit: BoxFit.fitHeight,
                                           )
                                         : CachedNetworkImage(
@@ -238,57 +249,6 @@ class _GroupDetailState extends State<GroupDetail> {
                                       ),
                                     ],
                                   ),
-                                  // _groupController.groupInfo[0]['membersList']
-                                  //             .length >
-                                  //         0
-                                  //     ? _groupController
-                                  //                 .groupInfo[0]['membersList']
-                                  //                 .length >
-                                  //             1
-                                  //         ? SizedBox(
-                                  //             width: 150,
-                                  //             child: Text(
-                                  //               "You, " +
-                                  //                   _groupController
-                                  //                               .groupInfo[0]
-                                  //                           ['membersList'][0]
-                                  //                       ['displayName'] +
-                                  //                   " , " +
-                                  //                   _groupController
-                                  //                               .groupInfo[0]
-                                  //                           ['membersList'][1]
-                                  //                       ['displayName'] +
-                                  //                   "...",
-                                  //               style: bodySmall.copyWith(
-                                  //                   color: Colors.white),
-                                  //               maxLines: 1,
-                                  //               overflow: TextOverflow.ellipsis,
-                                  //             ),
-                                  //           )
-                                  //         : SizedBox(
-                                  //             width: 150,
-                                  //             child: Text(
-                                  //               "You, " +
-                                  //                   _groupController
-                                  //                               .groupInfo[0]
-                                  //                           ['membersList'][0]
-                                  //                       ['displayName'],
-                                  //               style: bodySmall.copyWith(
-                                  //                   color: Colors.white),
-                                  //               maxLines: 1,
-                                  //               overflow: TextOverflow.ellipsis,
-                                  //             ),
-                                  //           )
-                                  //     : SizedBox(
-                                  //         width: 150,
-                                  //         child: Text(
-                                  //           "You ",
-                                  //           style: bodySmall.copyWith(
-                                  //               color: Colors.white),
-                                  //           maxLines: 1,
-                                  //           overflow: TextOverflow.ellipsis,
-                                  //         ),
-                                  //       ),
                                 ],
                               ),
                             ],
@@ -367,6 +327,7 @@ class _GroupDetailState extends State<GroupDetail> {
                                           padding: EdgeInsets.only(top: 16),
                                           physics: BouncingScrollPhysics(),
                                           itemBuilder: (context, index) {
+                                            _progressValue.add(0.0);
                                             List<dynamic> assignMembers =
                                                 _groupController
                                                         .toBeCompletedTaskList[
@@ -378,31 +339,32 @@ class _GroupDetailState extends State<GroupDetail> {
                                                         member['displayName'])
                                                     .join(', ');
 
-                                            // var a = double.parse(
-                                            //     _groupController
-                                            //         .toBeCompletedTaskList[
-                                            //             index]['duration']
-                                            //         .toString());
-                                            // _startTime =
-                                            //     DateFormat('yyyy-MM-dd HH:mm')
-                                            //         .parse(_groupController
-                                            //             .toBeCompletedTaskList[
-                                            //                 index]['startTime']
-                                            //             .toString());
-                                            //
-                                            // _endTime = _startTime.add(Duration(
-                                            //     hours: a
-                                            //         .toInt())); // Adjust the duration as needed
-                                            //
-                                            // if (_startTime
-                                            //     .isBefore(DateTime.now())) {
-                                            //   // Start the timer to update the progress
-                                            //   Timer.periodic(
-                                            //       Duration(seconds: 1),
-                                            //       (Timer timer) {
-                                            //     _updateProgress();
-                                            //   });
-                                            // }
+                                            var a = double.parse(
+                                                _groupController
+                                                    .toBeCompletedTaskList[
+                                                        index]['duration']
+                                                    .toString());
+                                            _startTime.add(
+                                                DateFormat('yyyy-MM-dd HH:mm')
+                                                    .parse(_groupController
+                                                        .toBeCompletedTaskList[
+                                                            index]['startTime']
+                                                        .toString()));
+
+                                            _endTime.add(_startTime[index].add(
+                                                Duration(
+                                                    hours: a
+                                                        .toInt()))); // Adjust the duration as needed
+
+                                            if (_startTime[index]
+                                                .isBefore(DateTime.now())) {
+                                              // Start the timer to update the progress
+                                              _timer = Timer.periodic(
+                                                  Duration(seconds: 5),
+                                                  (Timer _timer) {
+                                                _updateProgress(index);
+                                              });
+                                            }
                                             return Padding(
                                               padding:
                                                   EdgeInsets.only(bottom: 15.0),
@@ -572,21 +534,44 @@ class _GroupDetailState extends State<GroupDetail> {
                                                         SizedBox(
                                                           height: 20,
                                                         ),
-                                                        // _startTime.isBefore(
-                                                        //         DateTime.now())
-                                                        //     ? LinearProgressIndicator(
-                                                        //         value:
-                                                        //             _progressValue,
-                                                        //         backgroundColor:
-                                                        //             Colors
-                                                        //                 .white,
-                                                        //         valueColor:
-                                                        //             AlwaysStoppedAnimation<
-                                                        //                     Color>(
-                                                        //                 Colors
-                                                        //                     .blue),
-                                                        //       )
-                                                        //     : SizedBox.shrink(),
+                                                        _startTime[index]
+                                                                .isBefore(
+                                                                    DateTime
+                                                                        .now())
+                                                            ? Row(
+                                                                children: [
+                                                                  Container(
+                                                                    width: 65.w,
+                                                                    child:
+                                                                        LinearProgressIndicator(
+                                                                      value: _progressValue[
+                                                                          index],
+                                                                      backgroundColor:
+                                                                          Colors
+                                                                              .white,
+                                                                      valueColor: AlwaysStoppedAnimation<
+                                                                              Color>(
+                                                                          Colors
+                                                                              .blue),
+                                                                    ),
+                                                                  ),
+                                                                  SizedBox(
+                                                                    width:
+                                                                        1.5.w,
+                                                                  ),
+                                                                  Text(
+                                                                    (_progressValue[index] *
+                                                                                100)
+                                                                            .toStringAsFixed(0)
+                                                                            .toString() +
+                                                                        "%",
+                                                                    style: TextStyle(
+                                                                        color: Colors
+                                                                            .white),
+                                                                  )
+                                                                ],
+                                                              )
+                                                            : SizedBox.shrink(),
                                                         SizedBox(height: 10),
                                                         Row(
                                                           mainAxisAlignment:
@@ -1426,7 +1411,7 @@ class _GroupDetailState extends State<GroupDetail> {
                                                                                 34,
                                                                             avatars: [
                                                                               for (var n = 0; n < _groupController.notCompletedTaskList[index]['assignMembers'].length; n++)
-                                                                                AssetImage("assets/images/man1.png"),
+                                                                                _groupController.notCompletedTaskList[index]['assignMembers'][n]['imageUrl'] == "" ? AssetImage("assets/images/man1.png") : NetworkImage(_groupController.notCompletedTaskList[index]['assignMembers'][n]['imageUrl'].toString()) as ImageProvider,
                                                                             ],
                                                                           ),
                                                                         ),
