@@ -1,6 +1,8 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 
+import '../constants/app_images.dart';
 import '../constants/global_variables.dart';
 
 class LikeBarWidget extends StatefulWidget {
@@ -25,13 +27,29 @@ class _LikeBarWidgetState extends State<LikeBarWidget> {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Container(
-          height: 36,
-          width: 36,
-          decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              image: DecorationImage(
-                  image: AssetImage(widget.image), fit: BoxFit.cover)),
+        CircleAvatar(
+          radius: 20, // Adjust the radius as needed
+          backgroundColor:
+              Colors.grey, // You can set a default background color
+          child: ClipOval(
+            child: SizedBox(
+              height: 20 * 2,
+              width: 20 * 2,
+              child: widget.image == ""
+                  ? Image.asset(
+                      AppImages.profileImage,
+                      // Replace with your asset image path
+                      fit: BoxFit.cover,
+                    )
+                  : CachedNetworkImage(
+                      imageUrl: widget.image,
+                      placeholder: (context, url) =>
+                          CircularProgressIndicator(),
+                      errorWidget: (context, url, error) => Icon(Icons.error),
+                      fit: BoxFit.fill,
+                    ),
+            ),
+          ),
         ),
         SizedBox(
           width: 8,

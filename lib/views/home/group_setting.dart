@@ -123,74 +123,6 @@ class _GroupSettingState extends State<GroupSetting> {
                     SizedBox(
                       height: 10,
                     ),
-                    // DelayedDisplay(
-                    //   delay: Duration(milliseconds: 600),
-                    //   slidingBeginOffset: Offset(0, 0),
-                    //   child: TextFormField(
-                    //     readOnly: true,
-                    //     style: bodyNormal.copyWith(
-                    //         fontFamily: "MontserratSemiBold"),
-                    //     decoration: InputDecoration(
-                    //         contentPadding: const EdgeInsets.symmetric(
-                    //             horizontal: 20, vertical: 20),
-                    //         disabledBorder: OutlineInputBorder(
-                    //           borderRadius: BorderRadius.circular(50),
-                    //           borderSide: BorderSide(
-                    //             color: Colors
-                    //                 .black26, // Make the border transparent
-                    //             width:
-                    //                 1, // Set the width to 0 to make it disappear
-                    //           ),
-                    //         ),
-                    //         focusedBorder: OutlineInputBorder(
-                    //           borderRadius: BorderRadius.circular(50),
-                    //           borderSide: BorderSide(
-                    //             color: Colors
-                    //                 .black26, // Make the border transparent
-                    //             width:
-                    //                 1, // Set the width to 0 to make it disappear
-                    //           ),
-                    //         ),
-                    //         errorBorder: OutlineInputBorder(
-                    //           borderRadius: BorderRadius.circular(50),
-                    //           borderSide: BorderSide(
-                    //             color: Colors
-                    //                 .black26, // Make the border transparent
-                    //             width:
-                    //                 1, // Set the width to 0 to make it disappear
-                    //           ),
-                    //         ),
-                    //         focusedErrorBorder: OutlineInputBorder(
-                    //           borderRadius: BorderRadius.circular(50),
-                    //           borderSide: BorderSide(
-                    //             color: Colors
-                    //                 .black26, // Make the border transparent
-                    //             width:
-                    //                 1, // Set the width to 0 to make it disappear
-                    //           ),
-                    //         ),
-                    //         enabledBorder: OutlineInputBorder(
-                    //           borderRadius: BorderRadius.circular(50),
-                    //           borderSide: BorderSide(
-                    //             color: Colors
-                    //                 .black26, // Make the border transparent
-                    //             width:
-                    //                 1, // Set the width to 0 to make it disappear
-                    //           ),
-                    //         ),
-                    //         hintText: widget.groupID.toString(),
-                    //         hintStyle: bodyNormal.copyWith(
-                    //             color: Colors.black,
-                    //             fontFamily: "MontserratSemiBold"),
-                    //         prefixIconColor: Colors.white,
-                    //         prefixIconConstraints: const BoxConstraints(
-                    //           maxHeight: 30,
-                    //           minHeight: 30,
-                    //         )),
-                    //   ),
-                    //   // CustomTextField(
-                    //   //     hintText: groupInfo[0]['groupName'])
-                    // ),
                     SelectableText(
                         _groupSettingController.groupInfo[0]['groupCode']
                             .toString(),
@@ -217,33 +149,64 @@ class _GroupSettingState extends State<GroupSetting> {
                     DelayedDisplay(
                       delay: Duration(milliseconds: 400),
                       slidingBeginOffset: Offset(0, 0),
-                      child: CircleAvatar(
-                        radius: 70, // Adjust the radius as needed
-                        backgroundColor: Colors
-                            .grey, // You can set a default background color
-                        child: ClipOval(
-                          child: SizedBox(
-                            height: 70 * 2,
-                            width: 70 * 2,
-                            child: _groupSettingController.groupInfo[0]
-                                        ['groupImage'] ==
-                                    null
-                                ? Image.asset(
-                                    AppImages
-                                        .groupIcon, // Replace with your asset image path
-                                    fit: BoxFit.fitHeight,
-                                  )
-                                : CachedNetworkImage(
-                                    imageUrl: _groupSettingController
-                                        .groupInfo[0]['groupImage'],
-                                    placeholder: (context, url) =>
-                                        CircularProgressIndicator(),
-                                    errorWidget: (context, url, error) =>
-                                        Icon(Icons.error),
-                                    fit: BoxFit.fill,
-                                  ),
+                      child: Stack(
+                        children: [
+                          CircleAvatar(
+                            radius: 70, // Adjust the radius as needed
+                            backgroundColor: Colors
+                                .grey, // You can set a default background color
+                            child: ClipOval(
+                              child: SizedBox(
+                                height: 70 * 2,
+                                width: 70 * 2,
+                                child: _groupSettingController.groupInfo[0]
+                                            ['groupImage'] ==
+                                        null
+                                    ? Image.asset(
+                                        AppImages
+                                            .groupIcon, // Replace with your asset image path
+                                        fit: BoxFit.fitHeight,
+                                      )
+                                    : CachedNetworkImage(
+                                        imageUrl: _groupSettingController
+                                            .groupInfo[0]['groupImage'],
+                                        placeholder: (context, url) =>
+                                            CircularProgressIndicator(),
+                                        errorWidget: (context, url, error) =>
+                                            Icon(Icons.error),
+                                        fit: BoxFit.fill,
+                                      ),
+                              ),
+                            ),
                           ),
-                        ),
+                          // Positioned(
+                          //   right: 0,
+                          //   bottom: 10,
+                          //   child: ZoomTapAnimation(
+                          //     onTap: () {
+                          //       // _upload("gallery");
+                          //     },
+                          //     onLongTap: () {},
+                          //     enableLongTapRepeatEvent: false,
+                          //     longTapRepeatDuration:
+                          //         const Duration(milliseconds: 100),
+                          //     begin: 1.0,
+                          //     end: 0.93,
+                          //     beginDuration: const Duration(milliseconds: 20),
+                          //     endDuration: const Duration(milliseconds: 120),
+                          //     beginCurve: Curves.decelerate,
+                          //     endCurve: Curves.fastOutSlowIn,
+                          //     child: CircleAvatar(
+                          //         radius: 16,
+                          //         backgroundColor: AppColors.buttonColor,
+                          //         child: Icon(
+                          //           Icons.camera_alt,
+                          //           color: Colors.white,
+                          //           size: 16,
+                          //         )),
+                          //   ),
+                          // ),
+                        ],
                       ),
                     ),
                     SizedBox(
@@ -465,6 +428,7 @@ class _GroupSettingState extends State<GroupSetting> {
                                       Icon(
                                         Icons.admin_panel_settings_rounded,
                                         color: AppColors.buttonColor,
+                                        size: 3.h,
                                       )
                                     ],
                                   ),
@@ -576,7 +540,7 @@ class _GroupSettingState extends State<GroupSetting> {
                                               ? InkWell(
                                                   onTap: () async {
                                                     confirmPopUp(context,
-                                                        "Are you sure, you want to remove member",
+                                                        "Are you sure, you want to remove this member",
                                                         () async {
                                                       await _groupSettingController
                                                           .removeMember(
@@ -608,30 +572,122 @@ class _GroupSettingState extends State<GroupSetting> {
                                                           .toString())
                                               ? InkWell(
                                                   onTap: () async {
-                                                    confirmPopUp(context,
-                                                        "Are you sure, you want to make member admin",
-                                                        () async {
-                                                      await _groupSettingController.makeAdmin(
-                                                          _groupSettingController
-                                                                      .groupInfo[0]
-                                                                  [
-                                                                  'membersList']
-                                                              [j]['userID'],
-                                                          widget.groupID
-                                                              .toString(),
-                                                          _groupSettingController
-                                                              .groupInfo[0]
-                                                                  ['groupName']
-                                                              .toString());
-                                                      getData();
-                                                      Navigator.pop(context);
-                                                    });
+                                                    showDialog(
+                                                        context: context,
+                                                        barrierDismissible:
+                                                            false,
+                                                        builder: (context) {
+                                                          return StatefulBuilder(
+                                                              builder: (context,
+                                                                  setState) {
+                                                            return AlertDialog(
+                                                              backgroundColor:
+                                                                  Colors.white,
+                                                              elevation: 0,
+                                                              contentPadding:
+                                                                  EdgeInsets
+                                                                      .zero,
+                                                              shape: RoundedRectangleBorder(
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(
+                                                                              13)),
+                                                              // title: Text("Notice"),
+                                                              // content: Text("Launching this missile will destroy the entire universe. Is this what you intended to do?"),
+                                                              actions: [
+                                                                Column(
+                                                                  crossAxisAlignment:
+                                                                      CrossAxisAlignment
+                                                                          .start,
+                                                                  children: [
+                                                                    Container(
+                                                                        decoration:
+                                                                            const BoxDecoration(
+                                                                          color:
+                                                                              Colors.white,
+                                                                        ),
+                                                                        alignment:
+                                                                            Alignment
+                                                                                .center,
+                                                                        child:
+                                                                            Padding(
+                                                                          padding: const EdgeInsets
+                                                                              .all(
+                                                                              18.0),
+                                                                          child:
+                                                                              Column(
+                                                                            children: [
+                                                                              Icon(
+                                                                                Icons.admin_panel_settings_rounded,
+                                                                                color: AppColors.buttonColor,
+                                                                                size: 5.h,
+                                                                              ),
+                                                                              // Image.asset(
+                                                                              //   AppImages.logo1,
+                                                                              //   color: AppColors.buttonColor,
+                                                                              //   height: 5.h,
+                                                                              // ),
+                                                                              const SizedBox(
+                                                                                height: 20,
+                                                                              ),
+                                                                              Padding(
+                                                                                padding: EdgeInsets.only(left: 15.0, right: 15.0),
+                                                                                child: Text(
+                                                                                  "Are you sure, you want to make this member admin",
+                                                                                  textAlign: TextAlign.center,
+                                                                                  style: TextStyle(
+                                                                                    height: 1.4,
+                                                                                    fontWeight: FontWeight.w600,
+                                                                                    fontFamily: 'Poppins',
+                                                                                    color: Colors.black,
+                                                                                    fontSize: 17,
+                                                                                  ),
+                                                                                ),
+                                                                              ),
+                                                                              const SizedBox(
+                                                                                height: 20,
+                                                                              ),
+                                                                              Row(
+                                                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                                                children: [
+                                                                                  TextButton(
+                                                                                    child: Text(
+                                                                                      "No",
+                                                                                      style: bodyNormal.copyWith(color: Colors.black),
+                                                                                    ),
+                                                                                    onPressed: () {
+                                                                                      Navigator.pop(context);
+                                                                                    },
+                                                                                  ),
+                                                                                  TextButton(
+                                                                                    onPressed: () async {
+                                                                                      await _groupSettingController.makeAdmin(_groupSettingController.groupInfo[0]['membersList'][j]['userID'], widget.groupID.toString(), _groupSettingController.groupInfo[0]['groupName'].toString());
+                                                                                      getData();
+                                                                                      Navigator.pop(context);
+                                                                                    },
+                                                                                    child: Text(
+                                                                                      "Yes",
+                                                                                      style: bodyNormal.copyWith(color: Colors.red),
+                                                                                    ),
+                                                                                  ),
+                                                                                ],
+                                                                              )
+                                                                            ],
+                                                                          ),
+                                                                        )),
+                                                                  ],
+                                                                ),
+                                                              ],
+                                                            );
+                                                            ;
+                                                          });
+                                                        });
                                                   },
                                                   child: Icon(
-                                                    Icons
-                                                        .admin_panel_settings_rounded,
+                                                    Icons.add_moderator,
                                                     color:
                                                         AppColors.buttonColor,
+                                                    size: 3.h,
                                                   ))
                                               : SizedBox.shrink(),
                                         ],

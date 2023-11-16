@@ -10,6 +10,7 @@ import '../../constants/global_variables.dart';
 import '../../controllers/data_controller.dart';
 import '../../controllers/general_controller.dart';
 import '../../controllers/notification_controller.dart';
+import '../../helper/collections.dart';
 import '../../helper/page_navigation.dart';
 import '../../widgets/custom_widgets.dart';
 import '../home/bottom_nav_bar.dart';
@@ -34,11 +35,9 @@ class _NotificationsState extends State<Notifications> {
       isLoading = true;
     });
     await _notiController.getNotifications();
-    FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
-    CollectionReference collectionReference = firebaseFirestore
-        .collection('users')
+    CollectionReference collectionReference = Collections.USERS
         .doc(userData.userID.toString())
-        .collection("notifications");
+        .collection(Collections.NOTIFICATIONS);
 
     QuerySnapshot querySnapshot = await collectionReference.get();
 
@@ -167,7 +166,12 @@ class _NotificationsState extends State<Notifications> {
                                                 horizontal: 14, vertical: 10),
                                             width: double.infinity,
                                             height: 80,
-                                            color: Colors.white12,
+                                            color: _notiController
+                                                            .notificationList[
+                                                        index]['read'] ==
+                                                    true
+                                                ? Colors.white12
+                                                : Colors.grey,
                                             child: Row(
                                               children: [
                                                 Column(

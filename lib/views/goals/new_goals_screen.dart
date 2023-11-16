@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:delayed_display/delayed_display.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -123,6 +124,58 @@ class _NewGoalsScreenState extends State<NewGoalsScreen> {
                                       children: [
                                         Row(
                                           children: [
+                                            CircleAvatar(
+                                              radius:
+                                                  20, // Adjust the radius as needed
+                                              backgroundColor: Colors
+                                                  .grey, // You can set a default background color
+                                              child: ClipOval(
+                                                child: SizedBox(
+                                                  height: 20 * 2,
+                                                  width: 20 * 2,
+                                                  child: _goalController
+                                                                      .goalList[
+                                                                  index][
+                                                              'goalGroupImage'] ==
+                                                          null
+                                                      ? Image.asset(
+                                                          "assets/images/groupIcon.png", // Replace with your asset image path
+                                                          fit: BoxFit.fitHeight,
+                                                        )
+                                                      : CachedNetworkImage(
+                                                          imageUrl: _goalController
+                                                              .goalList[index][
+                                                                  'goalGroupImage']
+                                                              .toString(),
+                                                          placeholder: (context,
+                                                                  url) =>
+                                                              CircularProgressIndicator(),
+                                                          errorWidget: (context,
+                                                                  url, error) =>
+                                                              Icon(Icons.error),
+                                                          fit: BoxFit.fill,
+                                                        ),
+                                                ),
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              width: 1.w,
+                                            ),
+                                            Text(
+                                              _goalController.goalList[index]
+                                                      ['goalGroupName']
+                                                  .toString(),
+                                              style: headingMedium.copyWith(
+                                                  color: Colors.white),
+                                              maxLines: 2,
+                                            ),
+                                          ],
+                                        ),
+                                        SizedBox(
+                                          height: 10,
+                                        ),
+                                        Row(
+                                          children: [
                                             Expanded(
                                               child: Text(
                                                 _goalController.goalList[index]
@@ -201,7 +254,7 @@ class _NewGoalsScreenState extends State<NewGoalsScreen> {
                                           height: 10,
                                         ),
                                         LikeBarWidget(
-                                            image: "assets/images/man1.png",
+                                            image: userData.imageUrl,
                                             count: achievedPoints.toString(),
                                             percent: (achievedPoints /
                                                 int.parse(_goalController

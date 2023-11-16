@@ -676,7 +676,10 @@ class _EditGroupTaskState extends State<EditGroupTask> {
                       String startTime = _dataController.startTime.value;
                       String endTime = _dataController.endTime.value;
                       bool pastTime = DateTime.parse(startTime)
-                          .isBefore(DateTime.parse(endTime));
+                          .isAfter(DateTime.parse(endTime));
+                      print(_dataController.startTime.value);
+                      print(_dataController.endTime.value);
+                      print(pastTime);
                       if (taskFormField.currentState!.validate()) {
                         if (_dataController.assignTaskMember.isNotEmpty) {
                           if (_dataController.startTime.value ==
@@ -724,7 +727,7 @@ class _EditGroupTaskState extends State<EditGroupTask> {
                           }
                         } else {
                           errorPopUp(context,
-                              "Can't add task without assigned member");
+                              "Can't add task without assigning it to any member");
                         }
                       }
                     },
@@ -743,7 +746,7 @@ class _EditGroupTaskState extends State<EditGroupTask> {
                                   child: CircularProgressIndicator(
                                       color: Colors.white))
                               : Text(
-                                  "Edit Task",
+                                  "Save Changes",
                                   style: headingSmall.copyWith(
                                       color: Colors.white),
                                 ),

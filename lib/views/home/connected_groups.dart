@@ -25,6 +25,7 @@ class ConnectedGroupScreen extends StatefulWidget {
 class _ConnectedGroupScreenState extends State<ConnectedGroupScreen> {
   bool isLoading = false;
   final GlobalKey globalKeyOne = GlobalKey();
+
   // final GlobalKey globalKeyFour = GlobalKey();
   TextEditingController searchController = TextEditingController();
   bool isUnreadNotificationPresent = false;
@@ -272,13 +273,17 @@ class _ConnectedGroupScreenState extends State<ConnectedGroupScreen> {
           ? null
           : _dataController.chatUsers.isEmpty
               ? null
-              : FloatingActionButton(
-                  // key: intro.keys[0],
-                  backgroundColor: AppColors.buttonColor,
-                  onPressed: () {
-                    Get.to(() => ConnectNewGroup());
-                  },
-                  child: Icon(Icons.add),
+              : ShowCaseView(
+                  globalKey: globalKeyOne,
+                  title: 'Create or Join group',
+                  description: 'Create or Join group by clicking this button.',
+                  child: FloatingActionButton(
+                    backgroundColor: AppColors.buttonColor,
+                    onPressed: () {
+                      Get.to(() => ConnectNewGroup());
+                    },
+                    child: Icon(Icons.add),
+                  ),
                 ),
     );
   }
