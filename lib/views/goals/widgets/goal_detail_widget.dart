@@ -12,11 +12,16 @@ class GoalDetailWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        SizedBox(
-          height: 20,
-          width: 20,
-          child: Image.asset(icon),
-        ),
+        icon == "assets/icons/coin.png"
+            ? Icon(
+                Icons.flag_outlined,
+                color: Colors.white,
+              )
+            : SizedBox(
+                height: 20,
+                width: 20,
+                child: Image.asset(icon),
+              ),
         SizedBox(
           width: 10,
         ),

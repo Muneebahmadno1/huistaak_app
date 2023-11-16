@@ -138,7 +138,7 @@ class _ConnectNewGroupState extends State<ConnectNewGroup> {
               Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  "you have to be connected to any group to see activities",
+                  "You have to be connected to any group to see activities",
                   style: bodyNormal,
                 ),
               ),

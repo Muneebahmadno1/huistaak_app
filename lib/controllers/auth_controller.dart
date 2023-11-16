@@ -1,8 +1,11 @@
 import 'dart:math';
 
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:sizer/sizer.dart';
+import 'package:zoom_tap_animation/zoom_tap_animation.dart';
 
 import '../constants/global_variables.dart';
 import '../helper/collections.dart';
@@ -57,6 +60,12 @@ class AuthController extends GetxController {
     }
   }
 
+  reSendVerificationEmail(context) async {
+    await FirebaseAuth.instance.currentUser?.sendEmailVerification();
+    successPopUp(
+        context, const LoginScreen(), 'Verification link sent to your email.');
+  }
+
   validateUser(context, email, password) async {
     try {
       UserCredential user = await FirebaseAuth.instance
@@ -81,7 +90,161 @@ class AuthController extends GetxController {
             .update({"fcmToken": fcmToken.value});
       } else {
         Get.back();
-        errorPopUp(context, "User not verified yet,\n Try again");
+        showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (context) {
+              return StatefulBuilder(builder: (context, setState) {
+                return AlertDialog(
+                  backgroundColor: Colors.white,
+                  elevation: 0,
+                  contentPadding: EdgeInsets.zero,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(13)),
+                  // title: Text("Notice"),
+                  // content: Text("Launching this missile will destroy the entire universe. Is this what you intended to do?"),
+                  actions: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                            decoration: const BoxDecoration(
+                              color: Colors.white,
+                            ),
+                            alignment: Alignment.center,
+                            child: Padding(
+                              padding: const EdgeInsets.all(18.0),
+                              child: Column(
+                                children: [
+                                  Icon(
+                                    Icons.error_outline,
+                                    color: AppColors.buttonColor,
+                                    size: 5.h,
+                                  ),
+                                  const SizedBox(
+                                    height: 20,
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.only(
+                                        left: 15.0, right: 15.0),
+                                    child: Text(
+                                      "User not verified yet, Want to resend verification mail",
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        height: 1.4,
+                                        fontWeight: FontWeight.w600,
+                                        fontFamily: 'Poppins',
+                                        color: Colors.black,
+                                        fontSize: 17,
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    height: 20,
+                                  ),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 8),
+                                        child: ZoomTapAnimation(
+                                          onTap: () async {
+                                            HapticFeedback.heavyImpact();
+                                            await FirebaseAuth.instance
+                                                .signInWithEmailAndPassword(
+                                                    email: email.toString(),
+                                                    password:
+                                                        password.toString());
+                                            FirebaseAuth.instance.currentUser
+                                                ?.sendEmailVerification();
+                                            Get.back();
+                                            successPopUp(context, "",
+                                                'Verification link sent to your email.');
+                                          },
+                                          onLongTap: () {},
+                                          enableLongTapRepeatEvent: false,
+                                          longTapRepeatDuration:
+                                              const Duration(milliseconds: 100),
+                                          begin: 1.0,
+                                          end: 0.93,
+                                          beginDuration:
+                                              const Duration(milliseconds: 20),
+                                          endDuration:
+                                              const Duration(milliseconds: 120),
+                                          beginCurve: Curves.decelerate,
+                                          endCurve: Curves.fastOutSlowIn,
+                                          child: Container(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 20),
+                                              height: 40,
+                                              decoration: BoxDecoration(
+                                                color: AppColors.buttonColor,
+                                                borderRadius:
+                                                    BorderRadius.circular(50),
+                                              ),
+                                              child: Center(
+                                                child: Text("Yes",
+                                                    style: bodyLarge.copyWith(
+                                                        color: Colors.white,
+                                                        fontWeight:
+                                                            FontWeight.bold)),
+                                              )),
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 8),
+                                        child: ZoomTapAnimation(
+                                          onTap: () {
+                                            HapticFeedback.heavyImpact();
+                                            Navigator.pop(context);
+                                          },
+                                          onLongTap: () {},
+                                          enableLongTapRepeatEvent: false,
+                                          longTapRepeatDuration:
+                                              const Duration(milliseconds: 100),
+                                          begin: 1.0,
+                                          end: 0.93,
+                                          beginDuration:
+                                              const Duration(milliseconds: 20),
+                                          endDuration:
+                                              const Duration(milliseconds: 120),
+                                          beginCurve: Curves.decelerate,
+                                          endCurve: Curves.fastOutSlowIn,
+                                          child: Container(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 20),
+                                              height: 40,
+                                              decoration: BoxDecoration(
+                                                color: AppColors.buttonColor,
+                                                borderRadius:
+                                                    BorderRadius.circular(50),
+                                              ),
+                                              child: Center(
+                                                child: Text("No",
+                                                    style: bodyLarge.copyWith(
+                                                        color: Colors.white,
+                                                        fontWeight:
+                                                            FontWeight.bold)),
+                                              )),
+                                        ),
+                                      )
+                                    ],
+                                  )
+                                ],
+                              ),
+                            )),
+                      ],
+                    ),
+                  ],
+                );
+              });
+            });
+        // errorPopUp(context, "User not verified yet,\n Try again");
       }
     } on FirebaseAuthException catch (e) {
       Get.back();

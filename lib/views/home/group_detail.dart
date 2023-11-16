@@ -642,8 +642,12 @@ class _GroupDetailState extends State<GroupDetail> {
                                                               ? SizedBox
                                                                   .shrink()
                                                               : LikeBarWidget(
-                                                                  image:
-                                                                      "assets/images/man1.png",
+                                                                  image: _groupController
+                                                                              .toBeCompletedTaskList[index]
+                                                                          [
+                                                                          'assignMembers'][i]
+                                                                      [
+                                                                      'imageUrl'],
                                                                   count: _groupController.toBeCompletedTaskList[index]['assignMembers']
                                                                               [
                                                                               i]
@@ -686,134 +690,123 @@ class _GroupDetailState extends State<GroupDetail> {
                                                         //             .any((map) =>
                                                         //                 map['endTask'] ==
                                                         //                 null)
-                                                        _groupController
-                                                                .toBeCompletedTaskList[
-                                                                    index][
-                                                                    'assignMembers']
-                                                                .any((map) =>
-                                                                    map['userID']
-                                                                            .toString() ==
-                                                                        userData
-                                                                            .userID
-                                                                            .toString() &&
-                                                                    map['endTask'] ==
-                                                                        null)
-                                                            ? Row(
-                                                                children: [
-                                                                  _groupController
-                                                                          .toBeCompletedTaskList[
-                                                                              index]
-                                                                              [
-                                                                              'assignMembers']
-                                                                          .any((map) =>
+                                                        _startTime[index]
+                                                                .isBefore(
+                                                                    DateTime
+                                                                        .now())
+                                                            ? _groupController
+                                                                    .toBeCompletedTaskList[
+                                                                        index][
+                                                                        'assignMembers']
+                                                                    .any((map) =>
+                                                                        map['userID'].toString() ==
+                                                                            userData.userID
+                                                                                .toString() &&
+                                                                        map['endTask'] ==
+                                                                            null)
+                                                                ? Row(
+                                                                    children: [
+                                                                      _groupController.toBeCompletedTaskList[index]['assignMembers'].any((map) =>
                                                                               map['userID'].toString() == userData.userID.toString() &&
                                                                               map['startTask'] !=
                                                                                   null)
-                                                                      ? SizedBox
-                                                                          .shrink()
-                                                                      : Expanded(
-                                                                          child:
-                                                                              Padding(
-                                                                            padding:
-                                                                                const EdgeInsets.symmetric(vertical: 8),
-                                                                            child:
-                                                                                ZoomTapAnimation(
-                                                                              onTap: () async {
-                                                                                await _groupController.startTask(widget.groupID.toString(), _groupController.toBeCompletedTaskList[index]['id'].toString(), widget.groupTitle);
-                                                                                getData();
-                                                                              },
-                                                                              onLongTap: () {},
-                                                                              enableLongTapRepeatEvent: false,
-                                                                              longTapRepeatDuration: const Duration(milliseconds: 100),
-                                                                              begin: 1.0,
-                                                                              end: 0.93,
-                                                                              beginDuration: const Duration(milliseconds: 20),
-                                                                              endDuration: const Duration(milliseconds: 120),
-                                                                              beginCurve: Curves.decelerate,
-                                                                              endCurve: Curves.fastOutSlowIn,
-                                                                              child: Container(
-                                                                                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                                                                                  width: double.infinity,
-                                                                                  height: 50,
-                                                                                  decoration: BoxDecoration(
-                                                                                    color: Colors.white,
-                                                                                    borderRadius: BorderRadius.circular(50),
-                                                                                  ),
-                                                                                  child: Center(
-                                                                                    child: Text("Start", style: bodyLarge.copyWith(color: AppColors.buttonColor, fontWeight: FontWeight.bold)),
-                                                                                  )),
+                                                                          ? SizedBox
+                                                                              .shrink()
+                                                                          : Expanded(
+                                                                              child: Padding(
+                                                                                padding: const EdgeInsets.symmetric(vertical: 8),
+                                                                                child: ZoomTapAnimation(
+                                                                                  onTap: () async {
+                                                                                    await _groupController.startTask(widget.groupID.toString(), _groupController.toBeCompletedTaskList[index]['id'].toString(), widget.groupTitle);
+                                                                                    getData();
+                                                                                  },
+                                                                                  onLongTap: () {},
+                                                                                  enableLongTapRepeatEvent: false,
+                                                                                  longTapRepeatDuration: const Duration(milliseconds: 100),
+                                                                                  begin: 1.0,
+                                                                                  end: 0.93,
+                                                                                  beginDuration: const Duration(milliseconds: 20),
+                                                                                  endDuration: const Duration(milliseconds: 120),
+                                                                                  beginCurve: Curves.decelerate,
+                                                                                  endCurve: Curves.fastOutSlowIn,
+                                                                                  child: Container(
+                                                                                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                                                                                      width: double.infinity,
+                                                                                      height: 50,
+                                                                                      decoration: BoxDecoration(
+                                                                                        color: Colors.white,
+                                                                                        borderRadius: BorderRadius.circular(50),
+                                                                                      ),
+                                                                                      child: Center(
+                                                                                        child: Text("Start", style: bodyLarge.copyWith(color: AppColors.buttonColor, fontWeight: FontWeight.bold)),
+                                                                                      )),
+                                                                                ),
+                                                                              ),
                                                                             ),
-                                                                          ),
-                                                                        ),
-                                                                  SizedBox(
-                                                                    width: 10,
-                                                                  ),
-                                                                  _groupController
-                                                                          .toBeCompletedTaskList[
-                                                                              index]
-                                                                              [
-                                                                              'assignMembers']
-                                                                          .any((map) =>
+                                                                      SizedBox(
+                                                                        width:
+                                                                            10,
+                                                                      ),
+                                                                      _groupController.toBeCompletedTaskList[index]['assignMembers'].any((map) =>
                                                                               map['userID'].toString() == userData.userID.toString() &&
                                                                               map['startTask'] ==
                                                                                   null)
-                                                                      ? SizedBox
-                                                                          .shrink()
-                                                                      : Expanded(
-                                                                          child:
-                                                                              Padding(
-                                                                            padding:
-                                                                                const EdgeInsets.symmetric(vertical: 8),
-                                                                            child:
-                                                                                ZoomTapAnimation(
-                                                                              onTap: () async {
-                                                                                setState(() {
-                                                                                  isLoading = true;
-                                                                                });
-                                                                                await _groupController.endTask(widget.groupID.toString(), _groupController.toBeCompletedTaskList[index]['id'].toString(), _groupController.toBeCompletedTaskList[index]['assignMembers'], double.parse(_groupController.toBeCompletedTaskList[index]['duration'].toString()) * 60, _groupController.toBeCompletedTaskList[index]['taskScore'], widget.groupTitle, _groupController.groupInfo[0]['adminsList']);
-                                                                                Future.delayed(const Duration(milliseconds: 1000), () {
-                                                                                  setState(() {
-                                                                                    isFinish = false;
-                                                                                  });
-                                                                                });
-                                                                                Future.delayed(const Duration(milliseconds: 3000), () async {
-                                                                                  setState(() {});
-                                                                                  await getData();
-                                                                                  setState(() {
-                                                                                    isFinish = true;
-                                                                                  });
-                                                                                  Future.delayed(const Duration(milliseconds: 3000), () async {
+                                                                          ? SizedBox
+                                                                              .shrink()
+                                                                          : Expanded(
+                                                                              child: Padding(
+                                                                                padding: const EdgeInsets.symmetric(vertical: 8),
+                                                                                child: ZoomTapAnimation(
+                                                                                  onTap: () async {
                                                                                     setState(() {
-                                                                                      isFinish = false;
+                                                                                      isLoading = true;
                                                                                     });
-                                                                                  });
-                                                                                });
-                                                                              },
-                                                                              onLongTap: () {},
-                                                                              enableLongTapRepeatEvent: false,
-                                                                              longTapRepeatDuration: const Duration(milliseconds: 100),
-                                                                              begin: 1.0,
-                                                                              end: 0.93,
-                                                                              beginDuration: const Duration(milliseconds: 20),
-                                                                              endDuration: const Duration(milliseconds: 120),
-                                                                              beginCurve: Curves.decelerate,
-                                                                              endCurve: Curves.fastOutSlowIn,
-                                                                              child: Container(
-                                                                                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                                                                                  width: double.infinity,
-                                                                                  height: 50,
-                                                                                  decoration: BoxDecoration(
-                                                                                    color: Colors.white.withOpacity(0.5),
-                                                                                    borderRadius: BorderRadius.circular(50),
-                                                                                  ),
-                                                                                  child: Center(
-                                                                                    child: Text("Finish", style: bodyLarge.copyWith(color: Colors.white, fontWeight: FontWeight.bold)),
-                                                                                  )),
+                                                                                    await _groupController.endTask(widget.groupID.toString(), _groupController.toBeCompletedTaskList[index]['id'].toString(), _groupController.toBeCompletedTaskList[index]['assignMembers'], double.parse(_groupController.toBeCompletedTaskList[index]['duration'].toString()) * 60, _groupController.toBeCompletedTaskList[index]['taskScore'], widget.groupTitle, _groupController.groupInfo[0]['adminsList']);
+                                                                                    Future.delayed(const Duration(milliseconds: 1000), () {
+                                                                                      setState(() {
+                                                                                        isFinish = false;
+                                                                                      });
+                                                                                    });
+                                                                                    Future.delayed(const Duration(milliseconds: 3000), () async {
+                                                                                      setState(() {});
+                                                                                      await getData();
+                                                                                      setState(() {
+                                                                                        isFinish = true;
+                                                                                      });
+                                                                                      Future.delayed(const Duration(milliseconds: 3000), () async {
+                                                                                        setState(() {
+                                                                                          isFinish = false;
+                                                                                        });
+                                                                                      });
+                                                                                    });
+                                                                                  },
+                                                                                  onLongTap: () {},
+                                                                                  enableLongTapRepeatEvent: false,
+                                                                                  longTapRepeatDuration: const Duration(milliseconds: 100),
+                                                                                  begin: 1.0,
+                                                                                  end: 0.93,
+                                                                                  beginDuration: const Duration(milliseconds: 20),
+                                                                                  endDuration: const Duration(milliseconds: 120),
+                                                                                  beginCurve: Curves.decelerate,
+                                                                                  endCurve: Curves.fastOutSlowIn,
+                                                                                  child: Container(
+                                                                                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                                                                                      width: double.infinity,
+                                                                                      height: 50,
+                                                                                      decoration: BoxDecoration(
+                                                                                        color: Colors.white.withOpacity(0.5),
+                                                                                        borderRadius: BorderRadius.circular(50),
+                                                                                      ),
+                                                                                      child: Center(
+                                                                                        child: Text("Finish", style: bodyLarge.copyWith(color: Colors.white, fontWeight: FontWeight.bold)),
+                                                                                      )),
+                                                                                ),
+                                                                              ),
                                                                             ),
-                                                                          ),
-                                                                        ),
-                                                                ],
-                                                              )
+                                                                    ],
+                                                                  )
+                                                                : SizedBox
+                                                                    .shrink()
                                                             : SizedBox.shrink(),
                                                       ],
                                                     ),
@@ -1060,8 +1053,11 @@ class _GroupDetailState extends State<GroupDetail> {
                                                                   ? SizedBox
                                                                       .shrink()
                                                                   : LikeBarWidget(
-                                                                      image:
-                                                                          "assets/images/man1.png",
+                                                                      image: _groupController.completedTaskList[index]['assignMembers']
+                                                                              [
+                                                                              i]
+                                                                          [
+                                                                          'imageUrl'],
                                                                       count: _groupController.completedTaskList[index]['assignMembers'][i]
                                                                               [
                                                                               'pointsEarned'] ??

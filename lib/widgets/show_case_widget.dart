@@ -25,7 +25,6 @@ class ShowCaseView extends StatelessWidget {
         titleTextStyle: TextStyle(color: AppColors.buttonColor),
         description: description,
         targetShapeBorder: shapeBorder,
-        targetPadding: EdgeInsets.only(left: 0.0, top: -7.7, bottom: -7.7),
         child: child);
   }
 }

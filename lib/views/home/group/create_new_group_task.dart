@@ -705,7 +705,7 @@ class _CreateNewGroupTaskState extends State<CreateNewGroupTask> {
                           }
                         } else {
                           errorPopUp(context,
-                              "Can't add task without assigned member");
+                              "Can't add task without assigning it to any member");
                         }
                       }
                     },

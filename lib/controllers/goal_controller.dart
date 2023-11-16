@@ -57,10 +57,12 @@ class GoalController extends GetxController {
           .doc(groupWithUserList[i]['groupID'])
           .collection(Collections.GOALS)
           .get();
-      for (int i = 0; i < querySnapshot1.docs.length; i++) {
-        var a = querySnapshot1.docs[i].data() as Map;
+      for (int j = 0; j < querySnapshot1.docs.length; j++) {
+        var a = querySnapshot1.docs[j].data() as Map;
 
         goalList.add({
+          "goalGroupName": groupWithUserList[i]['groupName'],
+          "goalGroupImage": groupWithUserList[i]['groupImage'],
           "goalGroup": a['goalGroup'],
           "goalTitle": a['goalTitle'],
           "goalDate": a['goalDate'],
@@ -89,6 +91,24 @@ class GoalController extends GetxController {
     doc.set({
       "goalGroup": groupID.toString(),
       "goalID": doc.id,
+      "goalTitle": goalTitle,
+      "goalDate": goalDate,
+      "goalTime": time,
+      "goalMembers": goalMembers,
+      "goalPoints": goalPoints
+    });
+    return;
+  }
+
+  editGroupGoal(goalID, groupID, goalTitle, goalDate, time, goalMembers,
+      goalPoints) async {
+    await Collections.GROUPS
+        .doc(groupID.toString())
+        .collection(Collections.GOALS)
+        .doc(goalID)
+        .update({
+      "goalGroup": groupID.toString(),
+      "goalID": goalID.toString(),
       "goalTitle": goalTitle,
       "goalDate": goalDate,
       "goalTime": time,

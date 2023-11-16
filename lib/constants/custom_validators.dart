@@ -13,8 +13,8 @@ class CustomValidator {
   static String? postalCode(String? value) {
     if (value!.isEmpty) {
       return ' Postal Code is required';
-    } else if (value.length < 3) {
-      return ' Postal Code should be greater then 3 digits';
+    } else if (value.length <= 3) {
+      return ' Postal Code should be greater than 3 digits';
     }
     return null;
   }

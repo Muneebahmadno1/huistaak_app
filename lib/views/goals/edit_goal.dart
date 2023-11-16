@@ -1,9 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:delayed_display/delayed_display.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:huistaak/widgets/custom_widgets.dart';
 import 'package:sizer/sizer.dart';
+import 'package:zoom_tap_animation/zoom_tap_animation.dart';
 
 import '../../constants/custom_validators.dart';
 import '../../constants/global_variables.dart';
@@ -35,6 +37,7 @@ class _EditGoalState extends State<EditGoal> {
   List<dynamic> groupList = [];
   late String _dropDownValue;
   bool isLoading = false;
+  bool editLoading = false;
 
   getDataGoal() async {
     setState(() {
@@ -233,154 +236,61 @@ class _EditGoalState extends State<EditGoal> {
                       //   ),
                       // ),
                       const SizedBox(height: 20),
-                      DelayedDisplay(
-                        delay: Duration(milliseconds: 500),
-                        slidingBeginOffset: Offset(0, -1),
-                        child: Align(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            "Goal for group",
-                            style: headingSmall.copyWith(
-                                color: AppColors.buttonColor),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-
-                      DelayedDisplay(
-                        delay: Duration(milliseconds: 500),
-                        slidingBeginOffset: Offset(0, -1),
-                        child: Container(
-                          height: 56,
-                          decoration: BoxDecoration(
-                            color: AppColors.buttonColor.withOpacity(0.2),
-                            borderRadius: BorderRadius.circular(40),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.only(
-                                left: 20.0, right: 20.0, top: 3),
-                            child: DropdownButton(
-                              borderRadius: BorderRadius.circular(20),
-                              underline: SizedBox(),
-                              hint: Text(
-                                _dropDownValue,
-                                style: bodyNormal,
-                              ),
-                              value: _dropDownValue,
-                              isExpanded: true,
-                              iconSize: 30.0,
-                              style: bodyNormal,
-                              items: groupList.map(
-                                (val) {
-                                  return DropdownMenuItem<String>(
-                                    value: val['groupID'],
-                                    child: Text(val['groupName']),
-                                  );
-                                },
-                              ).toList(),
-                              onChanged: (val) async {
-                                setState(
-                                  () {
-                                    _dropDownValue = val!;
-                                    print(val);
-                                    print(_dropDownValue);
-                                  },
-                                );
-                              },
-                            ),
-                          ),
-                        ),
-                      ),
                       // DelayedDisplay(
-                      //   delay: Duration(milliseconds: 700),
+                      //   delay: Duration(milliseconds: 500),
                       //   slidingBeginOffset: Offset(0, -1),
                       //   child: Align(
                       //     alignment: Alignment.centerLeft,
                       //     child: Text(
-                      //       "Time for goal",
-                      //       style:
-                      //           headingSmall.copyWith(color: AppColors.buttonColor),
+                      //       "Goal for group",
+                      //       style: headingSmall.copyWith(
+                      //           color: AppColors.buttonColor),
                       //     ),
                       //   ),
                       // ),
                       // const SizedBox(height: 10),
+                      //
                       // DelayedDisplay(
-                      //   delay: Duration(milliseconds: 800),
-                      //   slidingBeginOffset: Offset(0, 0),
-                      //   child: TimePickerWidget(
-                      //     index: 0,
-                      //     title: 'Select Time',
-                      //   ),
-                      // ),
-                      // const SizedBox(height: 20),
-                      // DelayedDisplay(
-                      //   delay: Duration(milliseconds: 900),
+                      //   delay: Duration(milliseconds: 500),
                       //   slidingBeginOffset: Offset(0, -1),
-                      //   child: Align(
-                      //     alignment: Alignment.centerLeft,
-                      //     child: Text(
-                      //       "Assign Goal to Group Members:",
-                      //       style:
-                      //           headingSmall.copyWith(color: AppColors.buttonColor),
+                      //   child: Container(
+                      //     height: 56,
+                      //     decoration: BoxDecoration(
+                      //       color: AppColors.buttonColor.withOpacity(0.2),
+                      //       borderRadius: BorderRadius.circular(40),
                       //     ),
-                      //   ),
-                      // ),
-                      // SizedBox(
-                      //   height: 20,
-                      // ),
-                      // DelayedDisplay(
-                      //   delay: Duration(milliseconds: 1000),
-                      //   slidingBeginOffset: Offset(-1, 0),
-                      //   child: Obx(
-                      //     () => Row(
-                      //       children: [
-                      //         for (int a = 0;
-                      //             a < _dataController.assignGoalMember.length;
-                      //             a++)
-                      //           SizedBox(
-                      //             height: 70,
-                      //             width: 70,
-                      //             child: Stack(
-                      //               alignment: Alignment.center,
-                      //               children: [
-                      //                 Container(
-                      //                   height: 60,
-                      //                   width: 60,
-                      //                   decoration: BoxDecoration(
-                      //                     shape: BoxShape.circle,
-                      //                     image: DecorationImage(
-                      //                         image: AssetImage(
-                      //                             "assets/images/man1.png"),
-                      //                         fit: BoxFit.cover),
-                      //                   ),
-                      //                 ),
-                      //               ],
-                      //             ),
-                      //           ),
-                      //         SizedBox(
-                      //           width: 10,
+                      //     child: Padding(
+                      //       padding: const EdgeInsets.only(
+                      //           left: 20.0, right: 20.0, top: 3),
+                      //       child: DropdownButton(
+                      //         borderRadius: BorderRadius.circular(20),
+                      //         underline: SizedBox(),
+                      //         hint: Text(
+                      //           _dropDownValue,
+                      //           style: bodyNormal,
                       //         ),
-                      //         ZoomTapAnimation(
-                      //           onTap: () {
-                      //             Get.to(() => AddMember(
-                      //                   from: 'groupGoal',
-                      //                 ));
+                      //         value: _dropDownValue,
+                      //         isExpanded: true,
+                      //         iconSize: 30.0,
+                      //         style: bodyNormal,
+                      //         items: groupList.map(
+                      //           (val) {
+                      //             return DropdownMenuItem<String>(
+                      //               value: val['groupID'],
+                      //               child: Text(val['groupName']),
+                      //             );
                       //           },
-                      //           child: Container(
-                      //               height: 56,
-                      //               width: 56,
-                      //               decoration: BoxDecoration(
-                      //                   color: Colors.white,
-                      //                   shape: BoxShape.circle,
-                      //                   image: DecorationImage(
-                      //                       image: AssetImage(
-                      //                           "assets/images/dotted_border.png"))),
-                      //               child: Icon(
-                      //                 Icons.add,
-                      //                 color: AppColors.buttonColor,
-                      //               )),
-                      //         ),
-                      //       ],
+                      //         ).toList(),
+                      //         onChanged: (val) async {
+                      //           setState(
+                      //             () {
+                      //               _dropDownValue = val!;
+                      //               print(val);
+                      //               print(_dropDownValue);
+                      //             },
+                      //           );
+                      //         },
+                      //       ),
                       //     ),
                       //   ),
                       // ),
@@ -390,16 +300,21 @@ class _EditGoalState extends State<EditGoal> {
                       DelayedDisplay(
                         delay: Duration(milliseconds: 1100),
                         slidingBeginOffset: Offset(0, 0),
-                        child: CustomButton(
+                        child: ZoomTapAnimation(
                           onTap: () async {
+                            HapticFeedback.heavyImpact();
                             if (goalFormField.currentState!.validate()) {
-                              await _goalController.addGroupGoal(
+                              setState(() {
+                                editLoading = true;
+                              });
+                              await _goalController.editGroupGoal(
+                                widget.goalDetail['goalID'].toString(),
                                 _dropDownValue.toString(),
                                 goalNameEditingController.text,
                                 _dataController.goalSelectedDate,
                                 _dataController.startTime.toString(),
                                 _dataController.assignGoalMember,
-                                goalPointsEditingController.toString(),
+                                goalPointsEditingController.text.toString(),
                               );
                               _dataController.assignGoalMember.clear();
                               Get.find<GeneralController>()
@@ -409,8 +324,41 @@ class _EditGoalState extends State<EditGoal> {
                                 pageIndex: 1,
                               ));
                             }
+                            setState(() {
+                              editLoading = false;
+                            });
                           },
-                          buttonText: "Edit Goal",
+                          onLongTap: () {},
+                          enableLongTapRepeatEvent: false,
+                          longTapRepeatDuration:
+                              const Duration(milliseconds: 100),
+                          begin: 1.0,
+                          end: 0.93,
+                          beginDuration: const Duration(milliseconds: 20),
+                          endDuration: const Duration(milliseconds: 120),
+                          beginCurve: Curves.decelerate,
+                          endCurve: Curves.fastOutSlowIn,
+                          child: Container(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 20),
+                              width: double.infinity,
+                              height: 60,
+                              decoration: BoxDecoration(
+                                color: AppColors.buttonColor,
+                                borderRadius: BorderRadius.circular(50),
+                              ),
+                              child: editLoading
+                                  ? Center(
+                                      child: Center(
+                                      child: CircularProgressIndicator(
+                                          color: Colors.white),
+                                    ))
+                                  : Center(
+                                      child: Text("Save Changes",
+                                          style: bodyLarge.copyWith(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold)),
+                                    )),
                         ),
                       ),
                     ],
