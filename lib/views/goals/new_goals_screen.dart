@@ -105,6 +105,11 @@ class _NewGoalsScreenState extends State<NewGoalsScreen> {
                                 break; // Stop searching once a match is found
                               }
                             }
+                            Duration daysLeft;
+                            daysLeft = _goalController.goalList[index]
+                                    ['goalDate']
+                                .toDate()
+                                .difference(DateTime.now());
                             return Padding(
                               padding: EdgeInsets.only(bottom: 15.0),
                               child: DelayedDisplay(
@@ -114,7 +119,14 @@ class _NewGoalsScreenState extends State<NewGoalsScreen> {
                                   padding: EdgeInsets.all(20),
                                   width: double.infinity,
                                   decoration: BoxDecoration(
-                                    color: AppColors.buttonColor,
+                                    color: (achievedPoints /
+                                                int.parse(_goalController
+                                                    .goalList[index]
+                                                        ['goalPoints']
+                                                    .toString())) >=
+                                            1.0
+                                        ? Colors.green[900]
+                                        : AppColors.buttonColor,
                                     borderRadius: BorderRadius.circular(20),
                                   ),
                                   child: DelayedDisplay(
@@ -250,6 +262,14 @@ class _NewGoalsScreenState extends State<NewGoalsScreen> {
                                                 _goalController.goalList[index]
                                                         ['goalPoints'] ??
                                                     "0"),
+                                        SizedBox(
+                                          height: 10,
+                                        ),
+                                        GoalDetailWidget(
+                                            icon: "assets/icons/coin1.png",
+                                            title:
+                                                "Days remaining for achieving goal",
+                                            data: daysLeft.inDays.toString()),
                                         SizedBox(
                                           height: 10,
                                         ),

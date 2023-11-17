@@ -53,6 +53,7 @@ class HomeController extends GetxController {
   }
 
   joinGroupRequest(groupID) async {
+    String groupName = "";
     try {
       final newMap = {
         'displayName': userData.displayName.toString(),
@@ -65,7 +66,7 @@ class HomeController extends GetxController {
       if (querySnapshot2.docs.isNotEmpty) {
         // Get the first document (assuming there's only one match)
         var documentSnapshot = querySnapshot2.docs.first;
-
+        groupName = documentSnapshot['groupName'];
         // Retrieve data and add it to the adminList
         adminList.add({
           "adminsList": List.from(documentSnapshot['adminsList']),
@@ -90,11 +91,11 @@ class HomeController extends GetxController {
       notiID.set({
         "read": false,
         "notificationType": 1,
-        "notification": userData.displayName.toString() + " join group ",
+        "notification": userData.displayName.toString() + " join ",
         "Time": DateTime.now(),
         "notiID": notiID.id,
         "groupID": groupID.toString(),
-        "groupName": newMap['displayName'].toString(),
+        "groupName": groupName.toString(),
       });
       Collections.USERS
           .doc(adminList[0]['adminsList'][0]['userID'].toString())
