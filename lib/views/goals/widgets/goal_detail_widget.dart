@@ -17,11 +17,16 @@ class GoalDetailWidget extends StatelessWidget {
                 Icons.flag_outlined,
                 color: Colors.white,
               )
-            : SizedBox(
-                height: 20,
-                width: 20,
-                child: Image.asset(icon),
-              ),
+            : icon == "assets/icons/coin1.png"
+                ? Icon(
+                    Icons.sunny_snowing,
+                    color: Colors.white,
+                  )
+                : SizedBox(
+                    height: 20,
+                    width: 20,
+                    child: Image.asset(icon),
+                  ),
         SizedBox(
           width: 10,
         ),

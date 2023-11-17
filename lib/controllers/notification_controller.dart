@@ -29,7 +29,9 @@ class NotificationController extends GetxController {
         "Time": a['Time'],
         "groupID": a['groupID'],
         "groupName": a['groupName'],
-        "userToJoin": List.from(a['userToJoin'] ?? null),
+        "userName": a['userName'] ?? null,
+        "userToJoin":
+            a['userToJoin'] == null ? null : List.from(a['userToJoin']),
       });
     }
   }
@@ -50,14 +52,13 @@ class NotificationController extends GetxController {
     notiID.set({
       "read": false,
       "notificationType": 2,
-      "notification": userData.displayName.toString() +
-          " assigned you a task in " +
-          groupName.toString(),
+      "notification": " assigned you a task in ",
       "userToJoin": FieldValue.arrayUnion([]),
       "Time": DateTime.now(),
       "notiID": notiID.id,
       "groupID": groupID.toString(),
       "groupName": groupName.toString(),
+      "userName": userData.displayName.toString(),
     });
     Collections.USERS.doc(docID.toString()).get().then((value) async {
       UserModel notiUserData = UserModel.fromDocument(value.data());
