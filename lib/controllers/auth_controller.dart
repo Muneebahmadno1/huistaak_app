@@ -1,9 +1,14 @@
+import 'dart:io';
 import 'dart:math';
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:path/path.dart' as path;
 import 'package:sizer/sizer.dart';
 import 'package:zoom_tap_animation/zoom_tap_animation.dart';
 
@@ -19,6 +24,13 @@ import 'general_controller.dart';
 class AuthController extends GetxController {
   bool isEmailVerified = false;
   final loggedInGlobal = ValueNotifier(false);
+  late PickedFile pickedFile;
+  String? imageUrl;
+  File? imageFile;
+  final picker = ImagePicker();
+  bool processingStatus = false;
+  FirebaseStorage storage = FirebaseStorage.instance;
+  XFile? pickedImage;
 
   registerUser(context, emails, pass, map) async {
     try {
@@ -32,15 +44,7 @@ class AuthController extends GetxController {
         "userID": user.user!.uid,
         "displayName": map['displayName'].trim().toString(),
         "email": emails,
-        "imageUrl": randomNumber == 1
-            ? "https://firebasestorage.googleapis.com/v0/b/huistaak-b26cd.appspot.com/o/Ellipse%20425.png?alt=media&token=39ef01fd-faeb-4237-aad0-229a71531287"
-            : randomNumber == 2
-                ? "https://firebasestorage.googleapis.com/v0/b/huistaak-b26cd.appspot.com/o/Ellipse%20426.png?alt=media&token=7d6999f8-71bd-4c2c-88ab-7da3cc00acdf"
-                : randomNumber == 3
-                    ? "https://firebasestorage.googleapis.com/v0/b/huistaak-b26cd.appspot.com/o/Ellipse%20427.png?alt=media&token=636deb05-21b2-4cac-92e1-3f803a0c109e"
-                    : randomNumber == 4
-                        ? "https://firebasestorage.googleapis.com/v0/b/huistaak-b26cd.appspot.com/o/Ellipse%20429.png?alt=media&token=51d206a1-2158-49cf-8821-5a79c644907b"
-                        : "https://firebasestorage.googleapis.com/v0/b/huistaak-b26cd.appspot.com/o/Ellipse%20428.png?alt=media&token=2f6c1518-fbd1-4a81-ad9d-8ca89809f896",
+        "imageUrl": map['imageUrl'],
         "points": [],
         "postalCode": map['postalCode'].toString(),
         "fcmToken": fcmToken.value,
@@ -306,5 +310,43 @@ class AuthController extends GetxController {
       // setState(() {});
       errorPopUp(context, 'Error occurred while changing password! Try Again ');
     });
+  }
+
+  Future<bool> upload(String inputSource) async {
+    try {
+      pickedImage = await picker.pickImage(
+          source: inputSource == 'camera'
+              ? ImageSource.camera
+              : ImageSource.gallery,
+          maxWidth: 1920);
+
+      processingStatus = true;
+
+      final String fileName = path.basename(pickedImage!.path);
+      try {
+        // Uploading the selected image with some custom meta data
+        {
+          imageFile = File(pickedImage!.path);
+          await storage.ref(fileName).putFile(imageFile!).then((p0) async {
+            imageUrl = await p0.ref.getDownloadURL();
+            if (p0.state == TaskState.success) {
+              processingStatus = false;
+            }
+          });
+        }
+        // Refresh the UI
+        return true;
+      } on FirebaseException catch (error) {
+        if (kDebugMode) {
+          print(error);
+        }
+        return false;
+      }
+    } catch (err) {
+      if (kDebugMode) {
+        print(err);
+      }
+      return false;
+    }
   }
 }

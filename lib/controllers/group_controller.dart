@@ -1,8 +1,13 @@
+import 'dart:io';
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:path/path.dart' as path;
 
 import '../constants/global_variables.dart';
 import '../helper/collections.dart';
@@ -17,6 +22,15 @@ class GroupController extends GetxController {
   List<Map<String, dynamic>> completedTaskList = [];
   List<Map<String, dynamic>> notCompletedTaskList = [];
   List<Map<String, dynamic>> groupInfo = [];
+
+  bool loader = false;
+  late PickedFile pickedFile;
+  String? imageUrl;
+  File? imageFile;
+  final picker = ImagePicker();
+  bool processingStatus = false;
+  FirebaseStorage storage = FirebaseStorage.instance;
+  XFile? pickedImage;
 
   getGroupDetails(groupID, groupTitle) async {
     groupInfo.clear();
@@ -213,11 +227,10 @@ class GroupController extends GetxController {
             notiID.set({
               "read": false,
               "notificationType": 3,
-              "notification": userData.displayName.toString() +
-                  " has completed the task in " +
-                  groupTitle.toString(),
+              "notification": " has completed the task in ",
               "Time": DateTime.now(),
               "notiID": notiID.id,
+              "userName": userData.displayName.toString(),
               "userToJoin": FieldValue.arrayUnion([]),
               "groupID": groupID.toString(),
               "groupName": groupTitle.toString(),
@@ -347,5 +360,41 @@ class GroupController extends GetxController {
       "id": taskID,
     });
     return;
+  }
+
+  Future<bool> upload(String inputSource) async {
+    try {
+      pickedImage = await picker.pickImage(
+          source: inputSource == 'camera'
+              ? ImageSource.camera
+              : ImageSource.gallery,
+          maxWidth: 1920);
+      processingStatus = true;
+      final String fileName = path.basename(pickedImage!.path);
+      try {
+        // Uploading the selected image with some custom meta data
+        {
+          imageFile = File(pickedImage!.path);
+          await storage.ref(fileName).putFile(imageFile!).then((p0) async {
+            imageUrl = await p0.ref.getDownloadURL();
+            if (p0.state == TaskState.success) {
+              processingStatus = false;
+            }
+          });
+        }
+        // Refresh the UI
+        return true;
+      } on FirebaseException catch (error) {
+        if (kDebugMode) {
+          print(error);
+        }
+        return false;
+      }
+    } catch (err) {
+      if (kDebugMode) {
+        print(err);
+      }
+      return false;
+    }
   }
 }

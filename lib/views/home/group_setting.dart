@@ -31,6 +31,7 @@ class _GroupSettingState extends State<GroupSetting> {
       Get.find<GroupSettingController>();
   bool isLoading = false;
   bool Loading = false;
+  bool imageChangeLoading = false;
   bool adminLoading = false;
   bool memberLoading = false;
   List<UserModel> adminList = [];
@@ -73,7 +74,6 @@ class _GroupSettingState extends State<GroupSetting> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    print(widget.groupID);
     getData();
   }
 
@@ -155,57 +155,68 @@ class _GroupSettingState extends State<GroupSetting> {
                             radius: 70, // Adjust the radius as needed
                             backgroundColor: Colors
                                 .grey, // You can set a default background color
-                            child: ClipOval(
-                              child: SizedBox(
-                                height: 70 * 2,
-                                width: 70 * 2,
-                                child: _groupSettingController.groupInfo[0]
-                                            ['groupImage'] ==
-                                        null
-                                    ? Image.asset(
-                                        AppImages
-                                            .groupIcon, // Replace with your asset image path
-                                        fit: BoxFit.fitHeight,
-                                      )
-                                    : CachedNetworkImage(
-                                        imageUrl: _groupSettingController
-                                            .groupInfo[0]['groupImage'],
-                                        placeholder: (context, url) =>
-                                            CircularProgressIndicator(),
-                                        errorWidget: (context, url, error) =>
-                                            Icon(Icons.error),
-                                        fit: BoxFit.fill,
-                                      ),
-                              ),
+                            child: imageChangeLoading
+                                ? Center(child: CircularProgressIndicator())
+                                : ClipOval(
+                                    child: SizedBox(
+                                      height: 70 * 2,
+                                      width: 70 * 2,
+                                      child: _groupSettingController
+                                                  .groupInfo[0]['groupImage'] ==
+                                              null
+                                          ? Image.asset(
+                                              AppImages
+                                                  .groupIcon, // Replace with your asset image path
+                                              fit: BoxFit.fitHeight,
+                                            )
+                                          : CachedNetworkImage(
+                                              imageUrl: _groupSettingController
+                                                  .groupInfo[0]['groupImage'],
+                                              placeholder: (context, url) =>
+                                                  CircularProgressIndicator(),
+                                              errorWidget:
+                                                  (context, url, error) =>
+                                                      Icon(Icons.error),
+                                              fit: BoxFit.fill,
+                                            ),
+                                    ),
+                                  ),
+                          ),
+                          Positioned(
+                            right: 0,
+                            bottom: 10,
+                            child: ZoomTapAnimation(
+                              onTap: () async {
+                                setState(() {
+                                  imageChangeLoading = true;
+                                });
+                                await _groupSettingController.upload(
+                                    "gallery", widget.groupID.toString());
+                                await getData();
+                                setState(() {
+                                  imageChangeLoading = false;
+                                });
+                              },
+                              onLongTap: () {},
+                              enableLongTapRepeatEvent: false,
+                              longTapRepeatDuration:
+                                  const Duration(milliseconds: 100),
+                              begin: 1.0,
+                              end: 0.93,
+                              beginDuration: const Duration(milliseconds: 20),
+                              endDuration: const Duration(milliseconds: 120),
+                              beginCurve: Curves.decelerate,
+                              endCurve: Curves.fastOutSlowIn,
+                              child: CircleAvatar(
+                                  radius: 16,
+                                  backgroundColor: AppColors.buttonColor,
+                                  child: Icon(
+                                    Icons.camera_alt,
+                                    color: Colors.white,
+                                    size: 16,
+                                  )),
                             ),
                           ),
-                          // Positioned(
-                          //   right: 0,
-                          //   bottom: 10,
-                          //   child: ZoomTapAnimation(
-                          //     onTap: () {
-                          //       // _upload("gallery");
-                          //     },
-                          //     onLongTap: () {},
-                          //     enableLongTapRepeatEvent: false,
-                          //     longTapRepeatDuration:
-                          //         const Duration(milliseconds: 100),
-                          //     begin: 1.0,
-                          //     end: 0.93,
-                          //     beginDuration: const Duration(milliseconds: 20),
-                          //     endDuration: const Duration(milliseconds: 120),
-                          //     beginCurve: Curves.decelerate,
-                          //     endCurve: Curves.fastOutSlowIn,
-                          //     child: CircleAvatar(
-                          //         radius: 16,
-                          //         backgroundColor: AppColors.buttonColor,
-                          //         child: Icon(
-                          //           Icons.camera_alt,
-                          //           color: Colors.white,
-                          //           size: 16,
-                          //         )),
-                          //   ),
-                          // ),
                         ],
                       ),
                     ),

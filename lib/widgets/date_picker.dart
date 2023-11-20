@@ -34,10 +34,10 @@ class _DatePickerWidgetState extends State<DatePickerWidget> {
         title: Text(
           (widget.from == 'goal'
                       ? _dataController.goalSelectedDate
-                      : _dataController.selectedDate) ==
+                      : _dataController.selectedStartDate) ==
                   null
               ? 'Select Date'
-              : '${DateFormat.yMMMd().format((widget.from == 'goal' ? _dataController.goalSelectedDate : _dataController.selectedDate)!)}',
+              : '${DateFormat.yMMMd().format((widget.from == 'goal' ? _dataController.goalSelectedDate : _dataController.selectedStartDate)!)}',
           style: bodyNormal,
         ), // Format the date
         trailing: Icon(Icons.arrow_drop_down, color: Colors.black),
@@ -54,7 +54,7 @@ class _DatePickerWidgetState extends State<DatePickerWidget> {
       initialEntryMode: DatePickerEntryMode.calendarOnly,
       initialDate: (widget.from == 'goal'
               ? _dataController.goalSelectedDate
-              : _dataController.selectedDate) ??
+              : _dataController.selectedStartDate) ??
           DateTime.now(),
       firstDate: DateTime.now(),
       lastDate: DateTime(2101),
@@ -78,11 +78,11 @@ class _DatePickerWidgetState extends State<DatePickerWidget> {
         pickedDate !=
             (widget.from == 'goal'
                 ? _dataController.goalSelectedDate
-                : _dataController.selectedDate)) {
+                : _dataController.selectedStartDate)) {
       setState(() {
         (widget.from == 'goal'
             ? _dataController.goalSelectedDate = pickedDate
-            : _dataController.selectedDate = pickedDate);
+            : _dataController.selectedStartDate = pickedDate);
       });
     }
   }

@@ -166,14 +166,7 @@ class _NotificationsState extends State<Notifications> {
                                                 horizontal: 14, vertical: 10),
                                             width: double.infinity,
                                             height: 80,
-                                            color:
-                                                // _notiController
-                                                //                 .notificationList[
-                                                //             index]['read'] ==
-                                                //         true
-                                                //     ?
-                                                Colors.white12,
-                                            // : Colors.grey,
+                                            color: Colors.white12,
                                             child: Row(
                                               children: [
                                                 Column(
@@ -205,7 +198,8 @@ class _NotificationsState extends State<Notifications> {
                                                                 style:
                                                                     TextStyle(
                                                                   color: Colors
-                                                                      .black, // Change color as needed
+                                                                      .black,
+                                                                  // Change color as needed
                                                                   fontSize:
                                                                       18.0,
                                                                 ),
@@ -217,7 +211,9 @@ class _NotificationsState extends State<Notifications> {
                                                                         : _notiController.notificationList[index]['notificationType'] ==
                                                                                 2
                                                                             ? _notiController.notificationList[index]['userName']
-                                                                            : "",
+                                                                            : _notiController.notificationList[index]['notificationType'] == 3
+                                                                                ? _notiController.notificationList[index]['userName']
+                                                                                : "",
                                                                     style:
                                                                         TextStyle(
                                                                       fontWeight:
@@ -230,8 +226,9 @@ class _NotificationsState extends State<Notifications> {
                                                                             .notificationList[index]
                                                                         [
                                                                         'notification'],
-                                                                    style:
-                                                                        bodyNormal,
+                                                                    style: bodyNormal.copyWith(
+                                                                        fontSize:
+                                                                            14),
                                                                   ),
                                                                   TextSpan(
                                                                     text: _notiController.notificationList[index]['notificationType'] ==
@@ -242,7 +239,9 @@ class _NotificationsState extends State<Notifications> {
                                                                         : _notiController.notificationList[index]['notificationType'] ==
                                                                                 1
                                                                             ? _notiController.notificationList[index]['groupName']
-                                                                            : "",
+                                                                            : _notiController.notificationList[index]['notificationType'] == 3
+                                                                                ? _notiController.notificationList[index]['groupName']
+                                                                                : "",
                                                                     style:
                                                                         TextStyle(
                                                                       fontWeight:

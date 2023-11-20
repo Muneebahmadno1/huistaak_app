@@ -50,10 +50,24 @@ class _CreateNewGroupTaskState extends State<CreateNewGroupTask> {
   String? selectedValueEnd;
 
   List<String> timeItems = [];
+  List<String> endTimeItems = [];
   getTimesDropDownData(DateTime date) {
-    timeItems.clear();
+    setState(() {
+      timeItems.clear();
+      selectedValueStart = null;
+    });
     for (int i = 0; i < 24; i++)
       timeItems.add(
+          DateFormat('yyyy-MM-dd HH:mm').format(date.add(Duration(hours: i))));
+  }
+
+  getEndTimesDropDownData(DateTime date) {
+    setState(() {
+      endTimeItems.clear();
+      selectedValueEnd = null;
+    });
+    for (int i = 0; i < 24; i++)
+      endTimeItems.add(
           DateFormat('yyyy-MM-dd HH:mm').format(date.add(Duration(hours: i))));
   }
 
@@ -61,10 +75,11 @@ class _CreateNewGroupTaskState extends State<CreateNewGroupTask> {
     setState(() {
       _dataController.startTime.value = "";
       _dataController.endTime.value = "";
-      _dataController.selectedDate = DateTime.now();
+      // _dataController.selectedStartDate = DateTime.now();
       loading = true;
     });
-    getTimesDropDownData(DateTime.now());
+    // getTimesDropDownData(DateTime.now());
+    // getEndTimesDropDownData(DateTime.now());
     await _dataController.getTaskMember(widget.groupID);
 
     for (int i = 0; i < _dataController.userList.length; i++) {
@@ -141,7 +156,7 @@ class _CreateNewGroupTaskState extends State<CreateNewGroupTask> {
                   child: Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      "Date for task",
+                      "Start Date for task",
                       style:
                           headingSmall.copyWith(color: AppColors.buttonColor),
                     ),
@@ -165,23 +180,74 @@ class _CreateNewGroupTaskState extends State<CreateNewGroupTask> {
                         color: AppColors.buttonColor,
                       ), // Add a calendar icon in the leading position
                       title: Text(
-                        (_dataController.selectedDate) == null
+                        (_dataController.selectedStartDate) == null
                             ? 'Select Date'
-                            : '${DateFormat.yMMMd().format((_dataController.selectedDate)!)}',
+                            : '${DateFormat.yMMMd().format((_dataController.selectedStartDate)!)}',
                         style: bodyNormal,
                       ), // Format the date
                       trailing:
                           Icon(Icons.arrow_drop_down, color: Colors.black),
                       onTap: () async {
-                        await _showDatePicker(context);
-                        setState(() {
-                          selectedValueStart = DateFormat('yyyy-MM-dd HH:mm')
-                              .format(_dataController.selectedDate!);
-                          selectedValueEnd = DateFormat('yyyy-MM-dd HH:mm')
-                              .format(_dataController.selectedDate!
-                                  .add(Duration(hours: 1)));
-                        });
-                        getTimesDropDownData(_dataController.selectedDate!);
+                        await _showDatePicker(context, "StartDate");
+                        // setState(() {
+                        //   selectedValueStart = DateFormat('yyyy-MM-dd HH:mm')
+                        //       .format(_dataController.selectedStartDate!);
+                        // });
+                        getTimesDropDownData(
+                            _dataController.selectedStartDate!);
+                      },
+                    ),
+                  ),
+                  // DatePickerWidget(
+                  //   from: 'task',
+                  // )
+                ),
+                const SizedBox(height: 20),
+                DelayedDisplay(
+                  delay: Duration(milliseconds: 500),
+                  slidingBeginOffset: Offset(0, -1),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      "End Date for task",
+                      style:
+                          headingSmall.copyWith(color: AppColors.buttonColor),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 10),
+                DelayedDisplay(
+                  delay: Duration(milliseconds: 600),
+                  slidingBeginOffset: Offset(0, 0),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: AppColors.buttonColor.withOpacity(0.2),
+                      borderRadius: BorderRadius.circular(30.0),
+                    ),
+                    child: ListTile(
+                      horizontalTitleGap: 0,
+                      contentPadding: EdgeInsets.symmetric(
+                          horizontal: 16.0), // Adjust padding
+                      leading: Icon(
+                        Icons.calendar_month_outlined,
+                        color: AppColors.buttonColor,
+                      ), // Add a calendar icon in the leading position
+                      title: Text(
+                        (_dataController.selectedEndDate) == null
+                            ? 'Select Date'
+                            : '${DateFormat.yMMMd().format((_dataController.selectedEndDate)!)}',
+                        style: bodyNormal,
+                      ), // Format the date
+                      trailing:
+                          Icon(Icons.arrow_drop_down, color: Colors.black),
+                      onTap: () async {
+                        await _showDatePicker(context, "EndDate");
+                        // setState(() {
+                        //   selectedValueEnd = DateFormat('yyyy-MM-dd HH:mm')
+                        //       .format(_dataController.selectedEndDate!);
+                        // });
+                        getEndTimesDropDownData(
+                            _dataController.selectedEndDate!);
                       },
                     ),
                   ),
@@ -240,7 +306,7 @@ class _CreateNewGroupTaskState extends State<CreateNewGroupTask> {
                                               value: item,
                                               child: Center(
                                                 child: Text(
-                                                  item,
+                                                  item.split(' ')[1],
                                                   style: bodyNormal,
                                                   overflow:
                                                       TextOverflow.ellipsis,
@@ -355,12 +421,12 @@ class _CreateNewGroupTaskState extends State<CreateNewGroupTask> {
                                                 color: Colors.grey[700])),
                                       ],
                                     ),
-                                    items: timeItems
+                                    items: endTimeItems
                                         .map((item) => DropdownMenuItem<String>(
                                               value: item,
                                               child: Center(
                                                 child: Text(
-                                                  item,
+                                                  item.split(' ')[1],
                                                   style: bodyNormal,
                                                   overflow:
                                                       TextOverflow.ellipsis,
@@ -445,7 +511,7 @@ class _CreateNewGroupTaskState extends State<CreateNewGroupTask> {
                           Padding(
                             padding: const EdgeInsets.only(left: 18.0),
                             child: Text(
-                              "Error in Start/End Time",
+                              "Error in Start/End Date/Time",
                               style:
                                   TextStyle(color: Colors.red[800], height: 3),
                             ),
@@ -677,7 +743,7 @@ class _CreateNewGroupTaskState extends State<CreateNewGroupTask> {
                             await _groupController.addGroupTask(
                                 widget.groupID,
                                 taskNameEditingController.text,
-                                _dataController.selectedDate,
+                                _dataController.selectedStartDate,
                                 _dataController.startTime.toString(),
                                 _dataController.endTime.toString(),
                                 points.toString(),
@@ -692,8 +758,9 @@ class _CreateNewGroupTaskState extends State<CreateNewGroupTask> {
                                   widget.groupTitle,
                                   widget.groupID);
                             }
-
                             _dataController.assignTaskMember.clear();
+                            _dataController.selectedEndDate = DateTime.now();
+                            _dataController.selectedStartDate = DateTime.now();
                             PageTransition.pageBackNavigation(
                                 page: GroupDetail(
                               groupTitle: widget.groupTitle,
@@ -741,11 +808,11 @@ class _CreateNewGroupTaskState extends State<CreateNewGroupTask> {
     );
   }
 
-  Future<void> _showDatePicker(BuildContext context) async {
+  Future<void> _showDatePicker(BuildContext context, from) async {
     final DateTime? pickedDate = await showDatePicker(
       context: context,
       initialEntryMode: DatePickerEntryMode.calendarOnly,
-      initialDate: (_dataController.selectedDate) ?? DateTime.now(),
+      initialDate: DateTime.now(),
       firstDate: DateTime.now(),
       lastDate: DateTime(2101),
       builder: (BuildContext context, Widget? child) {
@@ -764,9 +831,15 @@ class _CreateNewGroupTaskState extends State<CreateNewGroupTask> {
       },
     );
 
-    if (pickedDate != null && pickedDate != (_dataController.selectedDate)) {
+    if (pickedDate != null &&
+        pickedDate !=
+            (from == "EndDate"
+                ? _dataController.selectedEndDate
+                : _dataController.selectedStartDate)) {
       setState(() {
-        (_dataController.selectedDate = pickedDate);
+        (from == "EndDate"
+            ? _dataController.selectedEndDate = pickedDate
+            : _dataController.selectedStartDate = pickedDate);
       });
     }
   }

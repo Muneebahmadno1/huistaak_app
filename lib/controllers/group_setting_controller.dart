@@ -1,5 +1,11 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:path/path.dart' as path;
 
 import '../constants/global_variables.dart';
 import '../helper/collections.dart';
@@ -11,6 +17,14 @@ class GroupSettingController extends GetxController {
       Get.find<NotificationController>();
   List<Map<String, dynamic>> taskList = [];
   List<Map<String, dynamic>> groupInfo = [];
+
+  late PickedFile pickedFile;
+  String? imageUrl;
+  File? imageFile;
+  final picker = ImagePicker();
+  bool processingStatus = false;
+  FirebaseStorage storage = FirebaseStorage.instance;
+  XFile? pickedImage;
 
   getGroupTaskList(groupID) async {
     taskList.clear();
@@ -223,6 +237,45 @@ class GroupSettingController extends GetxController {
     if (document.exists) {
       final UserModel user = UserModel.fromDocument(document.data()!);
       return user;
+    }
+  }
+
+  Future<bool> upload(String inputSource, groupID) async {
+    try {
+      pickedImage = await picker.pickImage(
+          source: inputSource == 'camera'
+              ? ImageSource.camera
+              : ImageSource.gallery,
+          maxWidth: 1920);
+      processingStatus = true;
+      final String fileName = path.basename(pickedImage!.path);
+      try {
+        // Uploading the selected image with some custom meta data
+        {
+          imageFile = File(pickedImage!.path);
+          await storage.ref(fileName).putFile(imageFile!).then((p0) async {
+            imageUrl = await p0.ref.getDownloadURL();
+            if (p0.state == TaskState.success) {
+              processingStatus = false;
+            }
+          });
+        }
+        // Refresh the UI
+        await Collections.GROUPS.doc(groupID).update({
+          "groupImage": imageUrl,
+        });
+        return true;
+      } on FirebaseException catch (error) {
+        if (kDebugMode) {
+          print(error);
+        }
+        return false;
+      }
+    } catch (err) {
+      if (kDebugMode) {
+        print(err);
+      }
+      return false;
     }
   }
 }

@@ -14,7 +14,6 @@ import 'package:zoom_tap_animation/zoom_tap_animation.dart';
 
 import '../../constants/app_images.dart';
 import '../../constants/global_variables.dart';
-import '../../controllers/data_controller.dart';
 import '../../controllers/general_controller.dart';
 import '../../controllers/group_controller.dart';
 import '../../helper/page_navigation.dart';
@@ -37,7 +36,6 @@ class GroupDetail extends StatefulWidget {
 
 class _GroupDetailState extends State<GroupDetail> {
   final GroupController _groupController = Get.find<GroupController>();
-  final HomeController _dataController = Get.find<HomeController>();
   bool isLoading = false;
   bool isFinish = false;
   int selectedContainer = 0;

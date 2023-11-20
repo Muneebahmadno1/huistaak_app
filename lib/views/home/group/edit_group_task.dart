@@ -67,7 +67,8 @@ class _EditGroupTaskState extends State<EditGroupTask> {
       loading = true;
       taskNameEditingController.text =
           widget.taskDetails['taskTitle'].toString();
-      _dataController.selectedDate = widget.taskDetails['taskDate'].toDate();
+      _dataController.selectedStartDate =
+          widget.taskDetails['taskDate'].toDate();
       points = int.parse(widget.taskDetails['taskScore']);
 
       _dataController.startTime.value =
@@ -178,9 +179,9 @@ class _EditGroupTaskState extends State<EditGroupTask> {
                         color: AppColors.buttonColor,
                       ), // Add a calendar icon in the leading position
                       title: Text(
-                        (_dataController.selectedDate) == null
+                        (_dataController.selectedStartDate) == null
                             ? 'Select Date'
-                            : '${DateFormat.yMMMd().format((_dataController.selectedDate)!)}',
+                            : '${DateFormat.yMMMd().format((_dataController.selectedStartDate)!)}',
                         style: bodyNormal,
                       ), // Format the date
                       trailing:
@@ -189,12 +190,13 @@ class _EditGroupTaskState extends State<EditGroupTask> {
                         await _showDatePicker(context);
                         setState(() {
                           selectedValueStart = DateFormat('yyyy-MM-dd HH:mm')
-                              .format(_dataController.selectedDate!);
+                              .format(_dataController.selectedStartDate!);
                           selectedValueEnd = DateFormat('yyyy-MM-dd HH:mm')
-                              .format(_dataController.selectedDate!
+                              .format(_dataController.selectedStartDate!
                                   .add(Duration(hours: 1)));
                         });
-                        getTimesDropDownData(_dataController.selectedDate!);
+                        getTimesDropDownData(
+                            _dataController.selectedStartDate!);
                       },
                     ),
                   ),
@@ -308,7 +310,7 @@ class _EditGroupTaskState extends State<EditGroupTask> {
                                 ),
                               ),
                               // CustomDropDown(
-                              //   dateForTime: _dataController.selectedDate!,
+                              //   dateForTime: _dataController.selectedStartDate!,
                               //   dropDownTitle: "Start Time",
                               // ),
                             ),
@@ -319,7 +321,7 @@ class _EditGroupTaskState extends State<EditGroupTask> {
                             //     borderRadius: BorderRadius.circular(40),
                             //   ),
                             //   child: CustomDropDown(
-                            //     dateForTime: _dataController.selectedDate!,
+                            //     dateForTime: _dataController.selectedStartDate!,
                             //     dropDownTitle:
                             //         widget.taskDetails['startTime'].toString(),
                             //   ),
@@ -445,7 +447,7 @@ class _EditGroupTaskState extends State<EditGroupTask> {
                                 ),
                               ),
                               // CustomDropDown(
-                              //   dateForTime: _dataController.selectedDate!,
+                              //   dateForTime: _dataController.selectedStartDate!,
                               //   dropDownTitle:
                               //       widget.taskDetails['endTime'].toString(),
                               // ),
@@ -699,7 +701,7 @@ class _EditGroupTaskState extends State<EditGroupTask> {
                                 widget.taskDetails['id'].toString(),
                                 widget.groupID,
                                 taskNameEditingController.text,
-                                _dataController.selectedDate,
+                                _dataController.selectedStartDate,
                                 _dataController.startTime.toString(),
                                 _dataController.endTime.toString(),
                                 points.toString(),
@@ -767,7 +769,7 @@ class _EditGroupTaskState extends State<EditGroupTask> {
     final DateTime? pickedDate = await showDatePicker(
       context: context,
       initialEntryMode: DatePickerEntryMode.calendarOnly,
-      initialDate: (_dataController.selectedDate) ?? DateTime.now(),
+      initialDate: (_dataController.selectedStartDate) ?? DateTime.now(),
       firstDate: DateTime.now(),
       lastDate: DateTime(2101),
       builder: (BuildContext context, Widget? child) {
@@ -786,9 +788,10 @@ class _EditGroupTaskState extends State<EditGroupTask> {
       },
     );
 
-    if (pickedDate != null && pickedDate != (_dataController.selectedDate)) {
+    if (pickedDate != null &&
+        pickedDate != (_dataController.selectedStartDate)) {
       setState(() {
-        (_dataController.selectedDate = pickedDate);
+        (_dataController.selectedStartDate = pickedDate);
       });
     }
   }
