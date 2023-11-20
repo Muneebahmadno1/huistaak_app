@@ -1,12 +1,6 @@
-import 'dart:io';
-
 import 'package:delayed_display/delayed_display.dart';
-import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:path/path.dart' as path;
 import 'package:zoom_tap_animation/zoom_tap_animation.dart';
 
 import '../../../constants/app_images.dart';
@@ -30,14 +24,7 @@ class _CreateNewGroupState extends State<CreateNewGroup> {
   final HomeController _dataController = Get.find<HomeController>();
   TextEditingController groupNameEditingController = TextEditingController();
   bool creatingGroup = false;
-  bool loader = false;
-  late PickedFile pickedFile;
-  String? imageUrl;
-  File? imageFile;
-  final picker = ImagePicker();
-  bool processingStatus = false;
-  FirebaseStorage storage = FirebaseStorage.instance;
-  XFile? pickedImage;
+  bool imageLoading = false;
   final GlobalKey<FormState> groupFormField = GlobalKey();
 
   @override
@@ -102,25 +89,34 @@ class _CreateNewGroupState extends State<CreateNewGroup> {
                     children: [
                       CircleAvatar(
                         radius: 60,
-                        child: ClipOval(
-                            child: Container(
-                          height: 60 * 2,
-                          width: 60 * 2,
-                          color: Colors.grey,
-                          child: imageFile != null
-                              ? Image.file(imageFile!)
-                              : Image.asset(
-                                  AppImages.groupIcon,
-                                  fit: BoxFit.fitHeight,
-                                ),
-                        )),
+                        backgroundColor: Colors.grey,
+                        child: imageLoading
+                            ? Center(child: CircularProgressIndicator())
+                            : ClipOval(
+                                child: Container(
+                                height: 60 * 2,
+                                width: 60 * 2,
+                                color: Colors.grey,
+                                child: _groupController.imageFile != null
+                                    ? Image.file(_groupController.imageFile!)
+                                    : Image.asset(
+                                        AppImages.groupIcon,
+                                        fit: BoxFit.fitHeight,
+                                      ),
+                              )),
                       ),
                       Positioned(
                         right: 0,
                         bottom: 10,
                         child: ZoomTapAnimation(
-                          onTap: () {
-                            _upload("gallery");
+                          onTap: () async {
+                            setState(() {
+                              imageLoading = true;
+                            });
+                            await _groupController.upload("gallery");
+                            setState(() {
+                              imageLoading = false;
+                            });
                           },
                           onLongTap: () {},
                           enableLongTapRepeatEvent: false,
@@ -313,7 +309,7 @@ class _CreateNewGroupState extends State<CreateNewGroup> {
                         });
                         var groupID = await _groupController.createGroup(
                             groupNameEditingController.text.toString(),
-                            imageUrl,
+                            _groupController.imageUrl,
                             _dataController.groupAdmins,
                             _dataController.groupMembers);
                         _dataController.groupAdmins.clear();
@@ -358,65 +354,5 @@ class _CreateNewGroupState extends State<CreateNewGroup> {
         ),
       ),
     );
-  }
-
-  Future<void> _upload(String inputSource) async {
-    Get.defaultDialog(
-        barrierDismissible: false,
-        title: "Huistaak",
-        titleStyle: const TextStyle(
-          color: AppColors.buttonColor,
-          fontSize: 18,
-          fontWeight: FontWeight.w500,
-          fontFamily: 'Poppins',
-        ),
-        middleText: "",
-        content: const Column(
-          children: [
-            Center(
-                child: CircularProgressIndicator(
-              color: AppColors.buttonColor,
-            ))
-          ],
-        ));
-    try {
-      pickedImage = await picker.pickImage(
-          source: inputSource == 'camera'
-              ? ImageSource.camera
-              : ImageSource.gallery,
-          maxWidth: 1920);
-      setState(() {
-        processingStatus = true;
-      });
-      final String fileName = path.basename(pickedImage!.path);
-      try {
-        // Uploading the selected image with some custom meta data
-        {
-          imageFile = File(pickedImage!.path);
-          await storage.ref(fileName).putFile(imageFile!).then((p0) async {
-            imageUrl = await p0.ref.getDownloadURL();
-            setState(() {});
-            if (p0.state == TaskState.success) {
-              setState(() {
-                processingStatus = false;
-              });
-            }
-          });
-        }
-        // Refresh the UI
-        Get.back();
-        setState(() {});
-      } on FirebaseException catch (error) {
-        Get.back();
-        if (kDebugMode) {
-          print(error);
-        }
-      }
-    } catch (err) {
-      Get.back();
-      if (kDebugMode) {
-        print(err);
-      }
-    }
   }
 }

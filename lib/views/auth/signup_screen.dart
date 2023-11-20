@@ -2,6 +2,7 @@ import 'package:delayed_display/delayed_display.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:huistaak/views/auth/welcome_screen.dart';
+import 'package:zoom_tap_animation/zoom_tap_animation.dart';
 
 import '../../constants/app_images.dart';
 import '../../constants/custom_validators.dart';
@@ -33,6 +34,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController phoneEditingController = TextEditingController();
   final TextEditingController postalCodeEditingController =
       TextEditingController();
+  bool imageLoading = false;
   final GlobalKey<FormState> signInFormField = GlobalKey();
 
   @override
@@ -102,6 +104,64 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 ),
                 SizedBox(
                   height: 30,
+                ),
+                Stack(
+                  children: [
+                    CircleAvatar(
+                      radius: 60,
+                      backgroundColor: Colors.grey,
+                      child: imageLoading
+                          ? Center(child: CircularProgressIndicator())
+                          : ClipOval(
+                              child: Container(
+                              height: 60 * 2,
+                              width: 60 * 2,
+                              color: Colors.grey,
+                              child: _authController.imageFile != null
+                                  ? Image.file(_authController.imageFile!)
+                                  : Image.asset(
+                                      AppImages.groupIcon,
+                                      fit: BoxFit.fitHeight,
+                                    ),
+                            )),
+                    ),
+                    Positioned(
+                      right: 0,
+                      bottom: 10,
+                      child: ZoomTapAnimation(
+                        onTap: () async {
+                          setState(() {
+                            imageLoading = true;
+                          });
+                          await _authController.upload("gallery");
+                          setState(() {
+                            imageLoading = false;
+                          });
+                        },
+                        onLongTap: () {},
+                        enableLongTapRepeatEvent: false,
+                        longTapRepeatDuration:
+                            const Duration(milliseconds: 100),
+                        begin: 1.0,
+                        end: 0.93,
+                        beginDuration: const Duration(milliseconds: 20),
+                        endDuration: const Duration(milliseconds: 120),
+                        beginCurve: Curves.decelerate,
+                        endCurve: Curves.fastOutSlowIn,
+                        child: CircleAvatar(
+                            radius: 16,
+                            backgroundColor: AppColors.buttonColor,
+                            child: Icon(
+                              Icons.camera_alt,
+                              color: Colors.white,
+                              size: 16,
+                            )),
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: 15,
                 ),
                 DelayedDisplay(
                   delay: Duration(milliseconds: 500),
@@ -311,41 +371,45 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     child: CustomButton(
                       buttonText: "Sign Up",
                       onTap: () async {
-                        if (signInFormField.currentState!.validate()) {
-                          Get.defaultDialog(
-                              barrierDismissible: false,
-                              title: "Huistaak",
-                              titleStyle: const TextStyle(
-                                color: AppColors.buttonColor,
-                                fontSize: 18,
-                                fontWeight: FontWeight.w500,
-                                fontFamily: 'Poppins',
-                              ),
-                              middleText: "",
-                              content: const Column(
-                                children: [
-                                  Center(
-                                      child: CircularProgressIndicator(
-                                    color: AppColors.buttonColor,
-                                  ))
-                                ],
-                              ));
-                          Map<String, String> map = {
-                            "displayName":
-                                nameEditingController.text.toString(),
-                            "email": emailEditingController.text.toString(),
-                            "password":
-                                passwordEditingController.text.toString(),
-                            "imageUrl": "",
-                            "postalCode":
-                                postalCodeEditingController.text.toString(),
-                          };
-                          await _authController.registerUser(
-                              context,
-                              emailEditingController.text.removeAllWhitespace
-                                  .toLowerCase(),
-                              passwordEditingController.text,
-                              map);
+                        if (_authController.imageUrl != null) {
+                          if (signInFormField.currentState!.validate()) {
+                            Get.defaultDialog(
+                                barrierDismissible: false,
+                                title: "Huistaak",
+                                titleStyle: const TextStyle(
+                                  color: AppColors.buttonColor,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w500,
+                                  fontFamily: 'Poppins',
+                                ),
+                                middleText: "",
+                                content: const Column(
+                                  children: [
+                                    Center(
+                                        child: CircularProgressIndicator(
+                                      color: AppColors.buttonColor,
+                                    ))
+                                  ],
+                                ));
+                            Map<String, String> map = {
+                              "displayName":
+                                  nameEditingController.text.toString(),
+                              "email": emailEditingController.text.toString(),
+                              "password":
+                                  passwordEditingController.text.toString(),
+                              "imageUrl": _authController.imageUrl.toString(),
+                              "postalCode":
+                                  postalCodeEditingController.text.toString(),
+                            };
+                            await _authController.registerUser(
+                                context,
+                                emailEditingController.text.removeAllWhitespace
+                                    .toLowerCase(),
+                                passwordEditingController.text,
+                                map);
+                          }
+                        } else {
+                          errorPopUp(context, "Profile image is required");
                         }
                       },
                     ),
@@ -354,102 +418,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 SizedBox(
                   height: 30,
                 ),
-                // DelayedDisplay(
-                //   delay: Duration(milliseconds: 1800),
-                //   slidingBeginOffset: Offset(0, 0),
-                //   child: Padding(
-                //     padding: const EdgeInsets.symmetric(horizontal: 22.0),
-                //     child: Row(
-                //       crossAxisAlignment: CrossAxisAlignment.start,
-                //       children: [
-                //         Expanded(
-                //             child: Divider(
-                //           thickness: 1.2,
-                //           color: Colors.black38,
-                //         )),
-                //         SizedBox(
-                //           width: 10,
-                //         ),
-                //         Text(
-                //           "or continue with",
-                //           style: bodySmall.copyWith(
-                //             color: Colors.black54,
-                //             fontSize: 12,
-                //             fontFamily: "MontserratSemiBold",
-                //           ),
-                //         ),
-                //         SizedBox(
-                //           width: 10,
-                //         ),
-                //         Expanded(
-                //             child: Divider(
-                //           thickness: 1.2,
-                //           color: Colors.black38,
-                //         )),
-                //       ],
-                //     ),
-                //   ),
-                // ),
-                // const SizedBox(
-                //   height: 30,
-                // ),
-                // DelayedDisplay(
-                //   delay: Duration(milliseconds: 1900),
-                //   slidingBeginOffset: Offset(0, 0),
-                //   child: Row(
-                //     mainAxisAlignment: MainAxisAlignment.center,
-                //     children: [
-                //       Container(
-                //         height: 56,
-                //         width: 70,
-                //         decoration: BoxDecoration(
-                //           borderRadius: BorderRadius.circular(16),
-                //           border: Border.all(color: Colors.black12, width: 1.4),
-                //         ),
-                //         child: Center(
-                //           child: SizedBox(
-                //               height: 30,
-                //               child: Image.asset(AppImages.facebookIcon)),
-                //         ),
-                //       ),
-                //       const SizedBox(
-                //         width: 10,
-                //       ),
-                //       Container(
-                //         height: 56,
-                //         width: 70,
-                //         decoration: BoxDecoration(
-                //           borderRadius: BorderRadius.circular(16),
-                //           border: Border.all(color: Colors.black12, width: 1.4),
-                //         ),
-                //         child: Center(
-                //           child: SizedBox(
-                //               height: 30,
-                //               child: Image.asset(AppImages.googleIcon)),
-                //         ),
-                //       ),
-                //       SizedBox(
-                //         width: 10,
-                //       ),
-                //       Container(
-                //         height: 56,
-                //         width: 70,
-                //         decoration: BoxDecoration(
-                //           borderRadius: BorderRadius.circular(16),
-                //           border: Border.all(color: Colors.black12, width: 1.4),
-                //         ),
-                //         child: Center(
-                //           child: SizedBox(
-                //               height: 30,
-                //               child: Image.asset(AppImages.appleIcon)),
-                //         ),
-                //       ),
-                //     ],
-                //   ),
-                // ),
-                // const SizedBox(
-                //   height: 20,
-                // ),
                 DelayedDisplay(
                   delay: Duration(milliseconds: 2000),
                   slidingBeginOffset: Offset(0, -1),
