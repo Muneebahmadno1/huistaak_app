@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:huistaak/views/home/group_detail.dart';
 import 'package:intl/intl.dart';
+import 'package:sizer/sizer.dart';
 
 import '../../../constants/global_variables.dart';
+import '../../../controllers/group_controller.dart';
 
 class ConnectedGroupList extends StatefulWidget {
   final String name;
@@ -12,23 +14,29 @@ class ConnectedGroupList extends StatefulWidget {
   final String imageUrl;
   final DateTime time;
   final String groupID;
+  final String unreadCount;
 
   ConnectedGroupList(
       {required this.name,
       required this.desc,
       required this.imageUrl,
       required this.time,
-      required this.groupID});
+      required this.groupID,
+      required this.unreadCount});
 
   @override
   _ConnectedGroupListState createState() => _ConnectedGroupListState();
 }
 
 class _ConnectedGroupListState extends State<ConnectedGroupList> {
+  final GroupController _groupController = Get.find<GroupController>();
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
+        _groupController.updateCounter(userData.userID, widget.groupID,
+            clearCounter: true);
         Get.to(() => GroupDetail(
               groupID: widget.groupID,
               groupTitle: widget.name,
@@ -105,9 +113,26 @@ class _ConnectedGroupListState extends State<ConnectedGroupList> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  SizedBox(
-                    height: 6,
-                  ),
+                  widget.unreadCount == "0"
+                      ? SizedBox(
+                          height: 6,
+                        )
+                      : Stack(
+                          children: [
+                            Icon(
+                              Icons.circle,
+                              size: 3.h,
+                              color: AppColors.buttonColor,
+                            ),
+                            Positioned(
+                                right: 6.5,
+                                top: 4,
+                                child: Text(
+                                  widget.unreadCount,
+                                  style: TextStyle(color: Colors.white),
+                                )),
+                          ],
+                        ),
                   Text(
                     DateFormat('HH:mm a').format(widget.time),
                     style: bodySmall.copyWith(

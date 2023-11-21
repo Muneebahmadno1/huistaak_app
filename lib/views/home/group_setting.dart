@@ -51,17 +51,17 @@ class _GroupSettingState extends State<GroupSetting> {
     });
 
     for (int i = 0;
-        i < _groupSettingController.groupInfo[0]['adminsList'].length;
+        i < _groupSettingController.groupInfo[0].adminsList.length;
         i++) {
       adminList.add(await _groupSettingController.fetchUser(
-          _groupSettingController.groupInfo[0]['adminsList'][i]['userID']
+          _groupSettingController.groupInfo[0].adminsList[i].userID
               .toString()));
     }
     for (int i = 0;
-        i < _groupSettingController.groupInfo[0]['membersList'].length;
+        i < _groupSettingController.groupInfo[0].membersList.length;
         i++) {
       memberList.add(await _groupSettingController.fetchUser(
-          _groupSettingController.groupInfo[0]['membersList'][i]['userID']
+          _groupSettingController.groupInfo[0].membersList[i].userID
               .toString()));
     }
     setState(() {
@@ -124,7 +124,7 @@ class _GroupSettingState extends State<GroupSetting> {
                       height: 10,
                     ),
                     SelectableText(
-                        _groupSettingController.groupInfo[0]['groupCode']
+                        _groupSettingController.groupInfo[0].groupCode
                             .toString(),
                         style: bodyNormal.copyWith(
                             color: Colors.black,
@@ -162,7 +162,7 @@ class _GroupSettingState extends State<GroupSetting> {
                                       height: 70 * 2,
                                       width: 70 * 2,
                                       child: _groupSettingController
-                                                  .groupInfo[0]['groupImage'] ==
+                                                  .groupInfo[0].groupImage ==
                                               null
                                           ? Image.asset(
                                               AppImages
@@ -171,7 +171,7 @@ class _GroupSettingState extends State<GroupSetting> {
                                             )
                                           : CachedNetworkImage(
                                               imageUrl: _groupSettingController
-                                                  .groupInfo[0]['groupImage'],
+                                                  .groupInfo[0].groupImage,
                                               placeholder: (context, url) =>
                                                   CircularProgressIndicator(),
                                               errorWidget:
@@ -292,8 +292,8 @@ class _GroupSettingState extends State<GroupSetting> {
                                     1, // Set the width to 0 to make it disappear
                               ),
                             ),
-                            hintText: _groupSettingController.groupInfo[0]
-                                ['groupName'],
+                            hintText:
+                                _groupSettingController.groupInfo[0].groupName,
                             hintStyle: bodyNormal.copyWith(
                                 color: Colors.black,
                                 fontFamily: "MontserratSemiBold"),
@@ -367,7 +367,7 @@ class _GroupSettingState extends State<GroupSetting> {
                         ? Shimmers.employeeListShimmer()
                         : ListView.builder(
                             itemCount: _groupSettingController
-                                .groupInfo[0]['adminsList'].length,
+                                .groupInfo[0].adminsList.length,
                             shrinkWrap: true,
                             padding: EdgeInsets.only(top: 16),
                             physics: BouncingScrollPhysics(),
@@ -419,9 +419,9 @@ class _GroupSettingState extends State<GroupSetting> {
                                             width: 25.w,
                                             child: Text(
                                               _groupSettingController
-                                                          .groupInfo[0]
-                                                      ['adminsList'][i]
-                                                  ['displayName'],
+                                                  .groupInfo[0]
+                                                  .adminsList[i]
+                                                  .displayName,
                                               maxLines: 1,
                                               style: headingMedium,
                                             ),
@@ -466,14 +466,14 @@ class _GroupSettingState extends State<GroupSetting> {
                     memberLoading
                         ? Shimmers.employeeListShimmer()
                         : _groupSettingController
-                                .groupInfo[0]['membersList'].isEmpty
+                                .groupInfo[0].membersList.isEmpty
                             ? Text(
                                 "No member have joined group yet.",
                                 style: bodySmall.copyWith(color: Colors.grey),
                               )
                             : ListView.builder(
                                 itemCount: _groupSettingController
-                                    .groupInfo[0]['membersList'].length,
+                                    .groupInfo[0].membersList.length,
                                 shrinkWrap: true,
                                 padding: EdgeInsets.only(top: 16),
                                 physics: BouncingScrollPhysics(),
@@ -496,9 +496,9 @@ class _GroupSettingState extends State<GroupSetting> {
                                                 height: 30 * 2,
                                                 width: 30 * 2,
                                                 child: _groupSettingController
-                                                                    .groupInfo[0]
-                                                                ['membersList']
-                                                            [j]['imageUrl'] ==
+                                                            .groupInfo[0]
+                                                            .membersList[j]
+                                                            .imageUrl ==
                                                         ""
                                                     ? Image.asset(
                                                         AppImages.profileImage,
@@ -506,10 +506,11 @@ class _GroupSettingState extends State<GroupSetting> {
                                                         fit: BoxFit.fitHeight,
                                                       )
                                                     : CachedNetworkImage(
-                                                        imageUrl: _groupSettingController
-                                                                    .groupInfo[0]
-                                                                ['membersList']
-                                                            [j]['imageUrl'],
+                                                        imageUrl:
+                                                            _groupSettingController
+                                                                .groupInfo[0]
+                                                                .membersList[j]
+                                                                .imageUrl,
                                                         placeholder: (context,
                                                                 url) =>
                                                             CircularProgressIndicator(),
@@ -530,9 +531,9 @@ class _GroupSettingState extends State<GroupSetting> {
                                               width: 25.w,
                                               child: Text(
                                                 _groupSettingController
-                                                            .groupInfo[0]
-                                                        ['membersList'][j]
-                                                    ['displayName'],
+                                                    .groupInfo[0]
+                                                    .membersList[j]
+                                                    .displayName,
                                                 maxLines: 1,
                                                 style: headingMedium,
                                               ),
@@ -541,11 +542,10 @@ class _GroupSettingState extends State<GroupSetting> {
                                           SizedBox(
                                             width: 25.w,
                                           ),
-                                          _groupSettingController.groupInfo[0]
-                                                      ['adminsList']
+                                          _groupSettingController
+                                                  .groupInfo[0].adminsList
                                                   .any((map) =>
-                                                      map['userID']
-                                                          .toString() ==
+                                                      map.userID.toString() ==
                                                       userData.userID
                                                           .toString())
                                               ? InkWell(
@@ -556,9 +556,9 @@ class _GroupSettingState extends State<GroupSetting> {
                                                       await _groupSettingController
                                                           .removeMember(
                                                         _groupSettingController
-                                                                    .groupInfo[0]
-                                                                ['membersList']
-                                                            [j]['userID'],
+                                                            .groupInfo[0]
+                                                            .membersList[j]
+                                                            .userID,
                                                         widget.groupID
                                                             .toString(),
                                                       );
@@ -574,11 +574,10 @@ class _GroupSettingState extends State<GroupSetting> {
                                           SizedBox(
                                             width: 5.0,
                                           ),
-                                          _groupSettingController.groupInfo[0]
-                                                      ['adminsList']
+                                          _groupSettingController
+                                                  .groupInfo[0].adminsList
                                                   .any((map) =>
-                                                      map['userID']
-                                                          .toString() ==
+                                                      map.userID.toString() ==
                                                       userData.userID
                                                           .toString())
                                               ? InkWell(
@@ -672,7 +671,7 @@ class _GroupSettingState extends State<GroupSetting> {
                                                                                   ),
                                                                                   TextButton(
                                                                                     onPressed: () async {
-                                                                                      await _groupSettingController.makeAdmin(_groupSettingController.groupInfo[0]['membersList'][j]['userID'], widget.groupID.toString(), _groupSettingController.groupInfo[0]['groupName'].toString());
+                                                                                      await _groupSettingController.makeAdmin(_groupSettingController.groupInfo[0].membersList[j].userID, widget.groupID.toString(), _groupSettingController.groupInfo[0].groupName.toString());
                                                                                       getData();
                                                                                       Navigator.pop(context);
                                                                                     },
@@ -690,7 +689,6 @@ class _GroupSettingState extends State<GroupSetting> {
                                                                 ),
                                                               ],
                                                             );
-                                                            ;
                                                           });
                                                         });
                                                   },
@@ -748,7 +746,7 @@ class _GroupSettingState extends State<GroupSetting> {
                           });
                           await _groupSettingController.leaveGroup(
                               widget.groupID.toString(),
-                              _groupSettingController.groupInfo[0]['groupName']
+                              _groupSettingController.groupInfo[0].groupName
                                   .toString());
                           Get.find<GeneralController>().onBottomBarTapped(0);
                           PageTransition.pageProperNavigation(
@@ -787,8 +785,8 @@ class _GroupSettingState extends State<GroupSetting> {
                       slidingBeginOffset: Offset(0, 0),
                       child: ZoomTapAnimation(
                         onTap: () async {
-                          openWhatsApp(_groupSettingController.groupInfo[0]
-                                  ['groupCode']
+                          openWhatsApp(_groupSettingController
+                              .groupInfo[0].groupCode
                               .toString());
                         },
                         child: Container(

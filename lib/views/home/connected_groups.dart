@@ -169,11 +169,6 @@ class _ConnectedGroupScreenState extends State<ConnectedGroupScreen> {
                       controller: searchController,
                       prefixIcon: "assets/icons/home/search.png",
                     ),
-                    // child: AuthTextField(
-                    //   controller: searchController,
-                    //   hintText: "Search your chats",
-                    //   prefixIcon: "assets/icons/home/search.png",
-                    // ),
                   ),
                   SizedBox(
                     height: 30,
@@ -209,35 +204,46 @@ class _ConnectedGroupScreenState extends State<ConnectedGroupScreen> {
                             padding: EdgeInsets.only(top: 16),
                             physics: BouncingScrollPhysics(),
                             itemBuilder: (context, index) {
-                              return _dataController.chatUsers[index]
-                                          ['groupName']
+                              return _dataController.chatUsers[index].groupName
                                       .toLowerCase()
                                       .contains(searchController.text
                                           .toString()
                                           .toLowerCase())
-                                  ? DelayedDisplay(
-                                      delay: Duration(milliseconds: 400),
-                                      slidingBeginOffset: Offset(0, -1),
-                                      child: ConnectedGroupList(
-                                        name: _dataController.chatUsers[index]
-                                            ['groupName'],
-                                        desc: _dataController.chatUsers[index]
-                                            ['groupName'],
-                                        imageUrl:
-                                            _dataController.chatUsers[index]
-                                                    ['groupImage'] ??
+                                  ? StreamBuilder<Object>(
+                                      stream: _dataController
+                                          .getUnreadTaskCount(_dataController
+                                              .chatUsers[index]
+                                              .toString())
+                                          .asStream(),
+                                      builder: (context, snapshot) {
+                                        String unreadCount =
+                                            snapshot.data.toString();
+                                        return DelayedDisplay(
+                                          delay: Duration(milliseconds: 400),
+                                          slidingBeginOffset: Offset(0, -1),
+                                          child: ConnectedGroupList(
+                                            name: _dataController
+                                                .chatUsers[index].groupName,
+                                            desc: _dataController
+                                                .chatUsers[index].groupName,
+                                            imageUrl: _dataController
+                                                    .chatUsers[index]
+                                                    .groupImage ??
                                                 "assets/images/groupIcon.png",
-                                        time: _dataController.chatUsers[index]
-                                                    ['date'] ==
-                                                null
-                                            ? DateTime.now()
-                                            : _dataController.chatUsers[index]
-                                                    ['date']
-                                                .toDate(),
-                                        groupID: _dataController
-                                            .chatUsers[index]['id'],
-                                      ),
-                                    )
+                                            time: _dataController
+                                                        .chatUsers[index]
+                                                        .date ==
+                                                    null
+                                                ? DateTime.now()
+                                                : _dataController
+                                                    .chatUsers[index].date
+                                                    .toDate(),
+                                            groupID: _dataController
+                                                .chatUsers[index].id,
+                                            unreadCount: unreadCount,
+                                          ),
+                                        );
+                                      })
                                   : SizedBox.shrink();
                             },
                           ),

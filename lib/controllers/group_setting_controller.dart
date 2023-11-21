@@ -9,6 +9,8 @@ import 'package:path/path.dart' as path;
 
 import '../constants/global_variables.dart';
 import '../helper/collections.dart';
+import '../models/group_details_model.dart';
+import '../models/member_model.dart';
 import '../models/user_model.dart';
 import 'notification_controller.dart';
 
@@ -16,7 +18,7 @@ class GroupSettingController extends GetxController {
   final NotificationController _notiController =
       Get.find<NotificationController>();
   List<Map<String, dynamic>> taskList = [];
-  List<Map<String, dynamic>> groupInfo = [];
+  List<GroupDetailsModel> groupInfo = [];
 
   late PickedFile pickedFile;
   String? imageUrl;
@@ -50,33 +52,54 @@ class GroupSettingController extends GetxController {
   getGroupInfo(groupID) async {
     groupInfo.clear();
     var querySnapshot = await Collections.GROUPS.doc(groupID).get();
-    groupInfo.add({
-      "groupCode": querySnapshot['groupCode'],
-      "groupImage": querySnapshot['groupImage'],
-      "groupName": querySnapshot['groupName'],
-      "adminsList": List.from(querySnapshot['adminsList']),
-      "membersList": List.from(querySnapshot['membersList']),
-    });
+    groupInfo.add(GroupDetailsModel(
+      adminsList: (querySnapshot['adminsList'] as List).map((memberData) {
+        return MemberModel(
+          displayName: memberData['displayName'],
+          imageUrl: memberData['imageUrl'],
+          userID: memberData['userID'],
+        );
+      }).toList(),
+      membersList: (querySnapshot['membersList'] as List).map((memberData) {
+        return MemberModel(
+          displayName: memberData['displayName'],
+          imageUrl: memberData['imageUrl'],
+          userID: memberData['userID'],
+        );
+      }).toList(),
+      groupImage: querySnapshot['groupImage'],
+      groupName: querySnapshot['groupName'],
+      groupCode: querySnapshot['groupCode'],
+    ));
   }
 
   leaveGroup(groupID, groupTitle) async {
-    if (groupInfo[0]['membersList'].isNotEmpty) {
-      groupInfo[0]['membersList']
-          .removeWhere((map) => map['userID'] == userData.userID.toString());
-
-      if (groupInfo[0]['membersList'].isNotEmpty) {
+    if (groupInfo[0].membersList.isNotEmpty) {
+      groupInfo[0]
+          .membersList
+          .removeWhere((map) => map.userID == userData.userID.toString());
+      List<Map<String, dynamic>> memberListData = groupInfo[0]
+          .membersList
+          .map((member) => {
+                'displayName': member.displayName,
+                'imageUrl': member.imageUrl,
+                'userID': member.userID,
+              })
+          .toList();
+      if (groupInfo[0].membersList.isNotEmpty) {
         Collections.GROUPS
             .doc(groupID.toString())
-            .update({'membersList': groupInfo[0]['membersList']});
+            .update({'membersList': memberListData});
       } else {
         Collections.GROUPS
             .doc(groupID.toString())
-            .update({'membersList': groupInfo[0]['membersList']});
+            .update({'membersList': memberListData});
       }
     }
-    if (groupInfo[0]['adminsList'].isNotEmpty) {
-      groupInfo[0]['adminsList']
-          .removeWhere((map) => map['userID'] == userData.userID.toString());
+    if (groupInfo[0].adminsList.isNotEmpty) {
+      groupInfo[0]
+          .adminsList
+          .removeWhere((map) => map.userID == userData.userID.toString());
       QuerySnapshot querySnapshot = await Collections.USERS
           .doc(userData.userID)
           .collection(Collections.MYGROUPS)
@@ -88,25 +111,48 @@ class GroupSettingController extends GetxController {
         }
       }
 
-      if (groupInfo[0]['adminsList'].isNotEmpty) {
+      if (groupInfo[0].adminsList.isNotEmpty) {
+        List<Map<String, dynamic>> adminListData = groupInfo[0]
+            .adminsList
+            .map((member) => {
+                  'displayName': member.displayName,
+                  'imageUrl': member.imageUrl,
+                  'userID': member.userID,
+                })
+            .toList();
         Collections.GROUPS
             .doc(groupID.toString())
-            .update({'adminsList': groupInfo[0]['adminsList']});
-      } else if (groupInfo[0]['membersList'].isNotEmpty) {
+            .update({'adminsList': adminListData});
+      } else if (groupInfo[0].adminsList.isNotEmpty) {
         // Remove the first element from membersList and store it in a variable.
-        Map<String, dynamic> removedMember =
-            groupInfo[0]['membersList'].removeAt(0);
+        MemberModel removedMember = groupInfo[0].membersList.removeAt(0);
 
         // Add the removed member to adminsList.
-        groupInfo[0]['adminsList'].add(removedMember);
+        groupInfo[0].adminsList.add(removedMember);
 
+        List<Map<String, dynamic>> adminListData = groupInfo[0]
+            .adminsList
+            .map((member) => {
+                  'displayName': member.displayName,
+                  'imageUrl': member.imageUrl,
+                  'userID': member.userID,
+                })
+            .toList();
+        List<Map<String, dynamic>> memberListData = groupInfo[0]
+            .membersList
+            .map((member) => {
+                  'displayName': member.displayName,
+                  'imageUrl': member.imageUrl,
+                  'userID': member.userID,
+                })
+            .toList();
         // Now you can update the Firestore document with the modified groupInfo.
         Collections.GROUPS.doc(groupID.toString()).update({
-          'membersList': groupInfo[0]['membersList'],
-          'adminsList': groupInfo[0]['adminsList'],
+          'membersList': memberListData,
+          'adminsList': adminListData,
         });
         var notiID = Collections.USERS
-            .doc(removedMember['userID'].toString())
+            .doc(removedMember.userID.toString())
             .collection(Collections.NOTIFICATIONS)
             .doc();
         notiID.set({
@@ -121,7 +167,7 @@ class GroupSettingController extends GetxController {
           "groupName": groupTitle.toString(),
         });
         Collections.USERS
-            .doc(removedMember['userID'].toString())
+            .doc(removedMember.userID.toString())
             .get()
             .then((value) async {
           UserModel notiUserData = UserModel.fromDocument(value.data());
@@ -134,10 +180,10 @@ class GroupSettingController extends GetxController {
               "You have been made admin of " + groupTitle.toString() + " group",
               data);
         });
-      } else if (groupInfo[0]['adminsList'].isEmpty) {
+      } else if (groupInfo[0].adminsList.isEmpty) {
         Collections.GROUPS
             .doc(groupID.toString())
-            .update({'adminsList': groupInfo[0]['adminsList']});
+            .update({'adminsList': groupInfo[0].adminsList});
       }
     }
 
@@ -169,43 +215,66 @@ class GroupSettingController extends GetxController {
   }
 
   removeMember(memberID, groupID) {
-    if (groupInfo[0]['membersList'].isNotEmpty) {
-      groupInfo[0]['membersList']
-          .removeWhere((map) => map['userID'] == memberID.toString());
-
-      if (groupInfo[0]['membersList'].isNotEmpty) {
+    if (groupInfo[0].membersList.isNotEmpty) {
+      groupInfo[0]
+          .membersList
+          .removeWhere((map) => map.userID == memberID.toString());
+      List<Map<String, dynamic>> memberListData = groupInfo[0]
+          .membersList
+          .map((member) => {
+                'displayName': member.displayName,
+                'imageUrl': member.imageUrl,
+                'userID': member.userID,
+              })
+          .toList();
+      if (groupInfo[0].membersList.isNotEmpty) {
         Collections.GROUPS
             .doc(groupID.toString())
-            .update({'membersList': groupInfo[0]['membersList']});
+            .update({'membersList': memberListData});
       } else {
         Collections.GROUPS
             .doc(groupID.toString())
-            .update({'membersList': groupInfo[0]['membersList']});
+            .update({'membersList': memberListData});
       }
     }
   }
 
   makeAdmin(memberID, groupID, groupTitle) {
-    late Map<String, dynamic> removedMember;
-    List<dynamic> membersList = groupInfo[0]['membersList'];
+    late MemberModel removedMember;
+    List<MemberModel> membersList = groupInfo[0].membersList;
 
     for (int i = 0; i < membersList.length; i++) {
-      if (membersList[i]['userID'] == memberID) {
+      if (membersList[i].userID == memberID) {
         removedMember = membersList.removeAt(i);
         break; // Exit the loop after the first match is removed
       }
     }
 
     // Add the removed member to adminsList.
-    groupInfo[0]['adminsList'].add(removedMember);
-
+    groupInfo[0].adminsList.add(removedMember);
+    List<Map<String, dynamic>> memberListData = groupInfo[0]
+        .membersList
+        .map((member) => {
+              'displayName': member.displayName,
+              'imageUrl': member.imageUrl,
+              'userID': member.userID,
+            })
+        .toList();
+    List<Map<String, dynamic>> adminListData = groupInfo[0]
+        .adminsList
+        .map((member) => {
+              'displayName': member.displayName,
+              'imageUrl': member.imageUrl,
+              'userID': member.userID,
+            })
+        .toList();
     // Now you can update the Firestore document with the modified groupInfo.
     Collections.GROUPS.doc(groupID.toString()).update({
-      'membersList': groupInfo[0]['membersList'],
-      'adminsList': groupInfo[0]['adminsList'],
+      'membersList': memberListData,
+      'adminsList': adminListData,
     });
     var notiID = Collections.USERS
-        .doc(removedMember['userID'].toString())
+        .doc(removedMember.userID.toString())
         .collection(Collections.NOTIFICATIONS)
         .doc();
     notiID.set({
@@ -219,7 +288,7 @@ class GroupSettingController extends GetxController {
       "groupName": groupTitle.toString(),
     });
     Collections.USERS
-        .doc(removedMember['userID'].toString())
+        .doc(removedMember.userID.toString())
         .get()
         .then((value) async {
       UserModel notiUserData = UserModel.fromDocument(value.data());

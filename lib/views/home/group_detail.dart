@@ -17,6 +17,7 @@ import '../../constants/global_variables.dart';
 import '../../controllers/general_controller.dart';
 import '../../controllers/group_controller.dart';
 import '../../helper/page_navigation.dart';
+import '../../models/member_model.dart';
 import '../../widgets/custom_widgets.dart';
 import '../../widgets/like_bar_widget.dart';
 import 'bottom_nav_bar.dart';
@@ -189,8 +190,8 @@ class _GroupDetailState extends State<GroupDetail> {
                                   child: SizedBox(
                                     height: 20 * 2,
                                     width: 20 * 2,
-                                    child: _groupController.groupInfo[0]
-                                                ['groupImage'] ==
+                                    child: _groupController
+                                                .groupInfo[0].groupImage ==
                                             null
                                         ? Image.asset(
                                             AppImages.groupIcon,
@@ -199,7 +200,7 @@ class _GroupDetailState extends State<GroupDetail> {
                                           )
                                         : CachedNetworkImage(
                                             imageUrl: _groupController
-                                                .groupInfo[0]['groupImage'],
+                                                .groupInfo[0].groupImage,
                                             placeholder: (context, url) =>
                                                 CircularProgressIndicator(),
                                             errorWidget:
@@ -236,8 +237,8 @@ class _GroupDetailState extends State<GroupDetail> {
                                       Container(
                                         width: 40.w,
                                         child: SelectableText(
-                                            _groupController.groupInfo[0]
-                                                    ['groupCode']
+                                            _groupController
+                                                .groupInfo[0].groupCode
                                                 .toString(),
                                             maxLines: 1,
                                             style: bodySmall.copyWith(
@@ -326,27 +327,30 @@ class _GroupDetailState extends State<GroupDetail> {
                                           physics: BouncingScrollPhysics(),
                                           itemBuilder: (context, index) {
                                             _progressValue.add(0.0);
-                                            List<dynamic> assignMembers =
+                                            List<MemberModel> assignMembers =
                                                 _groupController
-                                                        .toBeCompletedTaskList[
-                                                    index]['assignMembers'];
+                                                    .toBeCompletedTaskList[
+                                                        index]
+                                                    .assignMembers;
 
                                             String assignedMembersString =
                                                 assignMembers
                                                     .map((member) =>
-                                                        member['displayName'])
+                                                        member.displayName)
                                                     .join(', ');
 
                                             var a = double.parse(
                                                 _groupController
                                                     .toBeCompletedTaskList[
-                                                        index]['duration']
+                                                        index]
+                                                    .duration
                                                     .toString());
                                             _startTime.add(
                                                 DateFormat('yyyy-MM-dd HH:mm')
                                                     .parse(_groupController
                                                         .toBeCompletedTaskList[
-                                                            index]['startTime']
+                                                            index]
+                                                        .startTime
                                                         .toString()));
 
                                             _endTime.add(_startTime[index].add(
@@ -398,9 +402,9 @@ class _GroupDetailState extends State<GroupDetail> {
                                                                   .centerLeft,
                                                               child: Text(
                                                                 _groupController
-                                                                            .toBeCompletedTaskList[
-                                                                        index][
-                                                                    'taskTitle'],
+                                                                    .toBeCompletedTaskList[
+                                                                        index]
+                                                                    .taskTitle,
                                                                 style: headingLarge
                                                                     .copyWith(
                                                                         color: Colors
@@ -411,10 +415,10 @@ class _GroupDetailState extends State<GroupDetail> {
                                                               children: [
                                                                 _groupController
                                                                         .groupInfo[
-                                                                            0][
-                                                                            'adminsList']
+                                                                            0]
+                                                                        .adminsList
                                                                         .any((user) =>
-                                                                            user["userID"].toString() ==
+                                                                            user.userID.toString() ==
                                                                             userData.userID
                                                                                 .toString())
                                                                     ? InkWell(
@@ -439,10 +443,10 @@ class _GroupDetailState extends State<GroupDetail> {
                                                                         .shrink(),
                                                                 _groupController
                                                                         .groupInfo[
-                                                                            0][
-                                                                            'adminsList']
+                                                                            0]
+                                                                        .adminsList
                                                                         .any((user) =>
-                                                                            user["userID"].toString() ==
+                                                                            user.userID.toString() ==
                                                                             userData.userID
                                                                                 .toString())
                                                                     ? InkWell(
@@ -454,7 +458,7 @@ class _GroupDetailState extends State<GroupDetail> {
                                                                               () {
                                                                             _groupController.deleteTask(
                                                                               widget.groupID.toString(),
-                                                                              _groupController.toBeCompletedTaskList[index]['id'].toString(),
+                                                                              _groupController.toBeCompletedTaskList[index].id.toString(),
                                                                             );
                                                                             getData();
                                                                             Navigator.pop(context);
@@ -485,8 +489,8 @@ class _GroupDetailState extends State<GroupDetail> {
                                                                     'yyyy-MM-dd')
                                                                 .format(_groupController
                                                                     .toBeCompletedTaskList[
-                                                                        index][
-                                                                        'taskDate']
+                                                                        index]
+                                                                    .taskDate
                                                                     .toDate())),
                                                         SizedBox(
                                                           height: 10,
@@ -496,14 +500,14 @@ class _GroupDetailState extends State<GroupDetail> {
                                                                 "assets/icons/home/time.png",
                                                             title: "Time",
                                                             data: _groupController
-                                                                            .toBeCompletedTaskList[
-                                                                        index][
-                                                                    'startTime'] +
+                                                                    .toBeCompletedTaskList[
+                                                                        index]
+                                                                    .startTime +
                                                                 " to " +
                                                                 _groupController
-                                                                            .toBeCompletedTaskList[
-                                                                        index][
-                                                                    'endTime']),
+                                                                    .toBeCompletedTaskList[
+                                                                        index]
+                                                                    .endTime),
                                                         SizedBox(
                                                           height: 10,
                                                         ),
@@ -513,9 +517,9 @@ class _GroupDetailState extends State<GroupDetail> {
                                                             title:
                                                                 "Task Duration",
                                                             data: _groupController
-                                                                            .toBeCompletedTaskList[
-                                                                        index][
-                                                                    'duration'] +
+                                                                    .toBeCompletedTaskList[
+                                                                        index]
+                                                                    .duration +
                                                                 " hours"),
                                                         SizedBox(
                                                           height: 10,
@@ -526,9 +530,9 @@ class _GroupDetailState extends State<GroupDetail> {
                                                             title:
                                                                 "Task Score Points",
                                                             data: _groupController
-                                                                        .toBeCompletedTaskList[
+                                                                .toBeCompletedTaskList[
                                                                     index]
-                                                                ['taskScore']),
+                                                                .taskScore),
                                                         SizedBox(
                                                           height: 20,
                                                         ),
@@ -579,8 +583,7 @@ class _GroupDetailState extends State<GroupDetail> {
                                                             _groupController
                                                                         .toBeCompletedTaskList[
                                                                             index]
-                                                                            [
-                                                                            'assignMembers']
+                                                                        .assignMembers
                                                                         .length >
                                                                     0
                                                                 ? Text(
@@ -595,8 +598,7 @@ class _GroupDetailState extends State<GroupDetail> {
                                                             _groupController
                                                                         .toBeCompletedTaskList[
                                                                             index]
-                                                                            [
-                                                                            'assignMembers']
+                                                                        .assignMembers
                                                                         .length >
                                                                     0
                                                                 ? SizedBox(
@@ -611,9 +613,9 @@ class _GroupDetailState extends State<GroupDetail> {
                                                                             34,
                                                                         avatars: [
                                                                           for (var n = 0;
-                                                                              n < _groupController.toBeCompletedTaskList[index]['assignMembers'].length;
+                                                                              n < _groupController.toBeCompletedTaskList[index].assignMembers.length;
                                                                               n++)
-                                                                            _groupController.toBeCompletedTaskList[index]['assignMembers'][n]['imageUrl'] == "" ? AssetImage("assets/images/man1.png") : NetworkImage(_groupController.toBeCompletedTaskList[index]['assignMembers'][n]['imageUrl'].toString()) as ImageProvider,
+                                                                            _groupController.toBeCompletedTaskList[index].assignMembers[n].imageUrl == "" ? AssetImage("assets/images/man1.png") : NetworkImage(_groupController.toBeCompletedTaskList[index].assignMembers[n].imageUrl.toString()) as ImageProvider,
                                                                         ],
                                                                       ),
                                                                     ),
@@ -626,46 +628,47 @@ class _GroupDetailState extends State<GroupDetail> {
                                                             i <
                                                                 _groupController
                                                                     .toBeCompletedTaskList[
-                                                                        index][
-                                                                        'assignMembers']
+                                                                        index]
+                                                                    .assignMembers
                                                                     .length;
                                                             i++)
-                                                          !_groupController
-                                                                  .toBeCompletedTaskList[
-                                                                      index][
-                                                                      'assignMembers']
-                                                                      [i]
-                                                                  .containsKey(
-                                                                      "endTask")
+                                                          _groupController
+                                                                      .toBeCompletedTaskList[
+                                                                          index]
+                                                                      .assignMembers[
+                                                                          i]
+                                                                      .endTask ==
+                                                                  null
                                                               ? SizedBox
                                                                   .shrink()
                                                               : LikeBarWidget(
                                                                   image: _groupController
-                                                                              .toBeCompletedTaskList[index]
-                                                                          [
-                                                                          'assignMembers'][i]
-                                                                      [
-                                                                      'imageUrl'],
-                                                                  count: _groupController.toBeCompletedTaskList[index]['assignMembers']
-                                                                              [
-                                                                              i]
-                                                                          [
-                                                                          'pointsEarned'] ??
-                                                                      "0",
-                                                                  percent: (double.parse(_groupController.toBeCompletedTaskList[index]['assignMembers']
-                                                                              [
-                                                                              i]
-                                                                          [
-                                                                          'pointsEarned']) /
-                                                                      double.parse(
-                                                                          _groupController.toBeCompletedTaskList[index]
-                                                                              [
-                                                                              'taskScore'])),
-                                                                  TotalCount: _groupController
-                                                                              .toBeCompletedTaskList[
+                                                                      .toBeCompletedTaskList[
                                                                           index]
-                                                                      [
-                                                                      'taskScore'],
+                                                                      .assignMembers[
+                                                                          i]
+                                                                      .imageUrl,
+                                                                  count: _groupController
+                                                                          .toBeCompletedTaskList[
+                                                                              index]
+                                                                          .assignMembers[
+                                                                              i]
+                                                                          .pointsEarned ??
+                                                                      "0",
+                                                                  percent: (double.parse(_groupController
+                                                                          .toBeCompletedTaskList[
+                                                                              index]
+                                                                          .assignMembers[
+                                                                              i]
+                                                                          .pointsEarned) /
+                                                                      double.parse(_groupController
+                                                                          .toBeCompletedTaskList[
+                                                                              index]
+                                                                          .taskScore)),
+                                                                  TotalCount: _groupController
+                                                                      .toBeCompletedTaskList[
+                                                                          index]
+                                                                      .taskScore,
                                                                 ),
                                                         SizedBox(
                                                           height: 10,
@@ -694,19 +697,19 @@ class _GroupDetailState extends State<GroupDetail> {
                                                                         .now())
                                                             ? _groupController
                                                                     .toBeCompletedTaskList[
-                                                                        index][
-                                                                        'assignMembers']
+                                                                        index]
+                                                                    .assignMembers
                                                                     .any((map) =>
-                                                                        map['userID'].toString() ==
+                                                                        map.userID.toString() ==
                                                                             userData.userID
                                                                                 .toString() &&
-                                                                        map['endTask'] ==
+                                                                        map.endTask ==
                                                                             null)
                                                                 ? Row(
                                                                     children: [
-                                                                      _groupController.toBeCompletedTaskList[index]['assignMembers'].any((map) =>
-                                                                              map['userID'].toString() == userData.userID.toString() &&
-                                                                              map['startTask'] !=
+                                                                      _groupController.toBeCompletedTaskList[index].assignMembers.any((map) =>
+                                                                              map.userID.toString() == userData.userID.toString() &&
+                                                                              map.startTask !=
                                                                                   null)
                                                                           ? SizedBox
                                                                               .shrink()
@@ -715,7 +718,7 @@ class _GroupDetailState extends State<GroupDetail> {
                                                                                 padding: const EdgeInsets.symmetric(vertical: 8),
                                                                                 child: ZoomTapAnimation(
                                                                                   onTap: () async {
-                                                                                    await _groupController.startTask(widget.groupID.toString(), _groupController.toBeCompletedTaskList[index]['id'].toString(), widget.groupTitle);
+                                                                                    await _groupController.startTask(widget.groupID.toString(), _groupController.toBeCompletedTaskList[index].id.toString(), widget.groupTitle);
                                                                                     getData();
                                                                                   },
                                                                                   onLongTap: () {},
@@ -745,9 +748,9 @@ class _GroupDetailState extends State<GroupDetail> {
                                                                         width:
                                                                             10,
                                                                       ),
-                                                                      _groupController.toBeCompletedTaskList[index]['assignMembers'].any((map) =>
-                                                                              map['userID'].toString() == userData.userID.toString() &&
-                                                                              map['startTask'] ==
+                                                                      _groupController.toBeCompletedTaskList[index].assignMembers.any((map) =>
+                                                                              map.userID.toString() == userData.userID.toString() &&
+                                                                              map.startTask ==
                                                                                   null)
                                                                           ? SizedBox
                                                                               .shrink()
@@ -759,7 +762,7 @@ class _GroupDetailState extends State<GroupDetail> {
                                                                                     setState(() {
                                                                                       isLoading = true;
                                                                                     });
-                                                                                    await _groupController.endTask(widget.groupID.toString(), _groupController.toBeCompletedTaskList[index]['id'].toString(), _groupController.toBeCompletedTaskList[index]['assignMembers'], double.parse(_groupController.toBeCompletedTaskList[index]['duration'].toString()) * 60, _groupController.toBeCompletedTaskList[index]['taskScore'], widget.groupTitle, _groupController.groupInfo[0]['adminsList']);
+                                                                                    await _groupController.endTask(widget.groupID.toString(), _groupController.toBeCompletedTaskList[index].id.toString(), _groupController.toBeCompletedTaskList[index].assignMembers, double.parse(_groupController.toBeCompletedTaskList[index].duration.toString()) * 60, _groupController.toBeCompletedTaskList[index].taskScore, widget.groupTitle, _groupController.groupInfo[0].adminsList);
                                                                                     Future.delayed(const Duration(milliseconds: 1000), () {
                                                                                       setState(() {
                                                                                         isFinish = false;
@@ -835,15 +838,17 @@ class _GroupDetailState extends State<GroupDetail> {
                                               padding: EdgeInsets.only(top: 16),
                                               physics: BouncingScrollPhysics(),
                                               itemBuilder: (context, index) {
-                                                List<dynamic> assignMembers =
+                                                List<MemberModel>
+                                                    assignMembers =
                                                     _groupController
-                                                            .completedTaskList[
-                                                        index]['assignMembers'];
+                                                        .completedTaskList[
+                                                            index]
+                                                        .assignMembers;
 
                                                 String assignedMembersString =
                                                     assignMembers
-                                                        .map((member) => member[
-                                                            'displayName'])
+                                                        .map((member) =>
+                                                            member.displayName)
                                                         .join(', ');
 
                                                 return Padding(
@@ -883,9 +888,9 @@ class _GroupDetailState extends State<GroupDetail> {
                                                                           .centerLeft,
                                                                   child: Text(
                                                                     _groupController
-                                                                            .completedTaskList[index]
-                                                                        [
-                                                                        'taskTitle'],
+                                                                        .completedTaskList[
+                                                                            index]
+                                                                        .taskTitle,
                                                                     style: headingLarge
                                                                         .copyWith(
                                                                             color:
@@ -894,10 +899,10 @@ class _GroupDetailState extends State<GroupDetail> {
                                                                 ),
                                                                 _groupController
                                                                         .groupInfo[
-                                                                            0][
-                                                                            'adminsList']
+                                                                            0]
+                                                                        .adminsList
                                                                         .any((user) =>
-                                                                            user["userID"].toString() ==
+                                                                            user.userID.toString() ==
                                                                             userData.userID
                                                                                 .toString())
                                                                     ? InkWell(
@@ -909,7 +914,7 @@ class _GroupDetailState extends State<GroupDetail> {
                                                                               () {
                                                                             _groupController.deleteTask(
                                                                               widget.groupID.toString(),
-                                                                              _groupController.completedTaskList[index]['id'].toString(),
+                                                                              _groupController.completedTaskList[index].id.toString(),
                                                                             );
                                                                             getData();
                                                                             Navigator.pop(context);
@@ -939,8 +944,7 @@ class _GroupDetailState extends State<GroupDetail> {
                                                                     .format(_groupController
                                                                         .completedTaskList[
                                                                             index]
-                                                                            [
-                                                                            'taskDate']
+                                                                        .taskDate
                                                                         .toDate())),
                                                             SizedBox(
                                                               height: 10,
@@ -950,14 +954,14 @@ class _GroupDetailState extends State<GroupDetail> {
                                                                     "assets/icons/home/time.png",
                                                                 title: "Time",
                                                                 data: _groupController
-                                                                            .completedTaskList[index]
-                                                                        [
-                                                                        'startTime'] +
+                                                                        .completedTaskList[
+                                                                            index]
+                                                                        .startTime +
                                                                     " to " +
                                                                     _groupController
-                                                                            .completedTaskList[index]
-                                                                        [
-                                                                        'endTime']),
+                                                                        .completedTaskList[
+                                                                            index]
+                                                                        .endTime),
                                                             SizedBox(
                                                               height: 10,
                                                             ),
@@ -967,9 +971,9 @@ class _GroupDetailState extends State<GroupDetail> {
                                                                 title:
                                                                     "Task Duration",
                                                                 data: _groupController
-                                                                            .completedTaskList[index]
-                                                                        [
-                                                                        'duration'] +
+                                                                        .completedTaskList[
+                                                                            index]
+                                                                        .duration +
                                                                     " hours"),
                                                             SizedBox(
                                                               height: 10,
@@ -980,9 +984,9 @@ class _GroupDetailState extends State<GroupDetail> {
                                                                 title:
                                                                     "Task Score Points",
                                                                 data: _groupController
-                                                                            .completedTaskList[
-                                                                        index][
-                                                                    'taskScore']),
+                                                                    .completedTaskList[
+                                                                        index]
+                                                                    .taskScore),
                                                             SizedBox(
                                                               height: 20,
                                                             ),
@@ -992,8 +996,9 @@ class _GroupDetailState extends State<GroupDetail> {
                                                                       .spaceBetween,
                                                               children: [
                                                                 _groupController
-                                                                            .completedTaskList[index][
-                                                                                'assignMembers']
+                                                                            .completedTaskList[
+                                                                                index]
+                                                                            .assignMembers
                                                                             .length >
                                                                         0
                                                                     ? Text(
@@ -1005,8 +1010,9 @@ class _GroupDetailState extends State<GroupDetail> {
                                                                     : SizedBox
                                                                         .shrink(),
                                                                 _groupController
-                                                                            .completedTaskList[index][
-                                                                                'assignMembers']
+                                                                            .completedTaskList[
+                                                                                index]
+                                                                            .assignMembers
                                                                             .length >
                                                                         0
                                                                     ? SizedBox(
@@ -1021,8 +1027,8 @@ class _GroupDetailState extends State<GroupDetail> {
                                                                             height:
                                                                                 34,
                                                                             avatars: [
-                                                                              for (var n = 0; n < _groupController.completedTaskList[index]['assignMembers'].length; n++)
-                                                                                _groupController.completedTaskList[index]['assignMembers'][n]['imageUrl'] == "" ? AssetImage("assets/images/man1.png") : NetworkImage(_groupController.completedTaskList[index]['assignMembers'][n]['imageUrl'].toString()) as ImageProvider,
+                                                                              for (var n = 0; n < _groupController.completedTaskList[index].assignMembers.length; n++)
+                                                                                _groupController.completedTaskList[index].assignMembers[n].imageUrl == "" ? AssetImage("assets/images/man1.png") : NetworkImage(_groupController.completedTaskList[index].assignMembers[n].imageUrl.toString()) as ImageProvider,
                                                                             ],
                                                                           ),
                                                                         ),
@@ -1036,59 +1042,58 @@ class _GroupDetailState extends State<GroupDetail> {
                                                                     _groupController
                                                                         .completedTaskList[
                                                                             index]
-                                                                            [
-                                                                            'assignMembers']
+                                                                        .assignMembers
                                                                         .length;
                                                                 i++)
-                                                              !_groupController
-                                                                      .completedTaskList[
-                                                                          index]
-                                                                          [
-                                                                          'assignMembers']
-                                                                          [i]
-                                                                      .containsKey(
-                                                                          "endTask")
+                                                              _groupController
+                                                                          .completedTaskList[
+                                                                              index]
+                                                                          .assignMembers[
+                                                                              i]
+                                                                          .endTask ==
+                                                                      ""
                                                                   ? SizedBox
                                                                       .shrink()
                                                                   : LikeBarWidget(
-                                                                      image: _groupController.completedTaskList[index]['assignMembers']
-                                                                              [
+                                                                      image: _groupController
+                                                                          .completedTaskList[
+                                                                              index]
+                                                                          .assignMembers[
                                                                               i]
-                                                                          [
-                                                                          'imageUrl'],
-                                                                      count: _groupController.completedTaskList[index]['assignMembers'][i]
-                                                                              [
-                                                                              'pointsEarned'] ??
+                                                                          .imageUrl,
+                                                                      count: _groupController
+                                                                              .completedTaskList[index]
+                                                                              .assignMembers[i]
+                                                                              .pointsEarned ??
                                                                           "0",
-                                                                      percent: (double.parse(_groupController.completedTaskList[index]['assignMembers'][i]
-                                                                              [
-                                                                              'pointsEarned']) /
-                                                                          double.parse(_groupController.completedTaskList[index]
-                                                                              [
-                                                                              'taskScore'])),
-                                                                      TotalCount:
-                                                                          _groupController.completedTaskList[index]
-                                                                              [
-                                                                              'taskScore'],
+                                                                      percent: (double.parse(_groupController
+                                                                              .completedTaskList[index]
+                                                                              .assignMembers[i]
+                                                                              .pointsEarned) /
+                                                                          double.parse(_groupController.completedTaskList[index].taskScore)),
+                                                                      TotalCount: _groupController
+                                                                          .completedTaskList[
+                                                                              index]
+                                                                          .taskScore,
                                                                     ),
                                                             SizedBox(
                                                               height: 10,
                                                             ),
                                                             _groupController
                                                                     .completedTaskList[
-                                                                        index][
-                                                                        'assignMembers']
+                                                                        index]
+                                                                    .assignMembers
                                                                     .any((map) =>
-                                                                        map['userID'].toString() ==
+                                                                        map.userID.toString() ==
                                                                             userData.userID
                                                                                 .toString() &&
-                                                                        map['endTask'] ==
+                                                                        map.endTask ==
                                                                             null)
                                                                 ? Row(
                                                                     children: [
-                                                                      _groupController.completedTaskList[index]['assignMembers'].any((map) =>
-                                                                              map['userID'].toString() == userData.userID.toString() &&
-                                                                              map['startTask'] !=
+                                                                      _groupController.completedTaskList[index].assignMembers.any((map) =>
+                                                                              map.userID.toString() == userData.userID.toString() &&
+                                                                              map.startTask !=
                                                                                   null)
                                                                           ? SizedBox
                                                                               .shrink()
@@ -1097,7 +1102,7 @@ class _GroupDetailState extends State<GroupDetail> {
                                                                                 padding: const EdgeInsets.symmetric(vertical: 8),
                                                                                 child: ZoomTapAnimation(
                                                                                   onTap: () async {
-                                                                                    await _groupController.startTask(widget.groupID.toString(), _groupController.completedTaskList[index]['id'].toString(), widget.groupTitle);
+                                                                                    await _groupController.startTask(widget.groupID.toString(), _groupController.completedTaskList[index].id.toString(), widget.groupTitle);
                                                                                     getData();
                                                                                   },
                                                                                   onLongTap: () {},
@@ -1127,9 +1132,9 @@ class _GroupDetailState extends State<GroupDetail> {
                                                                         width:
                                                                             10,
                                                                       ),
-                                                                      _groupController.completedTaskList[index]['assignMembers'].any((map) =>
-                                                                              map['userID'].toString() == userData.userID.toString() &&
-                                                                              map['startTask'] ==
+                                                                      _groupController.completedTaskList[index].assignMembers.any((map) =>
+                                                                              map.userID.toString() == userData.userID.toString() &&
+                                                                              map.startTask ==
                                                                                   null)
                                                                           ? SizedBox
                                                                               .shrink()
@@ -1141,9 +1146,9 @@ class _GroupDetailState extends State<GroupDetail> {
                                                                                     setState(() {
                                                                                       isLoading = true;
                                                                                     });
-                                                                                    await _groupController.endTask(widget.groupID.toString(), _groupController.completedTaskList[index]['id'].toString(), _groupController.completedTaskList[index]['assignMembers'], double.parse(_groupController.completedTaskList[index]['duration'].toString()) * 60, _groupController.completedTaskList[index]['taskScore'], widget.groupTitle, _groupController.groupInfo[0]['adminsList']);
+                                                                                    await _groupController.endTask(widget.groupID.toString(), _groupController.completedTaskList[index].id.toString(), _groupController.completedTaskList[index].assignMembers, double.parse(_groupController.completedTaskList[index].duration.toString()) * 60, _groupController.completedTaskList[index].taskScore, widget.groupTitle, _groupController.groupInfo[0].adminsList);
                                                                                     Future.delayed(const Duration(milliseconds: 1000), () {
-                                                                                      print(_groupController.completedTaskList[index]['assignMembers'].any((map) => map['startTask'] == null));
+                                                                                      print(_groupController.completedTaskList[index].assignMembers.any((map) => map.startTask == null));
                                                                                       print(widget.groupTitle.toString());
                                                                                       setState(() {
                                                                                         isFinish = false;
@@ -1221,8 +1226,9 @@ class _GroupDetailState extends State<GroupDetail> {
                                               itemBuilder: (context, index) {
                                                 List<dynamic> assignMembers =
                                                     _groupController
-                                                            .notCompletedTaskList[
-                                                        index]['assignMembers'];
+                                                        .notCompletedTaskList[
+                                                            index]
+                                                        .assignMembers;
 
                                                 String assignedMembersString =
                                                     assignMembers
@@ -1266,9 +1272,9 @@ class _GroupDetailState extends State<GroupDetail> {
                                                                           .centerLeft,
                                                                   child: Text(
                                                                     _groupController
-                                                                            .notCompletedTaskList[index]
-                                                                        [
-                                                                        'taskTitle'],
+                                                                        .notCompletedTaskList[
+                                                                            index]
+                                                                        .taskTitle,
                                                                     style: headingLarge
                                                                         .copyWith(
                                                                             color:
@@ -1277,10 +1283,10 @@ class _GroupDetailState extends State<GroupDetail> {
                                                                 ),
                                                                 _groupController
                                                                         .groupInfo[
-                                                                            0][
-                                                                            'adminsList']
+                                                                            0]
+                                                                        .adminsList
                                                                         .any((user) =>
-                                                                            user["userID"].toString() ==
+                                                                            user.userID.toString() ==
                                                                             userData.userID
                                                                                 .toString())
                                                                     ? InkWell(
@@ -1292,7 +1298,7 @@ class _GroupDetailState extends State<GroupDetail> {
                                                                               () {
                                                                             _groupController.deleteTask(
                                                                               widget.groupID.toString(),
-                                                                              _groupController.notCompletedTaskList[index]['id'].toString(),
+                                                                              _groupController.notCompletedTaskList[index].id.toString(),
                                                                             );
                                                                             getData();
                                                                             Navigator.pop(context);
@@ -1322,8 +1328,7 @@ class _GroupDetailState extends State<GroupDetail> {
                                                                     .format(_groupController
                                                                         .notCompletedTaskList[
                                                                             index]
-                                                                            [
-                                                                            'taskDate']
+                                                                        .taskDate
                                                                         .toDate())),
                                                             SizedBox(
                                                               height: 10,
@@ -1333,14 +1338,14 @@ class _GroupDetailState extends State<GroupDetail> {
                                                                     "assets/icons/home/time.png",
                                                                 title: "Time",
                                                                 data: _groupController
-                                                                            .notCompletedTaskList[index]
-                                                                        [
-                                                                        'startTime'] +
+                                                                        .notCompletedTaskList[
+                                                                            index]
+                                                                        .startTime +
                                                                     " to " +
                                                                     _groupController
-                                                                            .notCompletedTaskList[index]
-                                                                        [
-                                                                        'endTime']),
+                                                                        .notCompletedTaskList[
+                                                                            index]
+                                                                        .endTime),
                                                             SizedBox(
                                                               height: 10,
                                                             ),
@@ -1350,9 +1355,9 @@ class _GroupDetailState extends State<GroupDetail> {
                                                                 title:
                                                                     "Task Duration",
                                                                 data: _groupController
-                                                                            .notCompletedTaskList[index]
-                                                                        [
-                                                                        'duration'] +
+                                                                        .notCompletedTaskList[
+                                                                            index]
+                                                                        .duration +
                                                                     " hours"),
                                                             SizedBox(
                                                               height: 10,
@@ -1363,9 +1368,9 @@ class _GroupDetailState extends State<GroupDetail> {
                                                                 title:
                                                                     "Task Score Points",
                                                                 data: _groupController
-                                                                            .notCompletedTaskList[
-                                                                        index][
-                                                                    'taskScore']),
+                                                                    .notCompletedTaskList[
+                                                                        index]
+                                                                    .taskScore),
                                                             SizedBox(
                                                               height: 20,
                                                             ),
@@ -1375,8 +1380,9 @@ class _GroupDetailState extends State<GroupDetail> {
                                                                       .spaceBetween,
                                                               children: [
                                                                 _groupController
-                                                                            .notCompletedTaskList[index][
-                                                                                'assignMembers']
+                                                                            .notCompletedTaskList[
+                                                                                index]
+                                                                            .assignMembers
                                                                             .length >
                                                                         0
                                                                     ? Text(
@@ -1388,8 +1394,9 @@ class _GroupDetailState extends State<GroupDetail> {
                                                                     : SizedBox
                                                                         .shrink(),
                                                                 _groupController
-                                                                            .notCompletedTaskList[index][
-                                                                                'assignMembers']
+                                                                            .notCompletedTaskList[
+                                                                                index]
+                                                                            .assignMembers
                                                                             .length >
                                                                         0
                                                                     ? SizedBox(
@@ -1404,8 +1411,8 @@ class _GroupDetailState extends State<GroupDetail> {
                                                                             height:
                                                                                 34,
                                                                             avatars: [
-                                                                              for (var n = 0; n < _groupController.notCompletedTaskList[index]['assignMembers'].length; n++)
-                                                                                _groupController.notCompletedTaskList[index]['assignMembers'][n]['imageUrl'] == "" ? AssetImage("assets/images/man1.png") : NetworkImage(_groupController.notCompletedTaskList[index]['assignMembers'][n]['imageUrl'].toString()) as ImageProvider,
+                                                                              for (var n = 0; n < _groupController.notCompletedTaskList[index].assignMembers.length; n++)
+                                                                                _groupController.notCompletedTaskList[index].assignMembers[n].imageUrl == "" ? AssetImage("assets/images/man1.png") : NetworkImage(_groupController.notCompletedTaskList[index].assignMembers[n].imageUrl.toString()) as ImageProvider,
                                                                             ],
                                                                           ),
                                                                         ),
@@ -1426,9 +1433,9 @@ class _GroupDetailState extends State<GroupDetail> {
                                               },
                                             ),
                                           ), //notCompletedTaskList is not assigned and worked on
-                            _groupController.groupInfo[0]['adminsList'].any(
+                            _groupController.groupInfo[0].adminsList.any(
                                     (user) =>
-                                        user["userID"].toString() ==
+                                        user.userID.toString() ==
                                         userData.userID.toString())
                                 ? _groupController
                                             .toBeCompletedTaskList.isEmpty &&
@@ -1441,9 +1448,9 @@ class _GroupDetailState extends State<GroupDetail> {
                                       )
                                     : SizedBox.shrink()
                                 : SizedBox.shrink(),
-                            _groupController.groupInfo[0]['adminsList'].any(
+                            _groupController.groupInfo[0].adminsList.any(
                                     (user) =>
-                                        user["userID"].toString() ==
+                                        user.userID.toString() ==
                                         userData.userID.toString())
                                 ? _groupController
                                             .toBeCompletedTaskList.isEmpty &&
@@ -1466,9 +1473,9 @@ class _GroupDetailState extends State<GroupDetail> {
                                       )
                                     : SizedBox.shrink()
                                 : SizedBox.shrink(),
-                            _groupController.groupInfo[0]['adminsList'].any(
+                            _groupController.groupInfo[0].adminsList.any(
                                     (user) =>
-                                        user["userID"].toString() ==
+                                        user.userID.toString() ==
                                         userData.userID.toString())
                                 ? _groupController
                                             .toBeCompletedTaskList.isEmpty &&
@@ -1496,8 +1503,8 @@ class _GroupDetailState extends State<GroupDetail> {
             ),
       floatingActionButton: isLoading
           ? SizedBox.shrink()
-          : _groupController.groupInfo[0]['adminsList'].any((user) =>
-                  user["userID"].toString() == userData.userID.toString())
+          : _groupController.groupInfo[0].adminsList.any((user) =>
+                  user.userID.toString() == userData.userID.toString())
               ? _groupController.toBeCompletedTaskList.isNotEmpty ||
                       _groupController.completedTaskList.isNotEmpty ||
                       _groupController.notCompletedTaskList.isNotEmpty

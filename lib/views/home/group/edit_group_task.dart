@@ -16,6 +16,7 @@ import '../../../controllers/group_controller.dart';
 import '../../../controllers/group_setting_controller.dart';
 import '../../../controllers/notification_controller.dart';
 import '../../../helper/page_navigation.dart';
+import '../../../models/member_model.dart';
 import '../../../models/user_model.dart';
 import '../../../widgets/text_form_fields.dart';
 import '../group_detail.dart';
@@ -577,23 +578,23 @@ class _EditGroupTaskState extends State<EditGroupTask> {
                                   setState(() {
                                     if (_dataController.assignTaskMember.any(
                                         (map) =>
-                                            map['userID'] ==
+                                            map.userID ==
                                             _dataController.userList[a]
                                                 ['userID'])) {
                                       _dataController.assignTaskMember
                                           .removeWhere((map) =>
-                                              map['userID'] ==
+                                              map.userID ==
                                               _dataController.userList[a]
                                                   ['userID']);
                                     } else {
-                                      _dataController.assignTaskMember.add({
-                                        'userID': _dataController.userList[a]
-                                            ['userID'],
-                                        'displayName': _dataController
-                                            .userList[a]['displayName'],
-                                        'imageUrl': _dataController.userList[a]
-                                            ['imageUrl']
-                                      });
+                                      _dataController.assignTaskMember.add(
+                                          MemberModel(
+                                              displayName: _dataController
+                                                  .userList[a]['displayName'],
+                                              imageUrl: _dataController
+                                                  .userList[a]['imageUrl'],
+                                              userID: _dataController
+                                                  .userList[a]['userID']));
                                     }
                                   });
                                 },
@@ -642,7 +643,7 @@ class _EditGroupTaskState extends State<EditGroupTask> {
                                       ),
                                       _dataController.assignTaskMember.any(
                                               (person) =>
-                                                  person['userID'] ==
+                                                  person.userID ==
                                                   _dataController.userList[a]
                                                       ['userID'])
                                           ? Positioned(
