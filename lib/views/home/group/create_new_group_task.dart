@@ -16,6 +16,7 @@ import '../../../controllers/group_controller.dart';
 import '../../../controllers/group_setting_controller.dart';
 import '../../../controllers/notification_controller.dart';
 import '../../../helper/page_navigation.dart';
+import '../../../models/member_model.dart';
 import '../../../models/user_model.dart';
 import '../../../widgets/text_form_fields.dart';
 import '../group_detail.dart';
@@ -51,6 +52,7 @@ class _CreateNewGroupTaskState extends State<CreateNewGroupTask> {
 
   List<String> timeItems = [];
   List<String> endTimeItems = [];
+
   getTimesDropDownData(DateTime date) {
     setState(() {
       timeItems.clear();
@@ -173,18 +175,20 @@ class _CreateNewGroupTaskState extends State<CreateNewGroupTask> {
                     ),
                     child: ListTile(
                       horizontalTitleGap: 0,
-                      contentPadding: EdgeInsets.symmetric(
-                          horizontal: 16.0), // Adjust padding
+                      contentPadding: EdgeInsets.symmetric(horizontal: 16.0),
+                      // Adjust padding
                       leading: Icon(
                         Icons.calendar_month_outlined,
                         color: AppColors.buttonColor,
-                      ), // Add a calendar icon in the leading position
+                      ),
+                      // Add a calendar icon in the leading position
                       title: Text(
                         (_dataController.selectedStartDate) == null
                             ? 'Select Date'
                             : '${DateFormat.yMMMd().format((_dataController.selectedStartDate)!)}',
                         style: bodyNormal,
-                      ), // Format the date
+                      ),
+                      // Format the date
                       trailing:
                           Icon(Icons.arrow_drop_down, color: Colors.black),
                       onTap: () async {
@@ -226,18 +230,20 @@ class _CreateNewGroupTaskState extends State<CreateNewGroupTask> {
                     ),
                     child: ListTile(
                       horizontalTitleGap: 0,
-                      contentPadding: EdgeInsets.symmetric(
-                          horizontal: 16.0), // Adjust padding
+                      contentPadding: EdgeInsets.symmetric(horizontal: 16.0),
+                      // Adjust padding
                       leading: Icon(
                         Icons.calendar_month_outlined,
                         color: AppColors.buttonColor,
-                      ), // Add a calendar icon in the leading position
+                      ),
+                      // Add a calendar icon in the leading position
                       title: Text(
                         (_dataController.selectedEndDate) == null
                             ? 'Select Date'
                             : '${DateFormat.yMMMd().format((_dataController.selectedEndDate)!)}',
                         style: bodyNormal,
-                      ), // Format the date
+                      ),
+                      // Format the date
                       trailing:
                           Icon(Icons.arrow_drop_down, color: Colors.black),
                       onTap: () async {
@@ -614,28 +620,26 @@ class _CreateNewGroupTaskState extends State<CreateNewGroupTask> {
                             itemBuilder: (context, a) {
                               return InkWell(
                                 onTap: () {
-                                  // _dataController.assignTaskMember.removeAt(a);
-
                                   setState(() {
                                     if (_dataController.assignTaskMember.any(
                                         (map) =>
-                                            map['userID'] ==
+                                            map.userID ==
                                             _dataController.userList[a]
                                                 ['userID'])) {
                                       _dataController.assignTaskMember
                                           .removeWhere((map) =>
-                                              map['userID'] ==
+                                              map.userID ==
                                               _dataController.userList[a]
                                                   ['userID']);
                                     } else {
-                                      _dataController.assignTaskMember.add({
-                                        'userID': _dataController.userList[a]
-                                            ['userID'],
-                                        'displayName': _dataController
-                                            .userList[a]['displayName'],
-                                        'imageUrl': _dataController.userList[a]
-                                            ['imageUrl']
-                                      });
+                                      _dataController.assignTaskMember.add(
+                                          MemberModel(
+                                              displayName: _dataController
+                                                  .userList[a]['displayName'],
+                                              imageUrl: _dataController
+                                                  .userList[a]['imageUrl'],
+                                              userID: _dataController
+                                                  .userList[a]['userID']));
                                     }
                                   });
                                 },
@@ -684,7 +688,7 @@ class _CreateNewGroupTaskState extends State<CreateNewGroupTask> {
                                       ),
                                       _dataController.assignTaskMember.any(
                                               (person) =>
-                                                  person['userID'] ==
+                                                  person.userID ==
                                                   _dataController.userList[a]
                                                       ['userID'])
                                           ? Positioned(
@@ -752,7 +756,7 @@ class _CreateNewGroupTaskState extends State<CreateNewGroupTask> {
                                 i < _dataController.assignTaskMember.length;
                                 i++) {
                               await _notiController.sendNotification(
-                                  _dataController.assignTaskMember[i]['userID']
+                                  _dataController.assignTaskMember[i].userID
                                       .toString(),
                                   _dataController.endTime.toString(),
                                   widget.groupTitle,

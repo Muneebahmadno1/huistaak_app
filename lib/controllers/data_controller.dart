@@ -1,8 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
+import 'package:huistaak/models/member_model.dart';
 
 import '../constants/global_variables.dart';
 import '../helper/collections.dart';
+import '../models/chat_user_model.dart';
 import '../models/user_model.dart';
 import 'notification_controller.dart';
 
@@ -14,15 +16,13 @@ class HomeController extends GetxController {
   DateTime? goalSelectedDate = DateTime.now();
   RxString startTime = ''.obs;
   RxString endTime = ''.obs;
-  List<dynamic> chatUsers = [];
+  List<ChatUserModel> chatUsers = [];
   List<Map<String, dynamic>> adminList = [];
   RxList<Map<String, dynamic>> groupAdmins = <Map<String, dynamic>>[].obs;
   RxList<Map<String, dynamic>> groupMembers = <Map<String, dynamic>>[].obs;
-  RxList<Map<String, dynamic>> assignTaskMember = <Map<String, dynamic>>[].obs;
+  RxList<MemberModel> assignTaskMember = <MemberModel>[].obs;
   RxList<Map<String, dynamic>> assignGoalMember = <Map<String, dynamic>>[].obs;
   List<dynamic> userList = [];
-  List<dynamic> groupList = [];
-  List<dynamic> groupMemberList = [];
 
   getAllUserGroups() async {
     chatUsers.clear();
@@ -34,22 +34,39 @@ class HomeController extends GetxController {
       List<dynamic> adminArray = groupsData['adminsList'];
       for (var userMap in adminArray)
         if (userMap['userID'] == userData.userID) {
-          chatUsers.add({
-            "groupImage": groupsData['groupImage'],
-            "groupName": groupsData['groupName'],
-            'date': groupsData['date'],
-            "id": documentSnapshot.id,
-          });
+          chatUsers.add(ChatUserModel(
+            groupImage: groupsData['groupImage'],
+            groupName: groupsData['groupName'],
+            date: groupsData['date'],
+            id: documentSnapshot.id,
+          ));
         }
       for (var userMap in mamberArray)
         if (userMap['userID'] == userData.userID) {
-          chatUsers.add({
-            "groupImage": groupsData['groupImage'],
-            "groupName": groupsData['groupName'],
-            'date': groupsData['date'],
-            "id": documentSnapshot.id,
-          });
+          chatUsers.add(ChatUserModel(
+            groupImage: groupsData['groupImage'],
+            groupName: groupsData['groupName'],
+            date: groupsData['date'],
+            id: documentSnapshot.id,
+          ));
         }
+    }
+  }
+
+  Future<int> getUnreadTaskCount(groupID) async {
+    try {
+      QuerySnapshot snapshot = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userData.userID)
+          .collection('counters')
+          .where('groupID', isEqualTo: groupID)
+          .get();
+
+      return snapshot.docs[0]['counter'];
+    } catch (e) {
+      print("Error fetching unread task count: $e");
+      // Return 0 in case of an error
+      return 0;
     }
   }
 
