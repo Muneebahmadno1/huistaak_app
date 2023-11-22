@@ -117,4 +117,102 @@ class GoalController extends GetxController {
     });
     return;
   }
+
+  // Future<bool> groupWithNoGoal() async {
+  //   // Assuming 'groups' is the name of your collection
+  //   CollectionReference groupsCollection = Collections.GROUPS;
+  //   for (Map<String, dynamic> groupData in groupList) {
+  //     // Get the 'groupID' for each group
+  //     String groupID = groupData['groupID'];
+  //
+  //     // Reference to the 'goals' subcollection
+  //     CollectionReference goalsCollection =
+  //         groupsCollection.doc(groupID).collection('goals');
+  //
+  //     // Query the 'goals' subcollection
+  //     QuerySnapshot goalsQuery = await goalsCollection.get();
+  //
+  //     // Check if the 'goals' subcollection is not empty
+  //     if (goalsQuery.docs.isEmpty ||
+  //         goalsQuery.docs.first['goalDate'].toDate().isBefore(DateTime.now())) {
+  //       return true;
+  //     }
+  //   }
+  //
+  //   // If none of the groups have a non-empty 'goals' subcollection, return false
+  //   return false;
+  // }
+
+  Future<bool> groupWithNoGoal() async {
+    // Assuming 'groups' is the name of your collection
+    CollectionReference groupsCollection = Collections.GROUPS;
+
+    for (Map<String, dynamic> groupData in groupList) {
+      // Get the 'groupID' for each group
+      String groupID = groupData['groupID'];
+
+      // Reference to the 'goals' subcollection
+      CollectionReference goalsCollection =
+          groupsCollection.doc(groupID).collection('goals');
+
+      // Query the 'goals' subcollection
+      QuerySnapshot goalsQuery = await goalsCollection.get();
+
+      // Check if the 'goals' subcollection is not empty
+      if (goalsQuery.docs.isNotEmpty) {
+        // Check if all goals are expired
+        if (goalsQuery.docs.every((goalDoc) =>
+            goalDoc['goalDate'].toDate().isBefore(DateTime.now()))) {
+          return true; // All goals are expired
+        }
+      }
+    }
+
+    // If none of the groups have a non-empty 'goals' subcollection or not all goals are expired, return false
+    return false;
+  }
+
+  Future<List<dynamic>> getGroupsWithEmptyGoals(String userID) async {
+    List<dynamic> groupsWithEmptyGoals = [];
+
+    CollectionReference myGroupsCollection =
+        Collections.USERS.doc(userID).collection(Collections.MYGROUPS);
+
+    QuerySnapshot querySnapshot = await myGroupsCollection.get();
+
+    for (QueryDocumentSnapshot groupDoc in querySnapshot.docs) {
+      // Get the data of the group
+      Map<String, dynamic> groupData = groupDoc.data() as Map<String, dynamic>;
+
+      // Reference to the 'goals' subcollection
+      CollectionReference goalsCollection =
+          Collections.GROUPS.doc(groupData['groupID']).collection('goals');
+
+      // Query the 'goals' subcollection
+      QuerySnapshot goalsQuery = await goalsCollection.get();
+
+      // Check if the 'goals' subcollection is empty
+      // if (goalsQuery.docs.isEmpty ||
+      //     goalsQuery.docs.first['goalDate'].toDate().isBefore(DateTime.now())) {
+      //   groupsWithEmptyGoals.add({
+      //     "groupName": groupData['groupName'],
+      //     "groupImage": groupData['groupImage'],
+      //     "groupID": groupData['groupID'],
+      //   });
+      // }
+      if (goalsQuery.docs.isNotEmpty) {
+        // Check if all goals are expired
+        if (goalsQuery.docs.every((goalDoc) =>
+            goalDoc['goalDate'].toDate().isBefore(DateTime.now()))) {
+          groupsWithEmptyGoals.add({
+            "groupName": groupData['groupName'],
+            "groupImage": groupData['groupImage'],
+            "groupID": groupData['groupID'],
+          });
+        }
+      }
+    }
+
+    return groupsWithEmptyGoals;
+  }
 }

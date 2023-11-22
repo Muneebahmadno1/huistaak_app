@@ -11,8 +11,8 @@ import 'notification_controller.dart';
 class HomeController extends GetxController {
   final NotificationController _notiController =
       Get.find<NotificationController>();
-  DateTime? selectedStartDate = DateTime.now();
-  DateTime? selectedEndDate = DateTime.now();
+  DateTime? selectedStartDate = null;
+  DateTime? selectedEndDate = null;
   DateTime? goalSelectedDate = DateTime.now();
   RxString startTime = ''.obs;
   RxString endTime = ''.obs;

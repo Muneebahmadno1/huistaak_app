@@ -1462,11 +1462,20 @@ class _GroupDetailState extends State<GroupDetail> {
                                         delay: Duration(milliseconds: 600),
                                         slidingBeginOffset: Offset(0, 0),
                                         child: CustomButton(
-                                          onTap: () {
-                                            Get.to(() => CreateNewGroupTask(
-                                                  groupID: widget.groupID,
-                                                  groupTitle: widget.groupTitle,
-                                                ));
+                                          onTap: () async {
+                                            bool available =
+                                                await _groupController
+                                                    .isGoalAvailable(
+                                                        widget.groupID);
+                                            available
+                                                ? Get.to(() =>
+                                                    CreateNewGroupTask(
+                                                      groupID: widget.groupID,
+                                                      groupTitle:
+                                                          widget.groupTitle,
+                                                    ))
+                                                : errorPopUp(context,
+                                                    "No goal set for this group");
                                           },
                                           buttonText: "Create a new task",
                                         ),
@@ -1510,11 +1519,15 @@ class _GroupDetailState extends State<GroupDetail> {
                       _groupController.notCompletedTaskList.isNotEmpty
                   ? FloatingActionButton(
                       backgroundColor: AppColors.buttonColor,
-                      onPressed: () {
-                        Get.to(() => CreateNewGroupTask(
-                              groupID: widget.groupID,
-                              groupTitle: widget.groupTitle,
-                            ));
+                      onPressed: () async {
+                        bool available = await _groupController
+                            .isGoalAvailable(widget.groupID);
+                        available
+                            ? Get.to(() => CreateNewGroupTask(
+                                  groupID: widget.groupID,
+                                  groupTitle: widget.groupTitle,
+                                ))
+                            : errorPopUp(context, "No goal set for this group");
                       },
                       child: Icon(Icons.add),
                     )

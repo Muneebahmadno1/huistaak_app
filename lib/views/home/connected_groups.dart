@@ -29,7 +29,7 @@ class _ConnectedGroupScreenState extends State<ConnectedGroupScreen> {
   // final GlobalKey globalKeyFour = GlobalKey();
   TextEditingController searchController = TextEditingController();
   bool isUnreadNotificationPresent = false;
-  bool firstTime = false;
+  bool firstTime = true;
   final HomeController _dataController = Get.find<HomeController>();
   final NotificationController _notiController =
       Get.find<NotificationController>();

@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:delayed_display/delayed_display.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -10,7 +9,6 @@ import '../../constants/global_variables.dart';
 import '../../controllers/data_controller.dart';
 import '../../controllers/general_controller.dart';
 import '../../controllers/goal_controller.dart';
-import '../../helper/collections.dart';
 import '../../helper/page_navigation.dart';
 import '../../widgets/date_picker.dart';
 import '../../widgets/text_form_fields.dart';
@@ -39,28 +37,13 @@ class _CreateNewTaskState extends State<CreateNewTask> {
       _dataController.goalSelectedDate = DateTime.now();
       isLoading = true;
     });
-    QuerySnapshot querySnapshot = await Collections.USERS
-        .doc(userData.userID)
-        .collection(Collections.MYGROUPS)
-        .get();
-    for (int i = 0; i < querySnapshot.docs.length; i++) {
-      var a = querySnapshot.docs[i].data() as Map;
-      setState(() {
-        groupList.add({
-          "groupName": a['groupName'],
-          "groupImage": a['groupImage'],
-          "groupID": a['groupID'],
-        });
-      });
-    }
+    groupList = await _goalController.getGroupsWithEmptyGoals(userData.userID);
     setState(() {
       if (groupList.isNotEmpty) {
         _dropDownValue = groupList[0]['groupID'];
       } else {
         _dropDownValue = "567guhjk67";
       }
-      print("_dropDownValue");
-      print(_dropDownValue);
     });
     setState(() {
       isLoading = false;
@@ -171,60 +154,6 @@ class _CreateNewTaskState extends State<CreateNewTask> {
                           hintText: "No. of points to achieve goal",
                         ),
                       ),
-                      // DelayedDisplay(
-                      //   delay: Duration(milliseconds: 1000),
-                      //   slidingBeginOffset: Offset(0, 0),
-                      //   child: Container(
-                      //     padding: const EdgeInsets.symmetric(horizontal: 50),
-                      //     width: double.infinity,
-                      //     height: 60,
-                      //     decoration: BoxDecoration(
-                      //       borderRadius: BorderRadius.circular(50),
-                      //       color: AppColors.buttonColor.withOpacity(0.2),
-                      //     ),
-                      //     child: Row(
-                      //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      //       children: [
-                      //         ZoomTapAnimation(
-                      //           onTap: () {
-                      //             if (points >= 10) {
-                      //               setState(() {
-                      //                 points = points - 10;
-                      //               });
-                      //             }
-                      //           },
-                      //           child: SizedBox(
-                      //             height: 40,
-                      //             width: 40,
-                      //             child: Icon(
-                      //               Icons.arrow_back_ios_new,
-                      //               color: AppColors.buttonColor,
-                      //             ),
-                      //           ),
-                      //         ),
-                      //         Text(
-                      //           "$points Points",
-                      //           style: headingSmall,
-                      //         ),
-                      //         ZoomTapAnimation(
-                      //           onTap: () {
-                      //             setState(() {
-                      //               points = points + 10;
-                      //             });
-                      //           },
-                      //           child: SizedBox(
-                      //             height: 40,
-                      //             width: 40,
-                      //             child: Icon(
-                      //               Icons.arrow_forward_ios,
-                      //               color: AppColors.buttonColor,
-                      //             ),
-                      //           ),
-                      //         ),
-                      //       ],
-                      //     ),
-                      //   ),
-                      // ),
                       const SizedBox(height: 20),
                       DelayedDisplay(
                         delay: Duration(milliseconds: 500),
@@ -239,7 +168,6 @@ class _CreateNewTaskState extends State<CreateNewTask> {
                         ),
                       ),
                       const SizedBox(height: 10),
-
                       DelayedDisplay(
                         delay: Duration(milliseconds: 500),
                         slidingBeginOffset: Offset(0, -1),
@@ -284,99 +212,6 @@ class _CreateNewTaskState extends State<CreateNewTask> {
                           ),
                         ),
                       ),
-                      // DelayedDisplay(
-                      //   delay: Duration(milliseconds: 700),
-                      //   slidingBeginOffset: Offset(0, -1),
-                      //   child: Align(
-                      //     alignment: Alignment.centerLeft,
-                      //     child: Text(
-                      //       "Time for goal",
-                      //       style:
-                      //           headingSmall.copyWith(color: AppColors.buttonColor),
-                      //     ),
-                      //   ),
-                      // ),
-                      // const SizedBox(height: 10),
-                      // DelayedDisplay(
-                      //   delay: Duration(milliseconds: 800),
-                      //   slidingBeginOffset: Offset(0, 0),
-                      //   child: TimePickerWidget(
-                      //     index: 0,
-                      //     title: 'Select Time',
-                      //   ),
-                      // ),
-                      // const SizedBox(height: 20),
-                      // DelayedDisplay(
-                      //   delay: Duration(milliseconds: 900),
-                      //   slidingBeginOffset: Offset(0, -1),
-                      //   child: Align(
-                      //     alignment: Alignment.centerLeft,
-                      //     child: Text(
-                      //       "Assign Goal to Group Members:",
-                      //       style:
-                      //           headingSmall.copyWith(color: AppColors.buttonColor),
-                      //     ),
-                      //   ),
-                      // ),
-                      // SizedBox(
-                      //   height: 20,
-                      // ),
-                      // DelayedDisplay(
-                      //   delay: Duration(milliseconds: 1000),
-                      //   slidingBeginOffset: Offset(-1, 0),
-                      //   child: Obx(
-                      //     () => Row(
-                      //       children: [
-                      //         for (int a = 0;
-                      //             a < _dataController.assignGoalMember.length;
-                      //             a++)
-                      //           SizedBox(
-                      //             height: 70,
-                      //             width: 70,
-                      //             child: Stack(
-                      //               alignment: Alignment.center,
-                      //               children: [
-                      //                 Container(
-                      //                   height: 60,
-                      //                   width: 60,
-                      //                   decoration: BoxDecoration(
-                      //                     shape: BoxShape.circle,
-                      //                     image: DecorationImage(
-                      //                         image: AssetImage(
-                      //                             "assets/images/man1.png"),
-                      //                         fit: BoxFit.cover),
-                      //                   ),
-                      //                 ),
-                      //               ],
-                      //             ),
-                      //           ),
-                      //         SizedBox(
-                      //           width: 10,
-                      //         ),
-                      //         ZoomTapAnimation(
-                      //           onTap: () {
-                      //             Get.to(() => AddMember(
-                      //                   from: 'groupGoal',
-                      //                 ));
-                      //           },
-                      //           child: Container(
-                      //               height: 56,
-                      //               width: 56,
-                      //               decoration: BoxDecoration(
-                      //                   color: Colors.white,
-                      //                   shape: BoxShape.circle,
-                      //                   image: DecorationImage(
-                      //                       image: AssetImage(
-                      //                           "assets/images/dotted_border.png"))),
-                      //               child: Icon(
-                      //                 Icons.add,
-                      //                 color: AppColors.buttonColor,
-                      //               )),
-                      //         ),
-                      //       ],
-                      //     ),
-                      //   ),
-                      // ),
                       SizedBox(
                         height: 15.h,
                       ),
