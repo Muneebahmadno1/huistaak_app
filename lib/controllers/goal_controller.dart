@@ -3,11 +3,13 @@ import 'package:get/get.dart';
 
 import '../constants/global_variables.dart';
 import '../helper/collections.dart';
+import '../models/goal_details_model.dart';
+import '../models/group_list_model.dart';
 
 class GoalController extends GetxController {
-  List<dynamic> groupList = [];
-  List<dynamic> groupWithUserList = [];
-  List<Map<String, dynamic>> goalList = [];
+  List<GroupListModel> groupList = [];
+  List<GroupListModel> groupWithUserList = [];
+  List<GoalDetailsModel> goalList = [];
 
   getGoalPageData() async {
     groupList.clear();
@@ -19,12 +21,11 @@ class GoalController extends GetxController {
         .get();
     for (int i = 0; i < querySnapshot.docs.length; i++) {
       var a = querySnapshot.docs[i].data() as Map;
-
-      groupList.add({
-        "groupName": a['groupName'],
-        "groupImage": a['groupImage'],
-        "groupID": a['groupID'],
-      });
+      groupList.add(GroupListModel(
+        groupName: a['groupName'],
+        groupImage: a['groupImage'],
+        groupID: a['groupID'],
+      ));
     }
     QuerySnapshot querySnapshot2 = await Collections.GROUPS.get();
     for (QueryDocumentSnapshot documentSnapshot1 in querySnapshot2.docs) {
@@ -34,42 +35,42 @@ class GoalController extends GetxController {
       List<dynamic> adminArray = groupsData['adminsList'];
       for (var userMap in adminArray)
         if (userMap['userID'] == userData.userID) {
-          groupWithUserList.add({
-            "groupID": groupsData['groupID'],
-            "groupImage": groupsData['groupImage'],
-            "groupName": groupsData['groupName'],
-            "id": documentSnapshot1.id,
-          });
+          groupWithUserList.add(GroupListModel(
+            groupName: groupsData['groupName'],
+            groupImage: groupsData['groupImage'],
+            groupID: groupsData['groupID'],
+          ));
         }
       for (var userMap in memberArray)
         if (userMap['userID'] == userData.userID) {
-          groupWithUserList.add({
-            "groupID": groupsData['groupID'],
-            "groupImage": groupsData['groupImage'],
-            "groupName": groupsData['groupName'],
-            "id": documentSnapshot1.id,
-          });
+          groupWithUserList.add(GroupListModel(
+            groupName: groupsData['groupName'],
+            groupImage: groupsData['groupImage'],
+            groupID: groupsData['groupID'],
+          ));
         }
     }
 
     for (int i = 0; i < groupWithUserList.length; i++) {
       QuerySnapshot querySnapshot1 = await Collections.GROUPS
-          .doc(groupWithUserList[i]['groupID'])
+          .doc(groupWithUserList[i].groupID)
           .collection(Collections.GOALS)
           .get();
       for (int j = 0; j < querySnapshot1.docs.length; j++) {
         var a = querySnapshot1.docs[j].data() as Map;
 
-        goalList.add({
-          "goalGroupName": groupWithUserList[i]['groupName'],
-          "goalGroupImage": groupWithUserList[i]['groupImage'],
-          "goalGroup": a['goalGroup'],
-          "goalTitle": a['goalTitle'],
-          "goalDate": a['goalDate'],
-          "goalTime": a['goalTime'],
-          "goalPoints": a['goalPoints'],
-          "goalID": a['goalID'],
-        });
+        goalList.add(
+          GoalDetailsModel(
+            goalGroupName: groupWithUserList[i].groupName,
+            goalGroupImage: groupWithUserList[i].groupImage,
+            goalGroup: a['goalGroup'],
+            goalTitle: a['goalTitle'],
+            goalDate: a['goalDate'],
+            goalTime: a['goalTime'],
+            goalPoints: a['goalPoints'],
+            goalID: a['goalID'],
+          ),
+        );
       }
     }
   }
@@ -118,38 +119,13 @@ class GoalController extends GetxController {
     return;
   }
 
-  // Future<bool> groupWithNoGoal() async {
-  //   // Assuming 'groups' is the name of your collection
-  //   CollectionReference groupsCollection = Collections.GROUPS;
-  //   for (Map<String, dynamic> groupData in groupList) {
-  //     // Get the 'groupID' for each group
-  //     String groupID = groupData['groupID'];
-  //
-  //     // Reference to the 'goals' subcollection
-  //     CollectionReference goalsCollection =
-  //         groupsCollection.doc(groupID).collection('goals');
-  //
-  //     // Query the 'goals' subcollection
-  //     QuerySnapshot goalsQuery = await goalsCollection.get();
-  //
-  //     // Check if the 'goals' subcollection is not empty
-  //     if (goalsQuery.docs.isEmpty ||
-  //         goalsQuery.docs.first['goalDate'].toDate().isBefore(DateTime.now())) {
-  //       return true;
-  //     }
-  //   }
-  //
-  //   // If none of the groups have a non-empty 'goals' subcollection, return false
-  //   return false;
-  // }
-
   Future<bool> groupWithNoGoal() async {
     // Assuming 'groups' is the name of your collection
     CollectionReference groupsCollection = Collections.GROUPS;
 
-    for (Map<String, dynamic> groupData in groupList) {
+    for (GroupListModel groupData in groupList) {
       // Get the 'groupID' for each group
-      String groupID = groupData['groupID'];
+      String groupID = groupData.groupID;
 
       // Reference to the 'goals' subcollection
       CollectionReference goalsCollection =
@@ -159,7 +135,7 @@ class GoalController extends GetxController {
       QuerySnapshot goalsQuery = await goalsCollection.get();
 
       // Check if the 'goals' subcollection is not empty
-      if (goalsQuery.docs.isNotEmpty) {
+      if (goalsQuery.docs.isEmpty) {
         // Check if all goals are expired
         if (goalsQuery.docs.every((goalDoc) =>
             goalDoc['goalDate'].toDate().isBefore(DateTime.now()))) {
@@ -200,7 +176,7 @@ class GoalController extends GetxController {
       //     "groupID": groupData['groupID'],
       //   });
       // }
-      if (goalsQuery.docs.isNotEmpty) {
+      if (goalsQuery.docs.isEmpty) {
         // Check if all goals are expired
         if (goalsQuery.docs.every((goalDoc) =>
             goalDoc['goalDate'].toDate().isBefore(DateTime.now()))) {

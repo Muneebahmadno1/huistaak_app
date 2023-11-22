@@ -287,7 +287,16 @@ class GroupController extends GetxController {
     });
   }
 
-  createGroup(groupName, groupImage, adminsList, membersList) async {
+  createGroup(
+      groupName, groupImage, List<MemberModel> adminsList, membersList) async {
+    List<Map<String, dynamic>> adminListData = adminsList
+        .map((member) => {
+              'displayName': member.displayName,
+              'imageUrl': member.imageUrl,
+              'userID': member.userID,
+            })
+        .toList();
+
     Random random = Random();
     int groupCode = 10000 + random.nextInt(90000);
     var groupID = Collections.GROUPS.doc().id;
@@ -296,8 +305,8 @@ class GroupController extends GetxController {
       "groupName": groupName,
       "groupImage": groupImage,
       "groupID": groupID.toString(),
-      "adminsList": adminsList,
-      "membersList": membersList,
+      "adminsList": adminListData,
+      "membersList": [],
       "date": DateTime.now(),
     });
     await Collections.USERS

@@ -55,8 +55,8 @@ class _DatePickerWidgetState extends State<DatePickerWidget> {
       initialDate: (widget.from == 'goal'
               ? _dataController.goalSelectedDate
               : _dataController.selectedStartDate) ??
-          DateTime.now(),
-      firstDate: DateTime.now(),
+          DateTime.now().add(Duration(days: 1)),
+      firstDate: DateTime.now().add(Duration(days: 1)),
       lastDate: DateTime(2101),
       builder: (BuildContext context, Widget? child) {
         return Theme(

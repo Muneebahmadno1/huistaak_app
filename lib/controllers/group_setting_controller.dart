@@ -11,13 +11,14 @@ import '../constants/global_variables.dart';
 import '../helper/collections.dart';
 import '../models/group_details_model.dart';
 import '../models/member_model.dart';
+import '../models/task_model.dart';
 import '../models/user_model.dart';
 import 'notification_controller.dart';
 
 class GroupSettingController extends GetxController {
   final NotificationController _notiController =
       Get.find<NotificationController>();
-  List<Map<String, dynamic>> taskList = [];
+  List<TaskModel> taskList = [];
   List<GroupDetailsModel> groupInfo = [];
 
   late PickedFile pickedFile;
@@ -36,16 +37,25 @@ class GroupSettingController extends GetxController {
         .get();
     for (int i = 0; i < querySnapshot.docs.length; i++) {
       var a = querySnapshot.docs[i].data() as Map;
-
-      taskList.add({
-        "taskTitle": a['taskTitle'],
-        "taskScore": a['taskScore'],
-        "taskDate": a['taskDate'],
-        "startTime": a['startTime'],
-        "endTime": a['endTime'],
-        "assignMembers": List.from(a['assignMembers']),
-        "id": a['id'],
-      });
+      taskList.add(TaskModel(
+        taskTitle: a['taskTitle'],
+        taskScore: a['taskScore'],
+        taskDate: a['taskDate'],
+        startTime: a['startTime'],
+        endTime: a['endTime'],
+        duration: "",
+        assignMembers: (a['assignMembers'] as List).map((memberData) {
+          return MemberModel(
+            displayName: memberData['displayName'],
+            imageUrl: memberData['imageUrl'],
+            userID: memberData['userID'],
+            startTask: memberData['startTask'] ?? null,
+            endTask: memberData['endTask'] ?? null,
+            pointsEarned: memberData['pointsEarned'] ?? null,
+          );
+        }).toList(),
+        id: a['id'],
+      ));
     }
   }
 

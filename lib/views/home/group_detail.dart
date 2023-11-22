@@ -1475,7 +1475,7 @@ class _GroupDetailState extends State<GroupDetail> {
                                                           widget.groupTitle,
                                                     ))
                                                 : errorPopUp(context,
-                                                    "No goal set for this group");
+                                                    "No goal has been set for this group. To create a new task in this group, you have to create a goal first.");
                                           },
                                           buttonText: "Create a new task",
                                         ),
@@ -1527,7 +1527,8 @@ class _GroupDetailState extends State<GroupDetail> {
                                   groupID: widget.groupID,
                                   groupTitle: widget.groupTitle,
                                 ))
-                            : errorPopUp(context, "No goal set for this group");
+                            : errorPopUp(context,
+                                "No goal has been set for this group. To create a new task in this group, you have to create a goal first.");
                       },
                       child: Icon(Icons.add),
                     )

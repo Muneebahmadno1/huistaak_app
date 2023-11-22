@@ -13,16 +13,16 @@ class HomeController extends GetxController {
       Get.find<NotificationController>();
   DateTime? selectedStartDate = null;
   DateTime? selectedEndDate = null;
-  DateTime? goalSelectedDate = DateTime.now();
+  DateTime? goalSelectedDate = DateTime.now().add(Duration(days: 1));
   RxString startTime = ''.obs;
   RxString endTime = ''.obs;
   List<ChatUserModel> chatUsers = [];
   List<Map<String, dynamic>> adminList = [];
-  RxList<Map<String, dynamic>> groupAdmins = <Map<String, dynamic>>[].obs;
-  RxList<Map<String, dynamic>> groupMembers = <Map<String, dynamic>>[].obs;
+  RxList<MemberModel> groupAdmins = <MemberModel>[].obs;
+  RxList<MemberModel> groupMembers = <MemberModel>[].obs;
   RxList<MemberModel> assignTaskMember = <MemberModel>[].obs;
   RxList<Map<String, dynamic>> assignGoalMember = <Map<String, dynamic>>[].obs;
-  List<dynamic> userList = [];
+  List<MemberModel> userList = [];
 
   getAllUserGroups() async {
     chatUsers.clear();
@@ -146,11 +146,10 @@ class HomeController extends GetxController {
         .get();
     for (int i = 0; i < querySnapshot.docs.length; i++) {
       var a = querySnapshot.docs[i].data() as Map;
-      userList.add({
-        "displayName": a['displayName'],
-        "imageUrl": a['imageUrl'],
-        "userID": a['userID'],
-      });
+      userList.add(MemberModel(
+          displayName: a['displayName'],
+          imageUrl: a['imageUrl'],
+          userID: a['userID']));
     }
   }
 
@@ -168,11 +167,10 @@ class HomeController extends GetxController {
         for (int i = 0; i < membersList.length; i++) {
           var memberData = membersList[i] as Map<String, dynamic>;
 
-          userList.add({
-            "displayName": memberData['displayName'],
-            "imageUrl": memberData['imageUrl'],
-            "userID": memberData['userID'],
-          });
+          userList.add(MemberModel(
+              displayName: memberData['displayName'],
+              imageUrl: memberData['imageUrl'],
+              userID: memberData['userID']));
         }
       }
       if (data.containsKey('adminsList')) {
@@ -181,11 +179,10 @@ class HomeController extends GetxController {
         for (int i = 0; i < membersList.length; i++) {
           var memberData = membersList[i] as Map<String, dynamic>;
 
-          userList.add({
-            "displayName": memberData['displayName'],
-            "imageUrl": memberData['imageUrl'],
-            "userID": memberData['userID'],
-          });
+          userList.add(MemberModel(
+              displayName: memberData['displayName'],
+              imageUrl: memberData['imageUrl'],
+              userID: memberData['userID']));
         }
       }
     }

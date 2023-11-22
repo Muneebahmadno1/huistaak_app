@@ -108,7 +108,7 @@ class _GroupTaskListState extends State<GroupTaskList> {
                                           alignment: Alignment.centerLeft,
                                           child: Text(
                                             _groupSettingController
-                                                .taskList[index]['taskTitle'],
+                                                .taskList[index].taskTitle,
                                             style: headingLarge.copyWith(
                                                 color: Colors.white),
                                           ),
@@ -121,7 +121,7 @@ class _GroupTaskListState extends State<GroupTaskList> {
                                             title: "Date",
                                             data: DateFormat('yyyy-MM-dd')
                                                 .format(_groupSettingController
-                                                    .taskList[index]['taskDate']
+                                                    .taskList[index].taskDate
                                                     .toDate())),
                                         SizedBox(
                                           height: 10,
@@ -130,12 +130,10 @@ class _GroupTaskListState extends State<GroupTaskList> {
                                             icon: "assets/icons/home/time.png",
                                             title: "Time",
                                             data: _groupSettingController
-                                                        .taskList[index]
-                                                    ['startTime'] +
+                                                    .taskList[index].startTime +
                                                 " to " +
                                                 _groupSettingController
-                                                        .taskList[index]
-                                                    ['endTime']),
+                                                    .taskList[index].endTime),
                                         SizedBox(
                                           height: 10,
                                         ),
@@ -152,7 +150,7 @@ class _GroupTaskListState extends State<GroupTaskList> {
                                                 "assets/icons/home/points.png",
                                             title: "Task Score Points",
                                             data: _groupSettingController
-                                                .taskList[index]['taskScore']),
+                                                .taskList[index].taskScore),
                                         SizedBox(
                                           height: 20,
                                         ),

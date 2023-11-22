@@ -14,12 +14,13 @@ import '../../controllers/general_controller.dart';
 import '../../controllers/goal_controller.dart';
 import '../../helper/collections.dart';
 import '../../helper/page_navigation.dart';
+import '../../models/goal_details_model.dart';
 import '../../widgets/date_picker.dart';
 import '../../widgets/text_form_fields.dart';
 import '../home/bottom_nav_bar.dart';
 
 class EditGoal extends StatefulWidget {
-  final goalDetail;
+  final GoalDetailsModel goalDetail;
 
   const EditGoal({super.key, required this.goalDetail});
 
@@ -42,11 +43,10 @@ class _EditGoalState extends State<EditGoal> {
   getDataGoal() async {
     setState(() {
       isLoading = true;
-      goalNameEditingController.text =
-          widget.goalDetail['goalTitle'].toString();
+      goalNameEditingController.text = widget.goalDetail.goalTitle.toString();
       goalPointsEditingController.text =
-          widget.goalDetail['goalPoints'].toString();
-      _dataController.goalSelectedDate = widget.goalDetail['goalDate'].toDate();
+          widget.goalDetail.goalPoints.toString();
+      _dataController.goalSelectedDate = widget.goalDetail.goalDate.toDate();
     });
     QuerySnapshot querySnapshot = await Collections.USERS
         .doc(userData.userID)
@@ -64,8 +64,7 @@ class _EditGoalState extends State<EditGoal> {
     }
     setState(() {
       if (groupList.isNotEmpty) {
-        _dropDownValue = widget.goalDetail['goalGroup'].toString();
-        ;
+        _dropDownValue = widget.goalDetail.goalGroup.toString();
       } else {
         _dropDownValue = "567guhjk67";
       }
@@ -308,7 +307,7 @@ class _EditGoalState extends State<EditGoal> {
                                 editLoading = true;
                               });
                               await _goalController.editGroupGoal(
-                                widget.goalDetail['goalID'].toString(),
+                                widget.goalDetail.goalID.toString(),
                                 _dropDownValue.toString(),
                                 goalNameEditingController.text,
                                 _dataController.goalSelectedDate,
