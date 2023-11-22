@@ -184,7 +184,7 @@ class _CreateNewGroupTaskState extends State<CreateNewGroupTask> {
                       // Add a calendar icon in the leading position
                       title: Text(
                         (_dataController.selectedStartDate) == null
-                            ? 'Select Date'
+                            ? 'Select start date'
                             : '${DateFormat.yMMMd().format((_dataController.selectedStartDate)!)}',
                         style: bodyNormal,
                       ),
@@ -202,9 +202,6 @@ class _CreateNewGroupTaskState extends State<CreateNewGroupTask> {
                       },
                     ),
                   ),
-                  // DatePickerWidget(
-                  //   from: 'task',
-                  // )
                 ),
                 const SizedBox(height: 20),
                 DelayedDisplay(
@@ -239,7 +236,7 @@ class _CreateNewGroupTaskState extends State<CreateNewGroupTask> {
                       // Add a calendar icon in the leading position
                       title: Text(
                         (_dataController.selectedEndDate) == null
-                            ? 'Select Date'
+                            ? 'Select end date'
                             : '${DateFormat.yMMMd().format((_dataController.selectedEndDate)!)}',
                         style: bodyNormal,
                       ),
@@ -257,9 +254,6 @@ class _CreateNewGroupTaskState extends State<CreateNewGroupTask> {
                       },
                     ),
                   ),
-                  // DatePickerWidget(
-                  //   from: 'task',
-                  // )
                 ),
                 const SizedBox(height: 20),
                 DelayedDisplay(

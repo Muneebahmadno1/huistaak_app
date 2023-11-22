@@ -23,12 +23,15 @@ class NewGoalsScreen extends StatefulWidget {
 class _NewGoalsScreenState extends State<NewGoalsScreen> {
   final GoalController _goalController = Get.find<GoalController>();
   bool isLoading = false;
-
+  bool anyGroupWithNoGoal = false;
   getData() async {
     setState(() {
       isLoading = true;
     });
     await _goalController.getGoalPageData();
+    anyGroupWithNoGoal = await _goalController.groupWithNoGoal();
+    print("anyGroupWithNoGoal");
+    print(anyGroupWithNoGoal);
     setState(() {
       isLoading = false;
     });
@@ -110,6 +113,10 @@ class _NewGoalsScreenState extends State<NewGoalsScreen> {
                                     ['goalDate']
                                 .toDate()
                                 .difference(DateTime.now());
+                            bool expired = _goalController.goalList[index]
+                                    ['goalDate']
+                                .toDate()
+                                .isBefore(DateTime.now());
                             return Padding(
                               padding: EdgeInsets.only(bottom: 15.0),
                               child: DelayedDisplay(
@@ -126,7 +133,12 @@ class _NewGoalsScreenState extends State<NewGoalsScreen> {
                                                     .toString())) >=
                                             1.0
                                         ? Colors.green[900]
-                                        : AppColors.buttonColor,
+                                        : _goalController.goalList[index]
+                                                    ['goalDate']
+                                                .toDate()
+                                                .isBefore(DateTime.now())
+                                            ? Colors.red
+                                            : AppColors.buttonColor,
                                     borderRadius: BorderRadius.circular(20),
                                   ),
                                   child: DelayedDisplay(
@@ -265,11 +277,14 @@ class _NewGoalsScreenState extends State<NewGoalsScreen> {
                                         SizedBox(
                                           height: 10,
                                         ),
-                                        GoalDetailWidget(
-                                            icon: "assets/icons/coin1.png",
-                                            title:
-                                                "Days remaining for achieving goal",
-                                            data: daysLeft.inDays.toString()),
+                                        expired
+                                            ? SizedBox.shrink()
+                                            : GoalDetailWidget(
+                                                icon: "assets/icons/coin1.png",
+                                                title:
+                                                    "Days remaining for achieving goal",
+                                                data:
+                                                    daysLeft.inDays.toString()),
                                         SizedBox(
                                           height: 10,
                                         ),
@@ -306,7 +321,10 @@ class _NewGoalsScreenState extends State<NewGoalsScreen> {
                         slidingBeginOffset: Offset(0, 0),
                         child: CustomButton(
                           onTap: () {
-                            Get.to(() => CreateNewTask());
+                            anyGroupWithNoGoal
+                                ? Get.to(() => CreateNewTask())
+                                : errorPopUp(
+                                    context, "All of your groups have goals");
                           },
                           buttonText: "Set Goal for your Group",
                         ),
@@ -327,7 +345,10 @@ class _NewGoalsScreenState extends State<NewGoalsScreen> {
                   : FloatingActionButton(
                       backgroundColor: AppColors.buttonColor,
                       onPressed: () {
-                        Get.to(() => CreateNewTask());
+                        anyGroupWithNoGoal
+                            ? Get.to(() => CreateNewTask())
+                            : errorPopUp(
+                                context, "All of your groups have goals");
                       },
                       child: Icon(Icons.add),
                     )

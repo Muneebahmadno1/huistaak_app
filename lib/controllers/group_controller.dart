@@ -460,4 +460,15 @@ class GroupController extends GetxController {
       return false;
     }
   }
+
+  Future<bool> isGoalAvailable(groupID) async {
+    DocumentReference documentReference = Collections.GROUPS.doc(groupID);
+
+    CollectionReference subcollectionReference =
+        documentReference.collection('goals');
+
+    QuerySnapshot subcollectionQuery = await subcollectionReference.get();
+
+    return subcollectionQuery.docs.isNotEmpty;
+  }
 }
