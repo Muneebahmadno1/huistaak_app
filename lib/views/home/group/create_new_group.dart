@@ -8,6 +8,7 @@ import '../../../constants/custom_validators.dart';
 import '../../../constants/global_variables.dart';
 import '../../../controllers/data_controller.dart';
 import '../../../controllers/group_controller.dart';
+import '../../../models/member_model.dart';
 import '../../../widgets/custom_widgets.dart';
 import '../../../widgets/text_form_fields.dart';
 import '../group_detail.dart';
@@ -32,12 +33,10 @@ class _CreateNewGroupState extends State<CreateNewGroup> {
     // TODO: implement initState
     super.initState();
     _dataController.groupAdmins.clear();
-    _dataController.groupAdmins.add({
-      'userID': userData.userID,
-      'displayName': userData.displayName,
-      'imageUrl': userData.imageUrl,
-    });
-    print(_dataController.groupAdmins);
+    _dataController.groupAdmins.add(MemberModel(
+        displayName: userData.displayName,
+        imageUrl: userData.imageUrl,
+        userID: userData.userID));
   }
 
   @override

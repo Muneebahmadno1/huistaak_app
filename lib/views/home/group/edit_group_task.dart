@@ -83,7 +83,7 @@ class _EditGroupTaskState extends State<EditGroupTask> {
     await _dataController.getTaskMember(widget.groupID);
     for (int i = 0; i < _dataController.userList.length; i++) {
       memberList.add(await _groupSettingController
-          .fetchUser(_dataController.userList[i]['userID'].toString()));
+          .fetchUser(_dataController.userList[i].userID.toString()));
     }
     setState(() {
       loading = false;
@@ -579,22 +579,22 @@ class _EditGroupTaskState extends State<EditGroupTask> {
                                     if (_dataController.assignTaskMember.any(
                                         (map) =>
                                             map.userID ==
-                                            _dataController.userList[a]
-                                                ['userID'])) {
+                                            _dataController
+                                                .userList[a].userID)) {
                                       _dataController.assignTaskMember
                                           .removeWhere((map) =>
                                               map.userID ==
-                                              _dataController.userList[a]
-                                                  ['userID']);
+                                              _dataController
+                                                  .userList[a].userID);
                                     } else {
                                       _dataController.assignTaskMember.add(
                                           MemberModel(
                                               displayName: _dataController
-                                                  .userList[a]['displayName'],
+                                                  .userList[a].displayName,
                                               imageUrl: _dataController
-                                                  .userList[a]['imageUrl'],
+                                                  .userList[a].imageUrl,
                                               userID: _dataController
-                                                  .userList[a]['userID']));
+                                                  .userList[a].userID));
                                     }
                                   });
                                 },
@@ -636,16 +636,16 @@ class _EditGroupTaskState extends State<EditGroupTask> {
                                               ),
                                             ),
                                           ),
-                                          Text(_dataController.userList[a]
-                                                  ['displayName']
+                                          Text(_dataController
+                                              .userList[a].displayName
                                               .toString()),
                                         ],
                                       ),
                                       _dataController.assignTaskMember.any(
                                               (person) =>
                                                   person.userID ==
-                                                  _dataController.userList[a]
-                                                      ['userID'])
+                                                  _dataController
+                                                      .userList[a].userID)
                                           ? Positioned(
                                               right: 2,
                                               bottom: 20,

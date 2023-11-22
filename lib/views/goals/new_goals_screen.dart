@@ -33,6 +33,7 @@ class _NewGoalsScreenState extends State<NewGoalsScreen> {
     print("anyGroupWithNoGoal");
     print(anyGroupWithNoGoal);
     setState(() {
+      anyGroupWithNoGoal;
       isLoading = false;
     });
   }
@@ -97,8 +98,7 @@ class _NewGoalsScreenState extends State<NewGoalsScreen> {
                                 indexJ < userData.points.length;
                                 indexJ++) {
                               if (userData.points[indexJ]['groupID'] ==
-                                  _goalController.goalList[index]
-                                      ['goalGroup']) {
+                                  _goalController.goalList[index].goalGroup) {
                                 userData.points[indexJ]['point'].toString() ==
                                         "[]"
                                     ? achievedPoints = 0
@@ -109,12 +109,11 @@ class _NewGoalsScreenState extends State<NewGoalsScreen> {
                               }
                             }
                             Duration daysLeft;
-                            daysLeft = _goalController.goalList[index]
-                                    ['goalDate']
+                            daysLeft = _goalController.goalList[index].goalDate
                                 .toDate()
                                 .difference(DateTime.now());
-                            bool expired = _goalController.goalList[index]
-                                    ['goalDate']
+                            bool expired = _goalController
+                                .goalList[index].goalDate
                                 .toDate()
                                 .isBefore(DateTime.now());
                             return Padding(
@@ -128,13 +127,12 @@ class _NewGoalsScreenState extends State<NewGoalsScreen> {
                                   decoration: BoxDecoration(
                                     color: (achievedPoints /
                                                 int.parse(_goalController
-                                                    .goalList[index]
-                                                        ['goalPoints']
+                                                    .goalList[index].goalPoints
                                                     .toString())) >=
                                             1.0
                                         ? Colors.green[900]
-                                        : _goalController.goalList[index]
-                                                    ['goalDate']
+                                        : _goalController
+                                                .goalList[index].goalDate
                                                 .toDate()
                                                 .isBefore(DateTime.now())
                                             ? Colors.red
@@ -158,19 +156,20 @@ class _NewGoalsScreenState extends State<NewGoalsScreen> {
                                                   height: 20 * 2,
                                                   width: 20 * 2,
                                                   child: _goalController
-                                                                      .goalList[
-                                                                  index][
-                                                              'goalGroupImage'] ==
+                                                              .goalList[index]
+                                                              .goalGroupImage ==
                                                           null
                                                       ? Image.asset(
                                                           "assets/images/groupIcon.png", // Replace with your asset image path
                                                           fit: BoxFit.fitHeight,
                                                         )
                                                       : CachedNetworkImage(
-                                                          imageUrl: _goalController
-                                                              .goalList[index][
-                                                                  'goalGroupImage']
-                                                              .toString(),
+                                                          imageUrl:
+                                                              _goalController
+                                                                  .goalList[
+                                                                      index]
+                                                                  .goalGroupImage
+                                                                  .toString(),
                                                           placeholder: (context,
                                                                   url) =>
                                                               CircularProgressIndicator(),
@@ -186,8 +185,8 @@ class _NewGoalsScreenState extends State<NewGoalsScreen> {
                                               width: 1.w,
                                             ),
                                             Text(
-                                              _goalController.goalList[index]
-                                                      ['goalGroupName']
+                                              _goalController
+                                                  .goalList[index].goalGroupName
                                                   .toString(),
                                               style: headingMedium.copyWith(
                                                   color: Colors.white),
@@ -202,8 +201,8 @@ class _NewGoalsScreenState extends State<NewGoalsScreen> {
                                           children: [
                                             Expanded(
                                               child: Text(
-                                                _goalController.goalList[index]
-                                                    ['goalTitle'],
+                                                _goalController
+                                                    .goalList[index].goalTitle,
                                                 style: headingMedium.copyWith(
                                                     color: Colors.white),
                                                 maxLines: 2,
@@ -235,11 +234,11 @@ class _NewGoalsScreenState extends State<NewGoalsScreen> {
                                                             .deleteGoal(
                                                           _goalController
                                                               .goalList[index]
-                                                                  ['goalGroup']
+                                                              .goalGroup
                                                               .toString(),
                                                           _goalController
                                                               .goalList[index]
-                                                                  ['goalID']
+                                                              .goalID
                                                               .toString(),
                                                         );
                                                         getData();
@@ -262,7 +261,7 @@ class _NewGoalsScreenState extends State<NewGoalsScreen> {
                                             title: "Date",
                                             data: DateFormat('yyyy-MM-dd')
                                                 .format(_goalController
-                                                    .goalList[index]['goalDate']
+                                                    .goalList[index].goalDate
                                                     .toDate())),
                                         SizedBox(
                                           height: 10,
@@ -270,10 +269,10 @@ class _NewGoalsScreenState extends State<NewGoalsScreen> {
                                         GoalDetailWidget(
                                             icon: "assets/icons/coin.png",
                                             title: "Points to achieve",
-                                            data:
-                                                _goalController.goalList[index]
-                                                        ['goalPoints'] ??
-                                                    "0"),
+                                            data: _goalController
+                                                    .goalList[index]
+                                                    .goalPoints ??
+                                                "0"),
                                         SizedBox(
                                           height: 10,
                                         ),
@@ -293,11 +292,10 @@ class _NewGoalsScreenState extends State<NewGoalsScreen> {
                                             count: achievedPoints.toString(),
                                             percent: (achievedPoints /
                                                 int.parse(_goalController
-                                                    .goalList[index]
-                                                        ['goalPoints']
+                                                    .goalList[index].goalPoints
                                                     .toString())),
                                             TotalCount: _goalController
-                                                .goalList[index]['goalPoints']
+                                                .goalList[index].goalPoints
                                                 .toString()),
                                         SizedBox(
                                           height: 10,
@@ -323,8 +321,8 @@ class _NewGoalsScreenState extends State<NewGoalsScreen> {
                           onTap: () {
                             anyGroupWithNoGoal
                                 ? Get.to(() => CreateNewTask())
-                                : errorPopUp(
-                                    context, "All of your groups have goals");
+                                : errorPopUp(context,
+                                    "Goals are created against groups. You do not have any group yet.");
                           },
                           buttonText: "Set Goal for your Group",
                         ),
@@ -347,8 +345,8 @@ class _NewGoalsScreenState extends State<NewGoalsScreen> {
                       onPressed: () {
                         anyGroupWithNoGoal
                             ? Get.to(() => CreateNewTask())
-                            : errorPopUp(
-                                context, "All of your groups have goals");
+                            : errorPopUp(context,
+                                "Goals are created against groups. You do not have any group yet.");
                       },
                       child: Icon(Icons.add),
                     )

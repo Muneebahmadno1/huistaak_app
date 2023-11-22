@@ -145,16 +145,20 @@ class _NotificationsState extends State<Notifications> {
                                   ),
                                   child: InkWell(
                                     onTap: () {
-                                      Get.to(() => GroupDetail(
-                                            groupID: _notiController
-                                                .notificationList[index]
-                                                    ['groupID']
-                                                .toString(),
-                                            groupTitle: _notiController
-                                                .notificationList[index]
-                                                    ['groupName']
-                                                .toString(),
-                                          ));
+                                      _notiController.notificationList[index]
+                                                  ['notificationType'] ==
+                                              1
+                                          ? null
+                                          : Get.to(() => GroupDetail(
+                                                groupID: _notiController
+                                                    .notificationList[index]
+                                                        ['groupID']
+                                                    .toString(),
+                                                groupTitle: _notiController
+                                                    .notificationList[index]
+                                                        ['groupName']
+                                                    .toString(),
+                                              ));
                                     },
                                     child: DelayedDisplay(
                                       delay: const Duration(milliseconds: 150),

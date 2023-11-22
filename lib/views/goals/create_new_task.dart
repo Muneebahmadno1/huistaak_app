@@ -34,10 +34,12 @@ class _CreateNewTaskState extends State<CreateNewTask> {
 
   getDataGoal() async {
     setState(() {
-      _dataController.goalSelectedDate = DateTime.now();
+      _dataController.goalSelectedDate = DateTime.now().add(Duration(days: 1));
       isLoading = true;
     });
     groupList = await _goalController.getGroupsWithEmptyGoals(userData.userID);
+    print("groupListlll");
+    print(groupList);
     setState(() {
       if (groupList.isNotEmpty) {
         _dropDownValue = groupList[0]['groupID'];
