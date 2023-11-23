@@ -6,10 +6,11 @@ import 'package:http/http.dart' as http;
 
 import '../constants/global_variables.dart';
 import '../helper/collections.dart';
+import '../models/notification_model.dart';
 import '../models/user_model.dart';
 
 class NotificationController extends GetxController {
-  List<Map<String, dynamic>> notificationList = [];
+  List<NotificationModel> notificationList = [];
 
   getNotifications() async {
     notificationList.clear();
@@ -20,19 +21,18 @@ class NotificationController extends GetxController {
         .get();
     for (int i = 0; i < querySnapshot.docs.length; i++) {
       var a = querySnapshot.docs[i].data() as Map;
-      notificationList.add({
-        "read": a['read'],
-        "notification": a['notification'],
-        "notificationType": a['notificationType'],
-        "notiID": a['notiID'],
-        "groupToJoinID": a['groupToJoinID'],
-        "Time": a['Time'],
-        "groupID": a['groupID'],
-        "groupName": a['groupName'],
-        "userName": a['userName'] ?? null,
-        "userToJoin":
-            a['userToJoin'] == null ? null : List.from(a['userToJoin']),
-      });
+      notificationList.add(NotificationModel(
+        read: a['read'],
+        notification: a['notification'],
+        notificationType: a['notificationType'],
+        notiID: a['notiID'],
+        groupToJoinID: a['groupToJoinID'],
+        Time: a['Time'],
+        groupID: a['groupID'],
+        groupName: a['groupName'],
+        userName: a['userName'] ?? null,
+        userToJoin: a['userToJoin'] == null ? [] : List.from(a['userToJoin']),
+      ));
     }
   }
 

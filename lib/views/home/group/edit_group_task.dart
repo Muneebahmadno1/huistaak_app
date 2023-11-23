@@ -17,6 +17,7 @@ import '../../../controllers/group_setting_controller.dart';
 import '../../../controllers/notification_controller.dart';
 import '../../../helper/page_navigation.dart';
 import '../../../models/member_model.dart';
+import '../../../models/task_model.dart';
 import '../../../models/user_model.dart';
 import '../../../widgets/text_form_fields.dart';
 import '../group_detail.dart';
@@ -24,7 +25,7 @@ import '../group_detail.dart';
 class EditGroupTask extends StatefulWidget {
   final groupID;
   final groupTitle;
-  final taskDetails;
+  final TaskModel taskDetails;
 
   const EditGroupTask(
       {super.key,
@@ -56,28 +57,42 @@ class _EditGroupTaskState extends State<EditGroupTask> {
   String? selectedValueEnd;
 
   List<String> timeItems = [];
+  List<String> endTimeItems = [];
+
   getTimesDropDownData(DateTime date) {
-    timeItems.clear();
+    setState(() {
+      timeItems.clear();
+      selectedValueStart = null;
+    });
     for (int i = 0; i < 24; i++)
       timeItems.add(
+          DateFormat('yyyy-MM-dd HH:mm').format(date.add(Duration(hours: i))));
+  }
+
+  getEndTimesDropDownData(DateTime date) {
+    setState(() {
+      endTimeItems.clear();
+      selectedValueEnd = null;
+    });
+    for (int i = 0; i < 24; i++)
+      endTimeItems.add(
           DateFormat('yyyy-MM-dd HH:mm').format(date.add(Duration(hours: i))));
   }
 
   getData() async {
     setState(() {
       loading = true;
-      taskNameEditingController.text =
-          widget.taskDetails['taskTitle'].toString();
-      _dataController.selectedStartDate =
-          widget.taskDetails['taskDate'].toDate();
-      points = int.parse(widget.taskDetails['taskScore']);
+      taskNameEditingController.text = widget.taskDetails.taskTitle.toString();
+      _dataController.selectedStartDate = widget.taskDetails.taskDate.toDate();
+      _dataController.selectedEndDate =
+          DateFormat('yyyy-MM-dd HH:mm').parse(widget.taskDetails.endTime);
+      points = int.parse(widget.taskDetails.taskScore);
 
-      _dataController.startTime.value =
-          widget.taskDetails['startTime'].toString();
-      _dataController.endTime.value = widget.taskDetails['endTime'].toString();
-      for (int i = 0; i < widget.taskDetails['assignMembers'].length; i++)
+      _dataController.startTime.value = widget.taskDetails.startTime.toString();
+      _dataController.endTime.value = widget.taskDetails.endTime.toString();
+      for (int i = 0; i < widget.taskDetails.assignMembers.length; i++)
         _dataController.assignTaskMember
-            .addAll({widget.taskDetails['assignMembers'][i]});
+            .addAll({widget.taskDetails.assignMembers[i]});
     });
     getTimesDropDownData(DateTime.now());
     await _dataController.getTaskMember(widget.groupID);
@@ -156,7 +171,7 @@ class _EditGroupTaskState extends State<EditGroupTask> {
                   child: Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      "Date for task",
+                      "Start Date for task",
                       style:
                           headingSmall.copyWith(color: AppColors.buttonColor),
                     ),
@@ -173,37 +188,127 @@ class _EditGroupTaskState extends State<EditGroupTask> {
                     ),
                     child: ListTile(
                       horizontalTitleGap: 0,
-                      contentPadding: EdgeInsets.symmetric(
-                          horizontal: 16.0), // Adjust padding
+                      contentPadding: EdgeInsets.symmetric(horizontal: 16.0),
+                      // Adjust padding
                       leading: Icon(
                         Icons.calendar_month_outlined,
                         color: AppColors.buttonColor,
-                      ), // Add a calendar icon in the leading position
+                      ),
+                      // Add a calendar icon in the leading position
                       title: Text(
                         (_dataController.selectedStartDate) == null
-                            ? 'Select Date'
+                            ? 'Select start date'
                             : '${DateFormat.yMMMd().format((_dataController.selectedStartDate)!)}',
                         style: bodyNormal,
-                      ), // Format the date
+                      ),
+                      // Format the date
                       trailing:
                           Icon(Icons.arrow_drop_down, color: Colors.black),
                       onTap: () async {
-                        await _showDatePicker(context);
-                        setState(() {
-                          selectedValueStart = DateFormat('yyyy-MM-dd HH:mm')
-                              .format(_dataController.selectedStartDate!);
-                          selectedValueEnd = DateFormat('yyyy-MM-dd HH:mm')
-                              .format(_dataController.selectedStartDate!
-                                  .add(Duration(hours: 1)));
-                        });
+                        await _showDatePicker(context, "StartDate");
+                        // setState(() {
+                        //   selectedValueStart = DateFormat('yyyy-MM-dd HH:mm')
+                        //       .format(_dataController.selectedStartDate!);
+                        // });
                         getTimesDropDownData(
                             _dataController.selectedStartDate!);
                       },
                     ),
                   ),
-                  // DatePickerWidget(
-                  //   from: 'task',
-                  // )
+                ),
+                // DelayedDisplay(
+                //   delay: Duration(milliseconds: 600),
+                //   slidingBeginOffset: Offset(0, 0),
+                //   child: Container(
+                //     decoration: BoxDecoration(
+                //       color: AppColors.buttonColor.withOpacity(0.2),
+                //       borderRadius: BorderRadius.circular(30.0),
+                //     ),
+                //     child: ListTile(
+                //       horizontalTitleGap: 0,
+                //       contentPadding: EdgeInsets.symmetric(
+                //           horizontal: 16.0), // Adjust padding
+                //       leading: Icon(
+                //         Icons.calendar_month_outlined,
+                //         color: AppColors.buttonColor,
+                //       ), // Add a calendar icon in the leading position
+                //       title: Text(
+                //         (_dataController.selectedStartDate) == null
+                //             ? 'Select Date'
+                //             : '${DateFormat.yMMMd().format((_dataController.selectedStartDate)!)}',
+                //         style: bodyNormal,
+                //       ), // Format the date
+                //       trailing:
+                //           Icon(Icons.arrow_drop_down, color: Colors.black),
+                //       onTap: () async {
+                //         await _showDatePicker(context);
+                //         setState(() {
+                //           selectedValueStart = DateFormat('yyyy-MM-dd HH:mm')
+                //               .format(_dataController.selectedStartDate!);
+                //           selectedValueEnd = DateFormat('yyyy-MM-dd HH:mm')
+                //               .format(_dataController.selectedStartDate!
+                //                   .add(Duration(hours: 1)));
+                //         });
+                //         getTimesDropDownData(
+                //             _dataController.selectedStartDate!);
+                //       },
+                //     ),
+                //   ),
+                //   // DatePickerWidget(
+                //   //   from: 'task',
+                //   // )
+                // ),
+                const SizedBox(height: 20),
+                DelayedDisplay(
+                  delay: Duration(milliseconds: 500),
+                  slidingBeginOffset: Offset(0, -1),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      "End Date for task",
+                      style:
+                          headingSmall.copyWith(color: AppColors.buttonColor),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 10),
+                DelayedDisplay(
+                  delay: Duration(milliseconds: 600),
+                  slidingBeginOffset: Offset(0, 0),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: AppColors.buttonColor.withOpacity(0.2),
+                      borderRadius: BorderRadius.circular(30.0),
+                    ),
+                    child: ListTile(
+                      horizontalTitleGap: 0,
+                      contentPadding: EdgeInsets.symmetric(horizontal: 16.0),
+                      // Adjust padding
+                      leading: Icon(
+                        Icons.calendar_month_outlined,
+                        color: AppColors.buttonColor,
+                      ),
+                      // Add a calendar icon in the leading position
+                      title: Text(
+                        (_dataController.selectedEndDate) == null
+                            ? 'Select end date'
+                            : '${DateFormat.yMMMd().format((_dataController.selectedEndDate)!)}',
+                        style: bodyNormal,
+                      ),
+                      // Format the date
+                      trailing:
+                          Icon(Icons.arrow_drop_down, color: Colors.black),
+                      onTap: () async {
+                        await _showDatePicker(context, "EndDate");
+                        // setState(() {
+                        //   selectedValueEnd = DateFormat('yyyy-MM-dd HH:mm')
+                        //       .format(_dataController.selectedEndDate!);
+                        // });
+                        getEndTimesDropDownData(
+                            _dataController.selectedEndDate!);
+                      },
+                    ),
+                  ),
                 ),
                 const SizedBox(height: 20),
                 DelayedDisplay(
@@ -234,7 +339,7 @@ class _EditGroupTaskState extends State<EditGroupTask> {
                                     hint: Row(
                                       children: [
                                         Text(
-                                            widget.taskDetails['startTime']
+                                            widget.taskDetails.startTime
                                                 .toString(),
                                             style: bodyNormal.copyWith(
                                                 fontSize: 12,
@@ -372,7 +477,7 @@ class _EditGroupTaskState extends State<EditGroupTask> {
                                         // ),
                                         // : SizedBox.shrink(),
                                         Text(
-                                            widget.taskDetails['endTime']
+                                            widget.taskDetails.endTime
                                                 .toString(),
                                             style: bodyNormal.copyWith(
                                                 fontSize: 12,
@@ -699,7 +804,7 @@ class _EditGroupTaskState extends State<EditGroupTask> {
                               isLoading = true;
                             });
                             await _groupController.editGroupTask(
-                                widget.taskDetails['id'].toString(),
+                                widget.taskDetails.id.toString(),
                                 widget.groupID,
                                 taskNameEditingController.text,
                                 _dataController.selectedStartDate,
@@ -766,11 +871,11 @@ class _EditGroupTaskState extends State<EditGroupTask> {
     );
   }
 
-  Future<void> _showDatePicker(BuildContext context) async {
+  Future<void> _showDatePicker(BuildContext context, from) async {
     final DateTime? pickedDate = await showDatePicker(
       context: context,
       initialEntryMode: DatePickerEntryMode.calendarOnly,
-      initialDate: (_dataController.selectedStartDate) ?? DateTime.now(),
+      initialDate: DateTime.now(),
       firstDate: DateTime.now(),
       lastDate: DateTime(2101),
       builder: (BuildContext context, Widget? child) {
@@ -790,9 +895,14 @@ class _EditGroupTaskState extends State<EditGroupTask> {
     );
 
     if (pickedDate != null &&
-        pickedDate != (_dataController.selectedStartDate)) {
+        pickedDate !=
+            (from == "EndDate"
+                ? _dataController.selectedEndDate
+                : _dataController.selectedStartDate)) {
       setState(() {
-        (_dataController.selectedStartDate = pickedDate);
+        (from == "EndDate"
+            ? _dataController.selectedEndDate = pickedDate
+            : _dataController.selectedStartDate = pickedDate);
       });
     }
   }

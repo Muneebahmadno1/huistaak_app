@@ -112,7 +112,7 @@ class _NotificationsState extends State<Notifications> {
                                         DismissiblePane(onDismissed: () async {
                                       _notiController.deleteNotification(
                                           _notiController
-                                              .notificationList[index]['notiID']
+                                              .notificationList[index].notiID
                                               .toString());
                                       setState(() {
                                         _notiController.notificationList
@@ -133,7 +133,7 @@ class _NotificationsState extends State<Notifications> {
                                           _notiController.deleteNotification(
                                               _notiController
                                                   .notificationList[index]
-                                                      ['notiID']
+                                                  .notiID
                                                   .toString());
                                           setState(() {
                                             _notiController.notificationList
@@ -146,17 +146,17 @@ class _NotificationsState extends State<Notifications> {
                                   child: InkWell(
                                     onTap: () {
                                       _notiController.notificationList[index]
-                                                  ['notificationType'] ==
+                                                  .notificationType ==
                                               1
                                           ? null
                                           : Get.to(() => GroupDetail(
                                                 groupID: _notiController
                                                     .notificationList[index]
-                                                        ['groupID']
+                                                    .groupID
                                                     .toString(),
                                                 groupTitle: _notiController
                                                     .notificationList[index]
-                                                        ['groupName']
+                                                    .groupName
                                                     .toString(),
                                               ));
                                     },
@@ -209,14 +209,14 @@ class _NotificationsState extends State<Notifications> {
                                                                 ),
                                                                 children: <TextSpan>[
                                                                   TextSpan(
-                                                                    text: _notiController.notificationList[index]['notificationType'] ==
+                                                                    text: _notiController.notificationList[index].notificationType ==
                                                                             4
                                                                         ? 'Congratulations '
-                                                                        : _notiController.notificationList[index]['notificationType'] ==
+                                                                        : _notiController.notificationList[index].notificationType ==
                                                                                 2
-                                                                            ? _notiController.notificationList[index]['userName']
-                                                                            : _notiController.notificationList[index]['notificationType'] == 3
-                                                                                ? _notiController.notificationList[index]['userName']
+                                                                            ? _notiController.notificationList[index].userName
+                                                                            : _notiController.notificationList[index].notificationType == 3
+                                                                                ? _notiController.notificationList[index].userName
                                                                                 : "",
                                                                     style:
                                                                         TextStyle(
@@ -227,24 +227,25 @@ class _NotificationsState extends State<Notifications> {
                                                                   ),
                                                                   TextSpan(
                                                                     text: _notiController
-                                                                            .notificationList[index]
-                                                                        [
-                                                                        'notification'],
+                                                                        .notificationList[
+                                                                            index]
+                                                                        .notification,
                                                                     style: bodyNormal.copyWith(
                                                                         fontSize:
                                                                             14),
                                                                   ),
                                                                   TextSpan(
-                                                                    text: _notiController.notificationList[index]['notificationType'] ==
+                                                                    text: _notiController.notificationList[index].notificationType ==
                                                                             2
-                                                                        ? _notiController.notificationList[index]
-                                                                            [
-                                                                            'groupName']
-                                                                        : _notiController.notificationList[index]['notificationType'] ==
+                                                                        ? _notiController
+                                                                            .notificationList[
+                                                                                index]
+                                                                            .groupName
+                                                                        : _notiController.notificationList[index].notificationType ==
                                                                                 1
-                                                                            ? _notiController.notificationList[index]['groupName']
-                                                                            : _notiController.notificationList[index]['notificationType'] == 3
-                                                                                ? _notiController.notificationList[index]['groupName']
+                                                                            ? _notiController.notificationList[index].groupName
+                                                                            : _notiController.notificationList[index].notificationType == 3
+                                                                                ? _notiController.notificationList[index].groupName
                                                                                 : "",
                                                                     style:
                                                                         TextStyle(
@@ -270,8 +271,7 @@ class _NotificationsState extends State<Notifications> {
                                                                   _notiController
                                                                       .notificationList[
                                                                           index]
-                                                                          [
-                                                                          'Time']
+                                                                      .Time
                                                                       .toDate()
                                                                       .toString()))
                                                               .toString(),

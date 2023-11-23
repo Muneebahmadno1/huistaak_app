@@ -40,7 +40,7 @@ class _ConnectedGroupScreenState extends State<ConnectedGroupScreen> {
     await _dataController.getAllUserGroups();
     await _notiController.getNotifications();
     isUnreadNotificationPresent = _notiController.notificationList
-        .any((element) => element["read"] == false);
+        .any((element) => element.read == false);
     firstTime = await getUserFirstTime();
     firstTime
         ? null

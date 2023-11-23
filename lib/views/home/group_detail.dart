@@ -127,12 +127,12 @@ class _GroupDetailState extends State<GroupDetail> {
     });
   }
 
-  @override
-  void dispose() {
-    // TODO: implement dispose
-    _timer.cancel();
-    super.dispose();
-  }
+  // @override
+  // void dispose() {
+  //   // TODO: implement dispose
+  //   _timer.cancel();
+  //   super.dispose();
+  // }
 
   @override
   Widget build(BuildContext context) {
