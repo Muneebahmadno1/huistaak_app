@@ -223,7 +223,6 @@ class _ChangePasswordState extends State<ChangePassword> {
                                 passwordEditingController.text,
                                 confirmPasswordEditingController.text);
                           }
-                          ;
                           setState(() {});
                           // Get.offAll(() => CustomBottomNavBar());
                         },

@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:math';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -38,8 +37,6 @@ class AuthController extends GetxController {
           .createUserWithEmailAndPassword(email: emails, password: pass);
       await FirebaseAuth.instance.currentUser
           ?.updateDisplayName(map['displayName']);
-      Random random = new Random();
-      int randomNumber = random.nextInt(5);
       Collections.USERS.doc(user.user!.uid).set({
         "userID": user.user!.uid,
         "displayName": map['displayName'].trim().toString(),
@@ -300,16 +297,24 @@ class AuthController extends GetxController {
         successPopUp(
             context, CustomBottomNavBar(), 'Password Changed Successfully');
       }).catchError((error) {
+        String errorMessage = 'Error occurred while changing password!';
         //Error, show something
         Get.back();
-        errorPopUp(
-            context, 'Error occurred while changing password! Try Again ');
+        errorPopUp(context, errorMessage);
       });
     }).catchError((err) {
+      print("err");
+      print(err.code);
       Get.back();
+      if (err.code == "INVALID_LOGIN_CREDENTIALS") {
+        errorPopUp(context, 'The current password is incorrect ');
+      }
       // setState(() {});
-      errorPopUp(context, 'Error occurred while changing password! Try Again ');
     });
+  }
+
+  clearFcm() {
+    Collections.USERS.doc(userData.userID).update({"fcmToken": ""});
   }
 
   Future<bool> upload(String inputSource) async {

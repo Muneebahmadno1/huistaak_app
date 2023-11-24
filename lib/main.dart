@@ -27,6 +27,7 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   FirebaseMessaging.onMessageOpenedApp.listen((_handleMessage));
   print("message");
   print(message);
+  Get.offAll(const Notifications());
 }
 
 void _handleMessage(RemoteMessage message) {

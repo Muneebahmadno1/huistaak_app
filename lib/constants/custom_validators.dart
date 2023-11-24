@@ -22,7 +22,7 @@ class CustomValidator {
   static String? password(String? value) {
     if (value!.isEmpty) {
       return ' Password is required';
-    } else if (value.length < 6) {
+    } else if (value.length < 7) {
       return ' Password should be greater than 6 digits';
     }
     return null;
@@ -39,7 +39,7 @@ class CustomValidator {
   static String? confirmPassword(String? value, String oldPassword) {
     if (value!.isEmpty) {
       return ' Confirm Password is required';
-    } else if (value.length < 6) {
+    } else if (value.length < 7) {
       return ' Password should be greater than 6 digits';
     } else if (value != oldPassword) {
       return ' Confirm Password is not matched';
