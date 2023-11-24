@@ -42,6 +42,10 @@ class _CreateNewGroupTaskState extends State<CreateNewGroupTask> {
   TextEditingController taskNameEditingController = TextEditingController();
   int points = 1;
   bool timeError = false;
+  bool visibility = false;
+  bool endDateError = false;
+  bool startTimeError = false;
+  bool endTimeError = false;
   bool isLoading = false;
   final GlobalKey<FormState> taskFormField = GlobalKey();
   List<UserModel> memberList = [];
@@ -193,10 +197,11 @@ class _CreateNewGroupTaskState extends State<CreateNewGroupTask> {
                           Icon(Icons.arrow_drop_down, color: Colors.black),
                       onTap: () async {
                         await _showDatePicker(context, "StartDate");
-                        // setState(() {
-                        //   selectedValueStart = DateFormat('yyyy-MM-dd HH:mm')
-                        //       .format(_dataController.selectedStartDate!);
-                        // });
+
+                        setState(() {
+                          _dataController.selectedEndDate = null;
+                          visibility = false;
+                        });
                         getTimesDropDownData(
                             _dataController.selectedStartDate!);
                       },
@@ -244,11 +249,12 @@ class _CreateNewGroupTaskState extends State<CreateNewGroupTask> {
                       trailing:
                           Icon(Icons.arrow_drop_down, color: Colors.black),
                       onTap: () async {
-                        await _showDatePicker(context, "EndDate");
-                        // setState(() {
-                        //   selectedValueEnd = DateFormat('yyyy-MM-dd HH:mm')
-                        //       .format(_dataController.selectedEndDate!);
-                        // });
+                        _dataController.selectedStartDate == null
+                            ? errorPopUp(context, "Select start date first")
+                            : await _showDatePicker(context, "EndDate");
+                        setState(() {
+                          visibility = false;
+                        });
                         getEndTimesDropDownData(
                             _dataController.selectedEndDate!);
                       },
@@ -317,13 +323,10 @@ class _CreateNewGroupTaskState extends State<CreateNewGroupTask> {
                                     value: selectedValueStart,
                                     onChanged: (value) {
                                       setState(() {
-                                        // if (widget.dropDownTitle == 'Start Time') {
                                         _dataController.startTime.value =
                                             value!;
-                                        // } else {
-                                        //   _dataController.endTime.value = value!;
-                                        // }
                                         selectedValueStart = value as String;
+                                        visibility = false;
                                       });
                                     },
                                     iconStyleData: IconStyleData(
@@ -437,12 +440,10 @@ class _CreateNewGroupTaskState extends State<CreateNewGroupTask> {
                                     value: selectedValueEnd,
                                     onChanged: (value) {
                                       setState(() {
-                                        // if (widget.dropDownTitle == 'Start Time') {
                                         _dataController.endTime.value = value!;
-                                        // } else {
-                                        //   _dataController.endTime.value = value!;
-                                        // }
+
                                         selectedValueEnd = value as String;
+                                        visibility = false;
                                       });
                                     },
                                     iconStyleData: IconStyleData(
@@ -504,20 +505,72 @@ class _CreateNewGroupTaskState extends State<CreateNewGroupTask> {
                     ],
                   ),
                 ),
-                timeError
-                    ? Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(left: 18.0),
-                            child: Text(
-                              "Error in Start/End Date/Time",
-                              style:
-                                  TextStyle(color: Colors.red[800], height: 3),
-                            ),
-                          ),
-                        ],
-                      )
+                visibility
+                    ? timeError
+                        ? startTimeError
+                            ? Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 18.0),
+                                    child: Text(
+                                      "Start Time of task is already passed",
+                                      style: TextStyle(
+                                          color: Colors.red[800], height: 3),
+                                    ),
+                                  ),
+                                ],
+                              )
+                            : startTimeError
+                                ? Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Padding(
+                                        padding:
+                                            const EdgeInsets.only(left: 18.0),
+                                        child: Text(
+                                          "End Time of task is already passed",
+                                          style: TextStyle(
+                                              color: Colors.red[800],
+                                              height: 3),
+                                        ),
+                                      ),
+                                    ],
+                                  )
+                                : endDateError
+                                    ? Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                left: 18.0),
+                                            child: Text(
+                                              "End time should be after start time",
+                                              style: TextStyle(
+                                                  color: Colors.red[800],
+                                                  height: 3),
+                                            ),
+                                          ),
+                                        ],
+                                      )
+                                    : Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                left: 18.0),
+                                            child: Text(
+                                              "Start and End Time can't be same",
+                                              style: TextStyle(
+                                                  color: Colors.red[800],
+                                                  height: 3),
+                                            ),
+                                          ),
+                                        ],
+                                      )
+                        : SizedBox.shrink()
                     : SizedBox.shrink(),
                 const SizedBox(height: 20),
                 DelayedDisplay(
@@ -715,13 +768,39 @@ class _CreateNewGroupTaskState extends State<CreateNewGroupTask> {
                   slidingBeginOffset: Offset(0, 0),
                   child: ZoomTapAnimation(
                     onTap: () async {
-                      bool pastTime = true;
+                      setState(() {
+                        visibility = true;
+                      });
                       if (_dataController.startTime.value != "" &&
                           _dataController.endTime.value != "") {
                         String startTime = _dataController.startTime.value;
                         String endTime = _dataController.endTime.value;
-                        pastTime = DateTime.parse(startTime)
-                            .isAfter(DateTime.parse(endTime));
+
+                        setState(() {
+                          endDateError = DateTime.parse(startTime)
+                              .isAfter(DateTime.parse(endTime));
+                          startTimeError = false;
+                          endTimeError = false;
+                        });
+                        if (endDateError == false) {
+                          if (_dataController.startTime.value != "") {
+                            final now = DateTime.now();
+                            String startTime = _dataController.startTime.value;
+                            setState(() {
+                              startTimeError =
+                                  DateTime.parse(startTime).isBefore(now);
+                              print(startTimeError);
+                            });
+                          }
+                          if (_dataController.endTime.value != "") {
+                            final now = DateTime.now();
+                            String endTime = _dataController.endTime.value;
+                            setState(() {
+                              endTimeError =
+                                  DateTime.parse(endTime).isBefore(now);
+                            });
+                          }
+                        }
                       }
                       if (taskFormField.currentState!.validate()) {
                         if (_dataController.assignTaskMember.isNotEmpty) {
@@ -729,7 +808,9 @@ class _CreateNewGroupTaskState extends State<CreateNewGroupTask> {
                                   _dataController.endTime.value ||
                               _dataController.startTime.value == "" ||
                               _dataController.endTime.value == "" ||
-                              pastTime) {
+                              endDateError ||
+                              startTimeError ||
+                              endTimeError) {
                             setState(() {
                               timeError = true;
                             });
@@ -757,8 +838,8 @@ class _CreateNewGroupTaskState extends State<CreateNewGroupTask> {
                                   widget.groupID);
                             }
                             _dataController.assignTaskMember.clear();
-                            _dataController.selectedEndDate = DateTime.now();
-                            _dataController.selectedStartDate = DateTime.now();
+                            _dataController.selectedEndDate = null;
+                            _dataController.selectedStartDate = null;
                             PageTransition.pageBackNavigation(
                                 page: GroupDetail(
                               groupTitle: widget.groupTitle,
@@ -798,6 +879,9 @@ class _CreateNewGroupTaskState extends State<CreateNewGroupTask> {
                     ),
                   ),
                 ),
+                SizedBox(
+                  height: 10,
+                ),
               ],
             ),
           ),
@@ -810,8 +894,12 @@ class _CreateNewGroupTaskState extends State<CreateNewGroupTask> {
     final DateTime? pickedDate = await showDatePicker(
       context: context,
       initialEntryMode: DatePickerEntryMode.calendarOnly,
-      initialDate: DateTime.now(),
-      firstDate: DateTime.now(),
+      initialDate: from == "EndDate"
+          ? _dataController.selectedStartDate!
+          : DateTime.now(),
+      firstDate: from == "EndDate"
+          ? _dataController.selectedStartDate!
+          : DateTime.now(),
       lastDate: DateTime(2101),
       builder: (BuildContext context, Widget? child) {
         return Theme(

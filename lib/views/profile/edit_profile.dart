@@ -203,9 +203,10 @@ class _EditProfileState extends State<EditProfile> {
                       SizedBox(
                         height: 10,
                       ),
-                      CustomTextField(
+                      AuthTextField(
+                        isNumber: true,
                         controller: postalCodeController,
-                        validator: (value) => CustomValidator.isEmpty(value),
+                        validator: (value) => CustomValidator.postalCode(value),
                         hintText: "Postal Code",
                       ),
                     ],

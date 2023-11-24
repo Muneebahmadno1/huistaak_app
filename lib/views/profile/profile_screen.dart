@@ -10,6 +10,7 @@ import 'package:sizer/sizer.dart';
 
 import '../../constants/app_images.dart';
 import '../../constants/global_variables.dart';
+import '../../controllers/auth_controller.dart';
 import '../../helper/page_navigation.dart';
 import '../auth/login_screen.dart';
 
@@ -22,7 +23,7 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   int totalPoints = 0;
-
+  final AuthController _authController = Get.find<AuthController>();
   getData() {
     if (userData.points.isNotEmpty) {
       // Calculate the sum of 'point' variables for the desired 'GroupID'
@@ -250,6 +251,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     slidingBeginOffset: Offset(0, 0),
                     child: CustomCard(
                       onTap: () {
+                        _authController.clearFcm();
                         setUserLoggedIn(false);
                         FirebaseAuth.instance.signOut();
                         PageTransition.pageProperNavigation(

@@ -554,7 +554,7 @@ class _GroupDetailState extends State<GroupDetail> {
                                                                       valueColor: AlwaysStoppedAnimation<
                                                                               Color>(
                                                                           Colors
-                                                                              .blue),
+                                                                              .green),
                                                                     ),
                                                                   ),
                                                                   SizedBox(
@@ -1224,7 +1224,8 @@ class _GroupDetailState extends State<GroupDetail> {
                                               padding: EdgeInsets.only(top: 16),
                                               physics: BouncingScrollPhysics(),
                                               itemBuilder: (context, index) {
-                                                List<dynamic> assignMembers =
+                                                List<MemberModel>
+                                                    assignMembers =
                                                     _groupController
                                                         .notCompletedTaskList[
                                                             index]
@@ -1232,8 +1233,8 @@ class _GroupDetailState extends State<GroupDetail> {
 
                                                 String assignedMembersString =
                                                     assignMembers
-                                                        .map((member) => member[
-                                                            'displayName'])
+                                                        .map((member) =>
+                                                            member.displayName)
                                                         .join(', ');
 
                                                 return Padding(

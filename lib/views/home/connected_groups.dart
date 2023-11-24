@@ -5,7 +5,6 @@ import 'package:get/get.dart';
 import 'package:huistaak/views/home/connect_new_group.dart';
 import 'package:huistaak/views/home/widgets/connected_group_widget.dart';
 import 'package:huistaak/views/notification/notifications.dart';
-import 'package:huistaak/widgets/show_case_widget.dart';
 import 'package:showcaseview/showcaseview.dart';
 import 'package:sizer/sizer.dart';
 import 'package:zoom_tap_animation/zoom_tap_animation.dart';
@@ -14,6 +13,7 @@ import '../../constants/app_images.dart';
 import '../../constants/global_variables.dart';
 import '../../controllers/data_controller.dart';
 import '../../controllers/notification_controller.dart';
+import '../../widgets/custom_widgets.dart';
 import '../../widgets/text_form_fields.dart';
 
 class ConnectedGroupScreen extends StatefulWidget {
@@ -28,7 +28,7 @@ class _ConnectedGroupScreenState extends State<ConnectedGroupScreen> {
   // final GlobalKey globalKeyFour = GlobalKey();
   TextEditingController searchController = TextEditingController();
   bool isUnreadNotificationPresent = false;
-  bool firstTime = true;
+  bool firstTime = false;
   final HomeController _dataController = Get.find<HomeController>();
   final NotificationController _notiController =
       Get.find<NotificationController>();
@@ -247,51 +247,52 @@ class _ConnectedGroupScreenState extends State<ConnectedGroupScreen> {
                             },
                           ),
                         ),
-                  // _dataController.chatUsers.isEmpty
-                  //     ? Expanded(child: SizedBox())
-                  //     : SizedBox.shrink(),
-                  // _dataController.chatUsers.isEmpty
-                  //     ? ShowCaseView(
-                  //         globalKey: globalKeyOne,
-                  //         title: 'Create or Join group',
-                  //         description:
-                  //             'Create or Join group by clicking this button.',
-                  //         child: DelayedDisplay(
-                  //           delay: Duration(milliseconds: 600),
-                  //           slidingBeginOffset: Offset(0, 0),
-                  //           child: CustomButton(
-                  //             onTap: () {
-                  //               Get.to(() => ConnectNewGroup());
-                  //             },
-                  //             buttonText: "Create a new Group",
-                  //           ),
-                  //         ),
-                  //       )
-                  //     : SizedBox.shrink(),
-                  // _dataController.chatUsers.isEmpty
-                  //     ? Expanded(child: SizedBox())
-                  //     : SizedBox.shrink(),
+                  _dataController.chatUsers.isEmpty
+                      ? Expanded(child: SizedBox())
+                      : SizedBox.shrink(),
+                  _dataController.chatUsers.isEmpty
+                      ? Showcase(
+                          // targetShapeBorder: RoundedRectangleBorder(
+                          //     borderRadius: BorderRadius.circular(50)),
+                          key: globalKeyOne,
+                          title: 'Create or Join group',
+                          description:
+                              'Create or Join group by clicking this button.',
+                          child: DelayedDisplay(
+                            delay: Duration(milliseconds: 600),
+                            slidingBeginOffset: Offset(0, 0),
+                            child: CustomButton(
+                              onTap: () {
+                                Get.to(() => ConnectNewGroup());
+                              },
+                              buttonText: "Create a new Group",
+                            ),
+                          ))
+                      : SizedBox.shrink(),
+                  _dataController.chatUsers.isEmpty
+                      ? Expanded(child: SizedBox())
+                      : SizedBox.shrink(),
                 ],
               ),
             ),
       floatingActionButton: isLoading
           ? null
-          :
-          // _dataController.chatUsers.isEmpty
-          //         ? null
-          //         :
-          ShowCaseView(
-              globalKey: globalKeyOne,
-              title: 'Create or Join group',
-              description: 'Create or Join group by clicking this button.',
-              child: FloatingActionButton(
-                backgroundColor: AppColors.buttonColor,
-                onPressed: () {
-                  Get.to(() => ConnectNewGroup());
-                },
-                child: Icon(Icons.add),
-              ),
-            ),
+          : _dataController.chatUsers.isEmpty
+              ? null:
+              // : Showcase(
+              //     // targetShapeBorder: CircleBorder(),
+              //     title: 'Create or Join group',
+              //     description: 'Create or Join group by clicking this button.',
+              //     key: globalKeyOne,
+              //     child:
+                  FloatingActionButton(
+                    backgroundColor: AppColors.buttonColor,
+                    onPressed: () {
+                      Get.to(() => ConnectNewGroup());
+                    },
+                    child: Icon(Icons.add),
+                  ),
+                // ),
     );
   }
 }

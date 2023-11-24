@@ -106,7 +106,7 @@ class _NotificationsState extends State<Notifications> {
                                   endActionPane: ActionPane(
                                     // A motion is a widget used to control how the pane animates.
                                     motion: ScrollMotion(),
-
+                                    dragDismissible: false,
                                     // A pane can dismiss the Slidable.
                                     dismissible:
                                         DismissiblePane(onDismissed: () async {
@@ -169,7 +169,7 @@ class _NotificationsState extends State<Notifications> {
                                             padding: const EdgeInsets.symmetric(
                                                 horizontal: 14, vertical: 10),
                                             width: double.infinity,
-                                            height: 80,
+                                            height: 13.h,
                                             color: Colors.white12,
                                             child: Row(
                                               children: [
@@ -193,7 +193,7 @@ class _NotificationsState extends State<Notifications> {
                                                                   maxWidth:
                                                                       84.w,
                                                                   maxHeight:
-                                                                      40),
+                                                                      8.h),
                                                           child: Align(
                                                             alignment: Alignment
                                                                 .centerLeft,
