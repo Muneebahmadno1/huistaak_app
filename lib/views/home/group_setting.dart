@@ -495,10 +495,7 @@ class _GroupSettingState extends State<GroupSetting> {
                                               child: SizedBox(
                                                 height: 30 * 2,
                                                 width: 30 * 2,
-                                                child: _groupSettingController
-                                                            .groupInfo[0]
-                                                            .membersList[j]
-                                                            .imageUrl ==
+                                                child: memberList[j].imageUrl ==
                                                         ""
                                                     ? Image.asset(
                                                         AppImages.profileImage,
@@ -506,11 +503,8 @@ class _GroupSettingState extends State<GroupSetting> {
                                                         fit: BoxFit.fitHeight,
                                                       )
                                                     : CachedNetworkImage(
-                                                        imageUrl:
-                                                            _groupSettingController
-                                                                .groupInfo[0]
-                                                                .membersList[j]
-                                                                .imageUrl,
+                                                        imageUrl: memberList[j]
+                                                            .imageUrl,
                                                         placeholder: (context,
                                                                 url) =>
                                                             CircularProgressIndicator(),
@@ -671,7 +665,7 @@ class _GroupSettingState extends State<GroupSetting> {
                                                                                   ),
                                                                                   TextButton(
                                                                                     onPressed: () async {
-                                                                                      await _groupSettingController.makeAdmin(_groupSettingController.groupInfo[0].membersList[j].userID, widget.groupID.toString(), _groupSettingController.groupInfo[0].groupName.toString());
+                                                                                      await _groupSettingController.makeAdmin(_groupSettingController.groupInfo[0].membersList[j].userID, widget.groupID.toString(), _groupSettingController.groupInfo[0].groupName.toString(), _groupSettingController.groupInfo[0].groupCode.toString(), _groupSettingController.groupInfo[0].groupImage);
                                                                                       getData();
                                                                                       Navigator.pop(context);
                                                                                     },
@@ -747,7 +741,10 @@ class _GroupSettingState extends State<GroupSetting> {
                           await _groupSettingController.leaveGroup(
                               widget.groupID.toString(),
                               _groupSettingController.groupInfo[0].groupName
-                                  .toString());
+                                  .toString(),
+                              _groupSettingController.groupInfo[0].groupCode
+                                  .toString(),
+                              _groupSettingController.groupInfo[0].groupImage);
                           Get.find<GeneralController>().onBottomBarTapped(0);
                           PageTransition.pageProperNavigation(
                               page: CustomBottomNavBar());

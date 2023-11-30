@@ -211,7 +211,7 @@ class _ConnectedGroupScreenState extends State<ConnectedGroupScreen> {
                                   ? StreamBuilder<Object>(
                                       stream: _dataController
                                           .getUnreadTaskCount(_dataController
-                                              .chatUsers[index]
+                                              .chatUsers[index].id
                                               .toString())
                                           .asStream(),
                                       builder: (context, snapshot) {
@@ -278,21 +278,22 @@ class _ConnectedGroupScreenState extends State<ConnectedGroupScreen> {
       floatingActionButton: isLoading
           ? null
           : _dataController.chatUsers.isEmpty
-              ? null:
+              ? null
+              :
               // : Showcase(
               //     // targetShapeBorder: CircleBorder(),
               //     title: 'Create or Join group',
               //     description: 'Create or Join group by clicking this button.',
               //     key: globalKeyOne,
               //     child:
-                  FloatingActionButton(
-                    backgroundColor: AppColors.buttonColor,
-                    onPressed: () {
-                      Get.to(() => ConnectNewGroup());
-                    },
-                    child: Icon(Icons.add),
-                  ),
-                // ),
+              FloatingActionButton(
+                  backgroundColor: AppColors.buttonColor,
+                  onPressed: () {
+                    Get.to(() => ConnectNewGroup());
+                  },
+                  child: Icon(Icons.add),
+                ),
+      // ),
     );
   }
 }

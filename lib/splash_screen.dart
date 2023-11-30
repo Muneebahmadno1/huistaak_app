@@ -60,8 +60,6 @@ class _SplashScreenState extends State<SplashScreen>
   getFCM() async {
     await FirebaseMessaging.instance.getToken().then((value) {
       fcmToken.value = value!;
-      print("Token saved");
-      print(fcmToken.value);
     });
     login
         ? await Collections.USERS
@@ -82,10 +80,10 @@ class _SplashScreenState extends State<SplashScreen>
             children: [
               Image.asset(
                 AppImages.logo,
-                color: Colors.white,
+                height: 45.h,
               ),
               SizedBox(
-                height: 30.h,
+                height: 25.h,
               ),
               SpinKitFadingCircle(
                 color: Colors.white,

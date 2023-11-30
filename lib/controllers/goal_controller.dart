@@ -5,6 +5,7 @@ import '../constants/global_variables.dart';
 import '../helper/collections.dart';
 import '../models/goal_details_model.dart';
 import '../models/group_list_model.dart';
+import '../models/user_model.dart';
 
 class GoalController extends GetxController {
   List<GroupListModel> groupList = [];
@@ -135,12 +136,14 @@ class GoalController extends GetxController {
       QuerySnapshot goalsQuery = await goalsCollection.get();
 
       // Check if the 'goals' subcollection is not empty
-      if (goalsQuery.docs.isEmpty) {
+      if (goalsQuery.docs.isNotEmpty) {
         // Check if all goals are expired
         if (goalsQuery.docs.every((goalDoc) =>
             goalDoc['goalDate'].toDate().isBefore(DateTime.now()))) {
           return true; // All goals are expired
         }
+      } else if (goalsQuery.docs.isEmpty) {
+        return true;
       }
     }
 
@@ -167,16 +170,7 @@ class GoalController extends GetxController {
       // Query the 'goals' subcollection
       QuerySnapshot goalsQuery = await goalsCollection.get();
 
-      // Check if the 'goals' subcollection is empty
-      // if (goalsQuery.docs.isEmpty ||
-      //     goalsQuery.docs.first['goalDate'].toDate().isBefore(DateTime.now())) {
-      //   groupsWithEmptyGoals.add({
-      //     "groupName": groupData['groupName'],
-      //     "groupImage": groupData['groupImage'],
-      //     "groupID": groupData['groupID'],
-      //   });
-      // }
-      if (goalsQuery.docs.isEmpty) {
+      if (goalsQuery.docs.isNotEmpty) {
         // Check if all goals are expired
         if (goalsQuery.docs.every((goalDoc) =>
             goalDoc['goalDate'].toDate().isBefore(DateTime.now()))) {
@@ -186,9 +180,87 @@ class GoalController extends GetxController {
             "groupID": groupData['groupID'],
           });
         }
+      } else if (goalsQuery.docs.isEmpty) {
+        groupsWithEmptyGoals.add({
+          "groupName": groupData['groupName'],
+          "groupImage": groupData['groupImage'],
+          "groupID": groupData['groupID'],
+        });
       }
     }
 
     return groupsWithEmptyGoals;
+  }
+
+  resetGroupPoints(String groupId) async {
+    // Get a reference to the users collection
+    CollectionReference usersCollection =
+        FirebaseFirestore.instance.collection('users');
+
+    // Fetch all documents in the collection
+    QuerySnapshot allUsers = await usersCollection.get();
+
+    // Update the 'point' variable to "0" for each user with the specified groupId
+    for (QueryDocumentSnapshot documentSnapshot in allUsers.docs) {
+      // Get the data map for the current user
+      Map<String, dynamic> userData =
+          documentSnapshot.data() as Map<String, dynamic>;
+
+      // Check if 'points' array is not null and is a List
+      if (userData['points'] != null && userData['points'] is List) {
+        // Iterate through the 'points' array and update 'point' variable for the matching 'groupID'
+        List<dynamic> updatedPoints = List.from(userData['points']);
+        for (int i = 0; i < updatedPoints.length; i++) {
+          if (updatedPoints[i]['groupID'] == groupId) {
+            // Update the 'point' variable to "0"
+            updatedPoints[i]['point'] = '0';
+          }
+        }
+
+        // Get the document reference for the current user
+        DocumentReference userDocRef = usersCollection.doc(documentSnapshot.id);
+
+        // Update the 'points' array in Firestore
+        await userDocRef.update({'points': updatedPoints});
+      }
+    }
+    Collections.USERS.doc(userData.userID.toString()).get().then((value) async {
+      userData = UserModel.fromDocument(value.data());
+    });
+  }
+
+  markCompleted(String groupId, userID, goalID) async {
+    print(groupId);
+    print(userID);
+    print(goalID);
+    DocumentReference goalDocRef = Collections.GROUPS
+        .doc(groupId.toString())
+        .collection(Collections.GOALS)
+        .doc(goalID.toString());
+
+    // Fetch the current data
+    DocumentSnapshot goalDoc = await goalDocRef.get();
+
+    if (goalDoc.exists) {
+      // Get the current completedGoals array
+      Map<String, dynamic>? data = goalDoc.data() as Map<String, dynamic>?;
+      if (data != null && data.containsKey('completedGoals')) {
+        // Get the current completedGoals array
+        List<dynamic> completedGoals = data['completedGoals'];
+
+        // Add the new userId to completedGoals array
+        completedGoals.add(userID);
+
+        // Update the completedGoals array in Firestore
+        await goalDocRef.update({'completedGoals': completedGoals});
+      } else {
+        // If the 'completedGoals' field doesn't exist, initialize it with the new userId
+        await goalDocRef.update({
+          'completedGoals': [userID]
+        });
+      }
+    } else {
+      print('Goal document does not exist.');
+    }
   }
 }

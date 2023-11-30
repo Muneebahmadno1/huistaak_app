@@ -83,7 +83,7 @@ class GroupSettingController extends GetxController {
     ));
   }
 
-  leaveGroup(groupID, groupTitle) async {
+  leaveGroup(groupID, groupTitle, groupCode, groupImage) async {
     if (groupInfo[0].membersList.isNotEmpty) {
       groupInfo[0]
           .membersList
@@ -160,6 +160,16 @@ class GroupSettingController extends GetxController {
         Collections.GROUPS.doc(groupID.toString()).update({
           'membersList': memberListData,
           'adminsList': adminListData,
+        });
+        Collections.USERS
+            .doc(removedMember.userID.toString())
+            .collection("myGroups")
+            .doc()
+            .update({
+          "groupCode": groupCode.toString(),
+          "groupID": groupID.toString(),
+          "groupName": groupTitle.toString(),
+          "groupImage": groupImage.toString()
         });
         var notiID = Collections.USERS
             .doc(removedMember.userID.toString())
@@ -249,7 +259,7 @@ class GroupSettingController extends GetxController {
     }
   }
 
-  makeAdmin(memberID, groupID, groupTitle) {
+  makeAdmin(memberID, groupID, groupTitle, groupCode, groupImage) {
     late MemberModel removedMember;
     List<MemberModel> membersList = groupInfo[0].membersList;
 
@@ -282,6 +292,16 @@ class GroupSettingController extends GetxController {
     Collections.GROUPS.doc(groupID.toString()).update({
       'membersList': memberListData,
       'adminsList': adminListData,
+    });
+    Collections.USERS
+        .doc(memberID.toString())
+        .collection("myGroups")
+        .doc()
+        .update({
+      "groupCode": groupCode.toString(),
+      "groupID": groupID.toString(),
+      "groupName": groupTitle.toString(),
+      "groupImage": groupImage.toString()
     });
     var notiID = Collections.USERS
         .doc(removedMember.userID.toString())

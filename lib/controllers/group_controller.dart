@@ -61,13 +61,98 @@ class GroupController extends GetxController {
       groupName: querySnapshot1['groupName'],
       groupCode: querySnapshot1['groupCode'],
     ));
+    // QuerySnapshot querySnapshot = await Collections.GROUPS
+    //     .doc(groupID)
+    //     .collection(Collections.TASKS)
+    //     .orderBy("taskDate", descending: true)
+    //     .get();
+    // for (int i = 0; i < querySnapshot.docs.length; i++) {
+    //   var a = querySnapshot.docs[i].data() as Map;
+    //   taskList.add(TaskModel(
+    //     taskTitle: a['taskTitle'],
+    //     taskScore: a['taskScore'],
+    //     taskDate: a['taskDate'],
+    //     startTime: a['startTime'],
+    //     endTime: a['endTime'],
+    //     duration: a['duration'],
+    //     assignMembers: (a['assignMembers'] as List).map((memberData) {
+    //       return MemberModel(
+    //         displayName: memberData['displayName'],
+    //         imageUrl: memberData['imageUrl'],
+    //         userID: memberData['userID'],
+    //         startTask: memberData['startTask'] ?? null,
+    //         endTask: memberData['endTask'] ?? null,
+    //         pointsEarned: memberData['pointsEarned'] ?? null,
+    //       );
+    //     }).toList(),
+    //     id: a['id'],
+    //   ));
+    // }
+    //..........................
     QuerySnapshot querySnapshot = await Collections.GROUPS
         .doc(groupID)
         .collection(Collections.TASKS)
         .orderBy("taskDate", descending: true)
         .get();
+    //
+    // for (int i = 0; i < querySnapshot.docs.length; i++) {
+    //   var a = querySnapshot.docs[i].data() as Map;
+    //   List<String> userIds = List<String>.from(
+    //       a['assignMembers'].map((memberData) => memberData['userID']));
+    //   List<MemberModel> members = [];
+    //   members.clear();
+    //   for (String userId in userIds.take(2)) {
+    //     DocumentSnapshot userDoc = await Collections.USERS.doc(userId).get();
+    //     if (userDoc.exists) {
+    //       members.add(MemberModel(
+    //         displayName: userDoc['displayName'],
+    //         imageUrl: userDoc['imageUrl'],
+    //         userID: userDoc['userID'],
+    //         startTask: a['startTask'] ?? null,
+    //         endTask: a['endTask'] ?? null,
+    //         pointsEarned: a['pointsEarned'] ?? null,
+    //       ));
+    //     }
+    //   }
+    //
+    //   taskList.add(TaskModel(
+    //     taskTitle: a['taskTitle'],
+    //     taskScore: a['taskScore'],
+    //     taskDate: a['taskDate'],
+    //     startTime: a['startTime'],
+    //     endTime: a['endTime'],
+    //     duration: a['duration'],
+    //     assignMembers: members,
+    //     id: a['id'],
+    //   ));
+    // }
     for (int i = 0; i < querySnapshot.docs.length; i++) {
       var a = querySnapshot.docs[i].data() as Map;
+
+      // Access 'assignedMembers' from the task data
+      List<Map<String, dynamic>> assignedMembers =
+          List<Map<String, dynamic>>.from(a['assignMembers']);
+
+      List<MemberModel> members = [];
+
+      for (var memberData in assignedMembers) {
+        String userId = memberData['userID'];
+
+        DocumentSnapshot userDoc = await Collections.USERS.doc(userId).get();
+
+        if (userDoc.exists) {
+          members.add(MemberModel(
+            displayName: userDoc['displayName'],
+            imageUrl: userDoc['imageUrl'],
+            userID: userDoc['userID'],
+            // Access 'startTask', 'endTask', 'pointsEarned' from memberData
+            startTask: memberData['startTask'] ?? null,
+            endTask: memberData['endTask'] ?? null,
+            pointsEarned: memberData['pointsEarned'] ?? null,
+          ));
+        }
+      }
+
       taskList.add(TaskModel(
         taskTitle: a['taskTitle'],
         taskScore: a['taskScore'],
@@ -75,19 +160,11 @@ class GroupController extends GetxController {
         startTime: a['startTime'],
         endTime: a['endTime'],
         duration: a['duration'],
-        assignMembers: (a['assignMembers'] as List).map((memberData) {
-          return MemberModel(
-            displayName: memberData['displayName'],
-            imageUrl: memberData['imageUrl'],
-            userID: memberData['userID'],
-            startTask: memberData['startTask'] ?? null,
-            endTask: memberData['endTask'] ?? null,
-            pointsEarned: memberData['pointsEarned'] ?? null,
-          );
-        }).toList(),
+        assignMembers: members,
         id: a['id'],
       ));
     }
+
     for (int j = 0; j < taskList.length; j++) {
       taskList[j].assignMembers.any((map) =>
               (map.userID.toString() == userData.userID.toString()) &&
@@ -161,8 +238,16 @@ class GroupController extends GetxController {
     });
   }
 
+  fetchUser(userID) async {
+    var document = await Collections.USERS.doc(userID.toString()).get();
+    if (document.exists) {
+      final UserModel user = UserModel.fromDocument(document.data()!);
+      return user;
+    }
+  }
+
   endTask(groupID, taskID, List<MemberModel> StartTime, taskDurationInMin,
-      points, groupTitle, adminList) async {
+      points, groupTitle, List<MemberModel> adminList) async {
     final DocumentReference documentReference = await Collections.GROUPS
         .doc(groupID)
         .collection(Collections.TASKS)
@@ -244,7 +329,7 @@ class GroupController extends GetxController {
             'assignMembers': existingArray,
           }).then((_) {
             var notiID = Collections.USERS
-                .doc(adminList[0]['userID'])
+                .doc(adminList[0].userID)
                 .collection(Collections.NOTIFICATIONS)
                 .doc();
             notiID.set({
@@ -253,13 +338,14 @@ class GroupController extends GetxController {
               "notification": " has completed the task in ",
               "Time": DateTime.now(),
               "notiID": notiID.id,
+              "notiImage": userData.imageUrl,
               "userName": userData.displayName.toString(),
               "userToJoin": FieldValue.arrayUnion([]),
               "groupID": groupID.toString(),
               "groupName": groupTitle.toString(),
             });
             Collections.USERS
-                .doc(adminList[0]['userID'].toString())
+                .doc(adminList[0].userID.toString())
                 .get()
                 .then((value) async {
               UserModel notiUserData = UserModel.fromDocument(value.data());
@@ -364,6 +450,8 @@ class GroupController extends GetxController {
       "id": docId,
     });
     for (int a = 0; a < assignMembers.length; a++) {
+      print("assignMembers.length");
+      print(assignMembers.length);
       updateCounter(assignMembers[a].userID, groupID);
     }
     return;

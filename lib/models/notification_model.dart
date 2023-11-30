@@ -3,6 +3,7 @@ class NotificationModel {
   dynamic notification;
   dynamic notificationType;
   dynamic notiID;
+  dynamic notiImage;
   dynamic groupToJoinID;
   dynamic Time;
   dynamic groupID;
@@ -11,6 +12,8 @@ class NotificationModel {
   List<dynamic> userToJoin;
 
   NotificationModel({
+    this.notiImage =
+        "https://firebasestorage.googleapis.com/v0/b/huistaak-b26cd.appspot.com/o/Ellipse%20425.png?alt=media&token=39ef01fd-faeb-4237-aad0-229a71531287",
     required this.read,
     required this.notification,
     required this.notificationType,
@@ -25,6 +28,7 @@ class NotificationModel {
 
   factory NotificationModel.fromJson(Map<String, dynamic> a) {
     return NotificationModel(
+      notiImage: a['notiImage'],
       read: a['read'],
       notification: a['notification'],
       notificationType: a['notificationType'],
