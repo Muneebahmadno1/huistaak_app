@@ -111,6 +111,7 @@ class HomeController extends GetxController {
         "notificationType": 1,
         "notification": userData.displayName.toString() + " join ",
         "Time": DateTime.now(),
+        "notiImage": userData.imageUrl,
         "notiID": notiID.id,
         "groupID": groupID.toString(),
         "groupName": groupName.toString(),

@@ -16,6 +16,7 @@ import '../../constants/app_images.dart';
 import '../../constants/global_variables.dart';
 import '../../controllers/general_controller.dart';
 import '../../controllers/group_controller.dart';
+import '../../controllers/group_setting_controller.dart';
 import '../../helper/page_navigation.dart';
 import '../../models/member_model.dart';
 import '../../widgets/custom_widgets.dart';
@@ -36,6 +37,8 @@ class GroupDetail extends StatefulWidget {
 }
 
 class _GroupDetailState extends State<GroupDetail> {
+  final GroupSettingController _groupSettingController =
+      Get.find<GroupSettingController>();
   final GroupController _groupController = Get.find<GroupController>();
   bool isLoading = false;
   bool isFinish = false;
@@ -327,6 +330,7 @@ class _GroupDetailState extends State<GroupDetail> {
                                           physics: BouncingScrollPhysics(),
                                           itemBuilder: (context, index) {
                                             _progressValue.add(0.0);
+
                                             List<MemberModel> assignMembers =
                                                 _groupController
                                                     .toBeCompletedTaskList[
@@ -400,15 +404,22 @@ class _GroupDetailState extends State<GroupDetail> {
                                                             Align(
                                                               alignment: Alignment
                                                                   .centerLeft,
-                                                              child: Text(
-                                                                _groupController
-                                                                    .toBeCompletedTaskList[
-                                                                        index]
-                                                                    .taskTitle,
-                                                                style: headingLarge
-                                                                    .copyWith(
-                                                                        color: Colors
-                                                                            .white),
+                                                              child: Container(
+                                                                width: 60.w,
+                                                                child: Text(
+                                                                  _groupController
+                                                                      .toBeCompletedTaskList[
+                                                                          index]
+                                                                      .taskTitle,
+                                                                  maxLines: 1,
+                                                                  overflow:
+                                                                      TextOverflow
+                                                                          .ellipsis,
+                                                                  style: headingLarge
+                                                                      .copyWith(
+                                                                          color:
+                                                                              Colors.white),
+                                                                ),
                                                               ),
                                                             ),
                                                             Row(
@@ -673,24 +684,6 @@ class _GroupDetailState extends State<GroupDetail> {
                                                         SizedBox(
                                                           height: 10,
                                                         ),
-                                                        // _groupController
-                                                        //         .toBeCompletedTaskList[
-                                                        //             index]
-                                                        //             [
-                                                        //             'assignMembers']
-                                                        //         .any((user) =>
-                                                        //             user["userID"]
-                                                        //                 .toString() ==
-                                                        //             userData
-                                                        //                 .userID
-                                                        //                 .toString())
-                                                        //     ? _groupController
-                                                        //             .toBeCompletedTaskList[
-                                                        //                 index][
-                                                        //                 'assignMembers']
-                                                        //             .any((map) =>
-                                                        //                 map['endTask'] ==
-                                                        //                 null)
                                                         _startTime[index]
                                                                 .isBefore(
                                                                     DateTime
@@ -886,15 +879,23 @@ class _GroupDetailState extends State<GroupDetail> {
                                                                   alignment:
                                                                       Alignment
                                                                           .centerLeft,
-                                                                  child: Text(
-                                                                    _groupController
-                                                                        .completedTaskList[
-                                                                            index]
-                                                                        .taskTitle,
-                                                                    style: headingLarge
-                                                                        .copyWith(
-                                                                            color:
-                                                                                Colors.white),
+                                                                  child:
+                                                                      Container(
+                                                                    width: 60.w,
+                                                                    child: Text(
+                                                                      _groupController
+                                                                          .completedTaskList[
+                                                                              index]
+                                                                          .taskTitle,
+                                                                      maxLines:
+                                                                          1,
+                                                                      overflow:
+                                                                          TextOverflow
+                                                                              .ellipsis,
+                                                                      style: headingLarge.copyWith(
+                                                                          color:
+                                                                              Colors.white),
+                                                                    ),
                                                                   ),
                                                                 ),
                                                                 _groupController
@@ -1051,7 +1052,7 @@ class _GroupDetailState extends State<GroupDetail> {
                                                                           .assignMembers[
                                                                               i]
                                                                           .endTask ==
-                                                                      ""
+                                                                      null
                                                                   ? SizedBox
                                                                       .shrink()
                                                                   : LikeBarWidget(
@@ -1066,11 +1067,11 @@ class _GroupDetailState extends State<GroupDetail> {
                                                                               .assignMembers[i]
                                                                               .pointsEarned ??
                                                                           "0",
-                                                                      percent: (double.parse(_groupController
+                                                                      percent: (double.parse(_groupController.completedTaskList[index].assignMembers[i].pointsEarned ??
+                                                                              "0") /
+                                                                          double.parse(_groupController
                                                                               .completedTaskList[index]
-                                                                              .assignMembers[i]
-                                                                              .pointsEarned) /
-                                                                          double.parse(_groupController.completedTaskList[index].taskScore)),
+                                                                              .taskScore)),
                                                                       TotalCount: _groupController
                                                                           .completedTaskList[
                                                                               index]
@@ -1271,15 +1272,23 @@ class _GroupDetailState extends State<GroupDetail> {
                                                                   alignment:
                                                                       Alignment
                                                                           .centerLeft,
-                                                                  child: Text(
-                                                                    _groupController
-                                                                        .notCompletedTaskList[
-                                                                            index]
-                                                                        .taskTitle,
-                                                                    style: headingLarge
-                                                                        .copyWith(
-                                                                            color:
-                                                                                Colors.white),
+                                                                  child:
+                                                                      Container(
+                                                                    width: 60.w,
+                                                                    child: Text(
+                                                                      _groupController
+                                                                          .notCompletedTaskList[
+                                                                              index]
+                                                                          .taskTitle,
+                                                                      maxLines:
+                                                                          1,
+                                                                      overflow:
+                                                                          TextOverflow
+                                                                              .ellipsis,
+                                                                      style: headingLarge.copyWith(
+                                                                          color:
+                                                                              Colors.white),
+                                                                    ),
                                                                   ),
                                                                 ),
                                                                 _groupController

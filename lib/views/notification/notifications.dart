@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:delayed_display/delayed_display.dart';
 import 'package:flutter/material.dart';
@@ -173,6 +174,60 @@ class _NotificationsState extends State<Notifications> {
                                             color: Colors.white12,
                                             child: Row(
                                               children: [
+                                                CircleAvatar(
+                                                  radius:
+                                                      20, // Adjust the radius as needed
+                                                  backgroundColor: Colors
+                                                      .grey, // You can set a default background color
+                                                  child: ClipOval(
+                                                    child: SizedBox(
+                                                      height: 20 * 2,
+                                                      width: 20 * 2,
+                                                      child: (_notiController
+                                                                      .notificationList[
+                                                                          index]
+                                                                      .notificationType ==
+                                                                  4 ||
+                                                              _notiController
+                                                                      .notificationList[
+                                                                          index]
+                                                                      .notificationType ==
+                                                                  1)
+                                                          ? Image.asset(
+                                                              "assets/images/congratImage.png", // Replace with your asset image path
+                                                              fit: BoxFit
+                                                                  .fitHeight,
+                                                            )
+                                                          : _notiController
+                                                                      .notificationList[
+                                                                          index]
+                                                                      .notificationType ==
+                                                                  null
+                                                              ? Image.asset(
+                                                                  "assets/images/groupIcon.png", // Replace with your asset image path
+                                                                  fit: BoxFit
+                                                                      .fitHeight,
+                                                                )
+                                                              : CachedNetworkImage(
+                                                                  imageUrl: _notiController
+                                                                      .notificationList[
+                                                                          index]
+                                                                      .notiImage
+                                                                      .toString(),
+                                                                  placeholder: (context,
+                                                                          url) =>
+                                                                      CircularProgressIndicator(),
+                                                                  errorWidget: (context,
+                                                                          url,
+                                                                          error) =>
+                                                                      Icon(Icons
+                                                                          .error),
+                                                                  fit: BoxFit
+                                                                      .fill,
+                                                                ),
+                                                    ),
+                                                  ),
+                                                ),
                                                 Column(
                                                   mainAxisAlignment:
                                                       MainAxisAlignment.center,
@@ -191,7 +246,7 @@ class _NotificationsState extends State<Notifications> {
                                                           constraints:
                                                               BoxConstraints(
                                                                   maxWidth:
-                                                                      84.w,
+                                                                      75.w,
                                                                   maxHeight:
                                                                       8.h),
                                                           child: Align(
@@ -217,7 +272,9 @@ class _NotificationsState extends State<Notifications> {
                                                                             ? _notiController.notificationList[index].userName
                                                                             : _notiController.notificationList[index].notificationType == 3
                                                                                 ? _notiController.notificationList[index].userName
-                                                                                : "",
+                                                                                : _notiController.notificationList[index].notificationType == 1
+                                                                                    ? "Congratulations "
+                                                                                    : "",
                                                                     style:
                                                                         TextStyle(
                                                                       fontWeight:

@@ -22,6 +22,7 @@ class NotificationController extends GetxController {
     for (int i = 0; i < querySnapshot.docs.length; i++) {
       var a = querySnapshot.docs[i].data() as Map;
       notificationList.add(NotificationModel(
+        notiImage: a['notiImage'],
         read: a['read'],
         notification: a['notification'],
         notificationType: a['notificationType'],
@@ -56,6 +57,7 @@ class NotificationController extends GetxController {
       "userToJoin": FieldValue.arrayUnion([]),
       "Time": DateTime.now(),
       "notiID": notiID.id,
+      "notiImage": userData.imageUrl.toString(),
       "groupID": groupID.toString(),
       "groupName": groupName.toString(),
       "userName": userData.displayName.toString(),
