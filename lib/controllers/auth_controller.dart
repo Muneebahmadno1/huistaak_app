@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart' as path;
+import 'package:path_provider/path_provider.dart';
 import 'package:sizer/sizer.dart';
 import 'package:zoom_tap_animation/zoom_tap_animation.dart';
 
@@ -24,6 +25,13 @@ class AuthController extends GetxController {
   bool isEmailVerified = false;
   final loggedInGlobal = ValueNotifier(false);
   late PickedFile pickedFile;
+  List<String> localDp = [
+    "assets/images/dp1.png",
+    "assets/images/dp2.png",
+    "assets/images/dp3.png",
+    "assets/images/dp4.png",
+    "assets/images/dp5.png",
+  ];
   String? imageUrl;
   File? imageFile;
   final picker = ImagePicker();
@@ -317,41 +325,85 @@ class AuthController extends GetxController {
     Collections.USERS.doc(userData.userID).update({"fcmToken": ""});
   }
 
-  Future<bool> upload(String inputSource) async {
-    try {
-      pickedImage = await picker.pickImage(
-          source: inputSource == 'camera'
-              ? ImageSource.camera
-              : ImageSource.gallery,
-          maxWidth: 1920);
+  Future<File> copyAssetToFile(String assetPath, String fileName) async {
+    ByteData data = await rootBundle.load(assetPath);
+    List<int> bytes = data.buffer.asUint8List();
+    String tempPath = (await getTemporaryDirectory()).path;
+    File file = File('$tempPath/$fileName');
+    await file.writeAsBytes(bytes, flush: true);
+    return file;
+  }
 
-      processingStatus = true;
-
-      final String fileName = path.basename(pickedImage!.path);
+  Future<bool> upload(String inputSource, {fromLocal = false}) async {
+    if (fromLocal == true) {
+      File tempImage = await copyAssetToFile(inputSource, "profileImage");
       try {
-        // Uploading the selected image with some custom meta data
-        {
-          imageFile = File(pickedImage!.path);
-          await storage.ref(fileName).putFile(imageFile!).then((p0) async {
-            imageUrl = await p0.ref.getDownloadURL();
-            if (p0.state == TaskState.success) {
-              processingStatus = false;
-            }
-          });
+        processingStatus = true;
+        try {
+          // Uploading the selected image with some custom meta data
+          {
+            imageFile = File(tempImage.path);
+            await storage
+                .ref("profileImage")
+                .putFile(tempImage)
+                .then((p0) async {
+              imageUrl = await p0.ref.getDownloadURL();
+              if (p0.state == TaskState.success) {
+                processingStatus = false;
+              }
+            });
+          }
+          // Refresh the UI
+          return true;
+        } on FirebaseException catch (error) {
+          if (kDebugMode) {
+            print(error);
+          }
+          return false;
         }
-        // Refresh the UI
-        return true;
-      } on FirebaseException catch (error) {
+      } catch (err) {
         if (kDebugMode) {
-          print(error);
+          print(err);
         }
         return false;
       }
-    } catch (err) {
-      if (kDebugMode) {
-        print(err);
+    } else {
+      try {
+        pickedImage = await picker.pickImage(
+            source: inputSource == 'camera'
+                ? ImageSource.camera
+                : ImageSource.gallery,
+            maxWidth: 1920);
+
+        processingStatus = true;
+        print("pickedImage!.path");
+        print(pickedImage!.path);
+        final String fileName = path.basename(pickedImage!.path);
+        try {
+          // Uploading the selected image with some custom meta data
+          {
+            imageFile = File(pickedImage!.path);
+            await storage.ref(fileName).putFile(imageFile!).then((p0) async {
+              imageUrl = await p0.ref.getDownloadURL();
+              if (p0.state == TaskState.success) {
+                processingStatus = false;
+              }
+            });
+          }
+          // Refresh the UI
+          return true;
+        } on FirebaseException catch (error) {
+          if (kDebugMode) {
+            print(error);
+          }
+          return false;
+        }
+      } catch (err) {
+        if (kDebugMode) {
+          print(err);
+        }
+        return false;
       }
-      return false;
     }
   }
 }
