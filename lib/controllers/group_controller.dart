@@ -335,7 +335,9 @@ class GroupController extends GetxController {
             notiID.set({
               "read": false,
               "notificationType": 3,
-              "notification": " has completed the task in ",
+              "notification": "you have earned " +
+                  userPoint.ceil().toString() +
+                  " points in ",
               "Time": DateTime.now(),
               "notiID": notiID.id,
               "notiImage": userData.imageUrl,

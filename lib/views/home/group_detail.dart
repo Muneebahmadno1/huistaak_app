@@ -16,7 +16,6 @@ import '../../constants/app_images.dart';
 import '../../constants/global_variables.dart';
 import '../../controllers/general_controller.dart';
 import '../../controllers/group_controller.dart';
-import '../../controllers/group_setting_controller.dart';
 import '../../helper/page_navigation.dart';
 import '../../models/member_model.dart';
 import '../../widgets/custom_widgets.dart';
@@ -37,8 +36,6 @@ class GroupDetail extends StatefulWidget {
 }
 
 class _GroupDetailState extends State<GroupDetail> {
-  final GroupSettingController _groupSettingController =
-      Get.find<GroupSettingController>();
   final GroupController _groupController = Get.find<GroupController>();
   bool isLoading = false;
   bool isFinish = false;
@@ -406,19 +403,25 @@ class _GroupDetailState extends State<GroupDetail> {
                                                                   .centerLeft,
                                                               child: Container(
                                                                 width: 60.w,
-                                                                child: Text(
-                                                                  _groupController
+                                                                child: Tooltip(
+                                                                  message: _groupController
                                                                       .toBeCompletedTaskList[
                                                                           index]
                                                                       .taskTitle,
-                                                                  maxLines: 1,
-                                                                  overflow:
-                                                                      TextOverflow
-                                                                          .ellipsis,
-                                                                  style: headingLarge
-                                                                      .copyWith(
-                                                                          color:
-                                                                              Colors.white),
+                                                                  child: Text(
+                                                                    _groupController
+                                                                        .toBeCompletedTaskList[
+                                                                            index]
+                                                                        .taskTitle,
+                                                                    maxLines: 1,
+                                                                    overflow:
+                                                                        TextOverflow
+                                                                            .ellipsis,
+                                                                    style: headingLarge
+                                                                        .copyWith(
+                                                                            color:
+                                                                                Colors.white),
+                                                                  ),
                                                                 ),
                                                               ),
                                                             ),
@@ -882,19 +885,25 @@ class _GroupDetailState extends State<GroupDetail> {
                                                                   child:
                                                                       Container(
                                                                     width: 60.w,
-                                                                    child: Text(
-                                                                      _groupController
+                                                                    child:
+                                                                        Tooltip(
+                                                                      message: _groupController
                                                                           .completedTaskList[
                                                                               index]
                                                                           .taskTitle,
-                                                                      maxLines:
-                                                                          1,
-                                                                      overflow:
-                                                                          TextOverflow
-                                                                              .ellipsis,
-                                                                      style: headingLarge.copyWith(
-                                                                          color:
-                                                                              Colors.white),
+                                                                      child:
+                                                                          Text(
+                                                                        _groupController
+                                                                            .completedTaskList[index]
+                                                                            .taskTitle,
+                                                                        maxLines:
+                                                                            1,
+                                                                        overflow:
+                                                                            TextOverflow.ellipsis,
+                                                                        style: headingLarge.copyWith(
+                                                                            color:
+                                                                                Colors.white),
+                                                                      ),
                                                                     ),
                                                                   ),
                                                                 ),
@@ -1275,19 +1284,25 @@ class _GroupDetailState extends State<GroupDetail> {
                                                                   child:
                                                                       Container(
                                                                     width: 60.w,
-                                                                    child: Text(
-                                                                      _groupController
+                                                                    child:
+                                                                        Tooltip(
+                                                                      message: _groupController
                                                                           .notCompletedTaskList[
                                                                               index]
                                                                           .taskTitle,
-                                                                      maxLines:
-                                                                          1,
-                                                                      overflow:
-                                                                          TextOverflow
-                                                                              .ellipsis,
-                                                                      style: headingLarge.copyWith(
-                                                                          color:
-                                                                              Colors.white),
+                                                                      child:
+                                                                          Text(
+                                                                        _groupController
+                                                                            .notCompletedTaskList[index]
+                                                                            .taskTitle,
+                                                                        maxLines:
+                                                                            1,
+                                                                        overflow:
+                                                                            TextOverflow.ellipsis,
+                                                                        style: headingLarge.copyWith(
+                                                                            color:
+                                                                                Colors.white),
+                                                                      ),
                                                                     ),
                                                                   ),
                                                                 ),
