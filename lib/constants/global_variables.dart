@@ -40,7 +40,7 @@ TextStyle bodySmall = const TextStyle(
     height: 1.5);
 
 TextStyle title = const TextStyle(
-    fontSize: 12, color: Colors.black12, fontFamily: 'MontserratSemiBold');
+    fontSize: 12, color: Colors.black12, fontFamily: "MontserratSemiBold");
 TextStyle hintText =
     const TextStyle(fontSize: 12, color: Colors.black12, fontFamily: 'Inter');
 
@@ -50,8 +50,8 @@ final userDocId = ValueNotifier("");
 RxString fcmToken = ''.obs;
 UserModel userData = UserModel(
     points: "",
-    postalCode: '',
-    phoneNumber: '',
+    postalCode: "",
+    phoneNumber: "",
     userID: "",
     displayName: "",
     email: "",

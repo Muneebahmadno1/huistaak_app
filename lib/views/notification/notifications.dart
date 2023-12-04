@@ -183,16 +183,17 @@ class _NotificationsState extends State<Notifications> {
                                                     child: SizedBox(
                                                       height: 20 * 2,
                                                       width: 20 * 2,
-                                                      child: (_notiController
-                                                                      .notificationList[
-                                                                          index]
-                                                                      .notificationType ==
-                                                                  4 ||
+                                                      child: (_notiController.notificationList[index].notificationType == 4 ||
                                                               _notiController
                                                                       .notificationList[
                                                                           index]
                                                                       .notificationType ==
-                                                                  1)
+                                                                  1 ||
+                                                              _notiController
+                                                                      .notificationList[
+                                                                          index]
+                                                                      .notificationType ==
+                                                                  3)
                                                           ? Image.asset(
                                                               "assets/images/congratImage.png", // Replace with your asset image path
                                                               fit: BoxFit
@@ -271,7 +272,7 @@ class _NotificationsState extends State<Notifications> {
                                                                                 2
                                                                             ? _notiController.notificationList[index].userName
                                                                             : _notiController.notificationList[index].notificationType == 3
-                                                                                ? _notiController.notificationList[index].userName
+                                                                                ? "Congratulations "
                                                                                 : _notiController.notificationList[index].notificationType == 1
                                                                                     ? "Congratulations "
                                                                                     : "",

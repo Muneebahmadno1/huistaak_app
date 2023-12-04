@@ -24,6 +24,7 @@ class _NewGoalsScreenState extends State<NewGoalsScreen> {
   final GoalController _goalController = Get.find<GoalController>();
   bool isLoading = false;
   bool anyGroupWithNoGoal = false;
+
   getData() async {
     setState(() {
       isLoading = true;
@@ -121,231 +122,210 @@ class _NewGoalsScreenState extends State<NewGoalsScreen> {
                                 ? _goalController.resetGroupPoints(
                                     _goalController.goalList[index].goalGroup)
                                 : null;
-                            return expired
-                                ? SizedBox.shrink()
-                                : Padding(
-                                    padding: EdgeInsets.only(bottom: 15.0),
-                                    child: DelayedDisplay(
-                                      delay: Duration(milliseconds: 400),
-                                      slidingBeginOffset: Offset(0, 0),
-                                      child: Container(
-                                        padding: EdgeInsets.all(20),
-                                        width: double.infinity,
-                                        decoration: BoxDecoration(
-                                          color: _goalController
-                                                  .goalList[index].goalDate
-                                                  .toDate()
-                                                  .isBefore(DateTime.now())
-                                              ? Colors.red
-                                              : (achievedPoints /
-                                                          int.parse(
-                                                              _goalController
-                                                                  .goalList[
-                                                                      index]
-                                                                  .goalPoints
-                                                                  .toString())) >=
-                                                      1.0
-                                                  ? Colors.green[900]
-                                                  : AppColors.buttonColor,
-                                          borderRadius:
-                                              BorderRadius.circular(20),
-                                        ),
-                                        child: DelayedDisplay(
-                                          delay: Duration(milliseconds: 500),
-                                          slidingBeginOffset: Offset(0, -1),
-                                          child: Column(
-                                            children: [
-                                              Row(
-                                                children: [
-                                                  CircleAvatar(
-                                                    radius:
-                                                        20, // Adjust the radius as needed
-                                                    backgroundColor: Colors
-                                                        .grey, // You can set a default background color
-                                                    child: ClipOval(
-                                                      child: SizedBox(
-                                                        height: 20 * 2,
-                                                        width: 20 * 2,
-                                                        child: _goalController
-                                                                    .goalList[
-                                                                        index]
-                                                                    .goalGroupImage ==
-                                                                null
-                                                            ? Image.asset(
-                                                                "assets/images/groupIcon.png", // Replace with your asset image path
-                                                                fit: BoxFit
-                                                                    .fitHeight,
-                                                              )
-                                                            : CachedNetworkImage(
-                                                                imageUrl: _goalController
-                                                                    .goalList[
-                                                                        index]
-                                                                    .goalGroupImage
-                                                                    .toString(),
-                                                                placeholder: (context,
-                                                                        url) =>
-                                                                    CircularProgressIndicator(),
-                                                                errorWidget: (context,
-                                                                        url,
-                                                                        error) =>
-                                                                    Icon(Icons
-                                                                        .error),
-                                                                fit:
-                                                                    BoxFit.fill,
-                                                              ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  SizedBox(
-                                                    width: 1.w,
-                                                  ),
-                                                  Text(
-                                                    _goalController
+                            return Padding(
+                              padding: EdgeInsets.only(bottom: 15.0),
+                              child: DelayedDisplay(
+                                delay: Duration(milliseconds: 400),
+                                slidingBeginOffset: Offset(0, 0),
+                                child: Container(
+                                  padding: EdgeInsets.all(20),
+                                  width: double.infinity,
+                                  decoration: BoxDecoration(
+                                    color: _goalController
+                                            .goalList[index].goalDate
+                                            .toDate()
+                                            .isBefore(DateTime.now())
+                                        ? Colors.red
+                                        : (achievedPoints /
+                                                    int.parse(_goalController
                                                         .goalList[index]
-                                                        .goalGroupName
-                                                        .toString(),
-                                                    style:
-                                                        headingMedium.copyWith(
-                                                            color:
-                                                                Colors.white),
-                                                    maxLines: 2,
-                                                  ),
-                                                ],
-                                              ),
-                                              SizedBox(
-                                                height: 10,
-                                              ),
-                                              Row(
-                                                children: [
-                                                  Expanded(
-                                                    child: Text(
-                                                      _goalController
-                                                          .goalList[index]
-                                                          .goalTitle,
-                                                      style: headingMedium
-                                                          .copyWith(
-                                                              color:
-                                                                  Colors.white),
-                                                      maxLines: 2,
-                                                    ),
-                                                  ),
-                                                  _goalController
-                                                          .groupList.isNotEmpty
-                                                      ? InkWell(
-                                                          onTap: () {
-                                                            Get.to(
-                                                                () => EditGoal(
-                                                                      goalDetail:
-                                                                          _goalController
-                                                                              .goalList[index],
-                                                                    ));
-                                                          },
-                                                          child: Icon(
-                                                            Icons.edit,
-                                                            color: Colors.white,
-                                                          ),
+                                                        .goalPoints
+                                                        .toString())) >=
+                                                1.0
+                                            ? Colors.green[900]
+                                            : AppColors.buttonColor,
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                  child: DelayedDisplay(
+                                    delay: Duration(milliseconds: 500),
+                                    slidingBeginOffset: Offset(0, -1),
+                                    child: Column(
+                                      children: [
+                                        Row(
+                                          children: [
+                                            CircleAvatar(
+                                              radius: 20,
+                                              // Adjust the radius as needed
+                                              backgroundColor: Colors.grey,
+                                              // You can set a default background color
+                                              child: ClipOval(
+                                                child: SizedBox(
+                                                  height: 20 * 2,
+                                                  width: 20 * 2,
+                                                  child: _goalController
+                                                              .goalList[index]
+                                                              .goalGroupImage ==
+                                                          null
+                                                      ? Image.asset(
+                                                          "assets/images/groupIcon.png",
+                                                          // Replace with your asset image path
+                                                          fit: BoxFit.fitHeight,
                                                         )
-                                                      : SizedBox.shrink(),
-                                                  _goalController
-                                                          .groupList.isNotEmpty
-                                                      ? InkWell(
-                                                          onTap: () {
-                                                            confirmPopUp(
-                                                                context,
-                                                                "Are you sure, you want to delete goal?",
-                                                                () {
-                                                              _goalController
-                                                                  .deleteGoal(
-                                                                _goalController
-                                                                    .goalList[
-                                                                        index]
-                                                                    .goalGroup
-                                                                    .toString(),
-                                                                _goalController
-                                                                    .goalList[
-                                                                        index]
-                                                                    .goalID
-                                                                    .toString(),
-                                                              );
-                                                              getData();
-                                                              Navigator.pop(
-                                                                  context);
-                                                            });
-                                                          },
-                                                          child: Icon(
-                                                            Icons.delete,
-                                                            color: Colors.white,
-                                                          ),
-                                                        )
-                                                      : SizedBox.shrink()
-                                                ],
-                                              ),
-                                              SizedBox(
-                                                height: 10,
-                                              ),
-                                              GoalDetailWidget(
-                                                  icon:
-                                                      "assets/icons/home/date.png",
-                                                  title: "Date",
-                                                  data: DateFormat('yyyy-MM-dd')
-                                                      .format(_goalController
-                                                          .goalList[index]
-                                                          .goalDate
-                                                          .toDate())),
-                                              SizedBox(
-                                                height: 10,
-                                              ),
-                                              GoalDetailWidget(
-                                                  icon: "assets/icons/coin.png",
-                                                  title: "Points to achieve",
-                                                  data: _goalController
-                                                          .goalList[index]
-                                                          .goalPoints ??
-                                                      "0"),
-                                              SizedBox(
-                                                height: 10,
-                                              ),
-                                              expired
-                                                  ? SizedBox.shrink()
-                                                  : GoalDetailWidget(
-                                                      icon:
-                                                          "assets/icons/coin1.png",
-                                                      title:
-                                                          "Days remaining for achieving goal",
-                                                      data: daysLeft.inDays
-                                                          .toString()),
-                                              expired
-                                                  ? SizedBox.shrink()
-                                                  : SizedBox(
-                                                      height: 10,
-                                                    ),
-                                              expired
-                                                  ? SizedBox.shrink()
-                                                  : LikeBarWidget(
-                                                      image: userData.imageUrl,
-                                                      count: achievedPoints
-                                                          .toString(),
-                                                      percent: (achievedPoints /
-                                                          int.parse(
+                                                      : CachedNetworkImage(
+                                                          imageUrl:
                                                               _goalController
                                                                   .goalList[
                                                                       index]
-                                                                  .goalPoints
-                                                                  .toString())),
-                                                      TotalCount:
+                                                                  .goalGroupImage
+                                                                  .toString(),
+                                                          placeholder: (context,
+                                                                  url) =>
+                                                              CircularProgressIndicator(),
+                                                          errorWidget: (context,
+                                                                  url, error) =>
+                                                              Icon(Icons.error),
+                                                          fit: BoxFit.fill,
+                                                        ),
+                                                ),
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              width: 1.w,
+                                            ),
+                                            Text(
+                                              _goalController
+                                                  .goalList[index].goalGroupName
+                                                  .toString(),
+                                              style: headingMedium.copyWith(
+                                                  color: Colors.white),
+                                              maxLines: 2,
+                                            ),
+                                          ],
+                                        ),
+                                        SizedBox(
+                                          height: 10,
+                                        ),
+                                        Row(
+                                          children: [
+                                            Expanded(
+                                              child: Text(
+                                                _goalController
+                                                    .goalList[index].goalTitle,
+                                                style: headingMedium.copyWith(
+                                                    color: Colors.white),
+                                                maxLines: 2,
+                                              ),
+                                            ),
+                                            _goalController.groupList.isNotEmpty
+                                                ? InkWell(
+                                                    onTap: () {
+                                                      Get.to(() => EditGoal(
+                                                            goalDetail:
+                                                                _goalController
+                                                                        .goalList[
+                                                                    index],
+                                                          ));
+                                                    },
+                                                    child: Icon(
+                                                      Icons.edit,
+                                                      color: Colors.white,
+                                                    ),
+                                                  )
+                                                : SizedBox.shrink(),
+                                            _goalController.groupList.isNotEmpty
+                                                ? InkWell(
+                                                    onTap: () {
+                                                      confirmPopUp(context,
+                                                          "Are you sure, you want to delete goal?",
+                                                          () {
+                                                        _goalController
+                                                            .resetGroupPoints(
+                                                                _goalController
+                                                                    .goalList[
+                                                                        index]
+                                                                    .goalGroup);
+                                                        _goalController
+                                                            .deleteGoal(
                                                           _goalController
                                                               .goalList[index]
-                                                              .goalPoints
-                                                              .toString()),
-                                              SizedBox(
+                                                              .goalGroup
+                                                              .toString(),
+                                                          _goalController
+                                                              .goalList[index]
+                                                              .goalID
+                                                              .toString(),
+                                                        );
+                                                        getData();
+                                                        Navigator.pop(context);
+                                                      });
+                                                    },
+                                                    child: Icon(
+                                                      Icons.delete,
+                                                      color: Colors.white,
+                                                    ),
+                                                  )
+                                                : SizedBox.shrink()
+                                          ],
+                                        ),
+                                        SizedBox(
+                                          height: 10,
+                                        ),
+                                        GoalDetailWidget(
+                                            icon: "assets/icons/home/date.png",
+                                            title: "Date",
+                                            data: DateFormat('yyyy-MM-dd')
+                                                .format(_goalController
+                                                    .goalList[index].goalDate
+                                                    .toDate())),
+                                        SizedBox(
+                                          height: 10,
+                                        ),
+                                        GoalDetailWidget(
+                                            icon: "assets/icons/coin.png",
+                                            title: "Points to achieve",
+                                            data: _goalController
+                                                    .goalList[index]
+                                                    .goalPoints ??
+                                                "0"),
+                                        SizedBox(
+                                          height: 10,
+                                        ),
+                                        expired
+                                            ? SizedBox.shrink()
+                                            : GoalDetailWidget(
+                                                icon: "assets/icons/coin1.png",
+                                                title:
+                                                    "Days remaining for achieving goal",
+                                                data:
+                                                    daysLeft.inDays.toString()),
+                                        expired
+                                            ? SizedBox.shrink()
+                                            : SizedBox(
                                                 height: 10,
                                               ),
-                                            ],
-                                          ),
+                                        expired
+                                            ? SizedBox.shrink()
+                                            : LikeBarWidget(
+                                                image: userData.imageUrl,
+                                                count:
+                                                    achievedPoints.toString(),
+                                                percent: (achievedPoints /
+                                                    int.parse(_goalController
+                                                        .goalList[index]
+                                                        .goalPoints
+                                                        .toString())),
+                                                TotalCount: _goalController
+                                                    .goalList[index].goalPoints
+                                                    .toString()),
+                                        SizedBox(
+                                          height: 10,
                                         ),
-                                      ),
+                                      ],
                                     ),
-                                  );
+                                  ),
+                                ),
+                              ),
+                            );
                           },
                         ),
                       ),
