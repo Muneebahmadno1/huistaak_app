@@ -273,7 +273,7 @@ class _NewGoalsScreenState extends State<NewGoalsScreen> {
                                         GoalDetailWidget(
                                             icon: "assets/icons/home/date.png",
                                             title: "Date",
-                                            data: DateFormat('yyyy-MM-dd')
+                                            data: DateFormat('dd-MM-yyyy')
                                                 .format(_goalController
                                                     .goalList[index].goalDate
                                                     .toDate())),
