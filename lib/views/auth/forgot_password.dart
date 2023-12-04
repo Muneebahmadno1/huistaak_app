@@ -138,14 +138,27 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                       buttonText: "Send link to reset Password",
                       onTap: () async {
                         if (key.currentState!.validate()) {
-                          setState(() {
-                            isLoading = true;
-                          });
+                          Get.defaultDialog(
+                              barrierDismissible: false,
+                              title: "Huistaak",
+                              titleStyle: const TextStyle(
+                                color: AppColors.buttonColor,
+                                fontSize: 18,
+                                fontWeight: FontWeight.w500,
+                                fontFamily: 'Poppins',
+                              ),
+                              middleText: "",
+                              content: const Column(
+                                children: [
+                                  Center(
+                                      child: CircularProgressIndicator(
+                                    color: AppColors.buttonColor,
+                                  ))
+                                ],
+                              ));
+
                           await resetPassword(
                               email: emailEditingController.text);
-                          setState(() {
-                            isLoading = false;
-                          });
                         }
                       },
                     ),
@@ -174,9 +187,11 @@ class _ForgotPasswordState extends State<ForgotPassword> {
       //   },
       //   desc: 'To change password an email send to your email account.',
       // ).show();
+      Get.back();
       successPopUp(context, const LoginScreen(),
           'To change password an email send to your email account.');
     } on FirebaseAuthException catch (e) {
+      Get.back();
       if (e.code == 'user-not-found') {
         errorPopUp(
           context,
