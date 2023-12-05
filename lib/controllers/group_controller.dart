@@ -452,8 +452,6 @@ class GroupController extends GetxController {
       "id": docId,
     });
     for (int a = 0; a < assignMembers.length; a++) {
-      print("assignMembers.length");
-      print(assignMembers.length);
       updateCounter(assignMembers[a].userID, groupID);
     }
     return;
@@ -476,7 +474,8 @@ class GroupController extends GetxController {
             .update({'counter': clearCounter ? 0 : FieldValue.increment(1)});
       } else {
         // If the document does not exist, create a new one with counter set to 1
-        await countersRef.add({'groupID': groupID, 'counter': 1});
+        await countersRef
+            .add({'groupID': groupID, 'counter': clearCounter ? 0 : 1});
       }
     } catch (e) {
       print('Error updating counter: $e');

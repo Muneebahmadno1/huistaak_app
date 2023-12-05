@@ -178,18 +178,9 @@ class _ForgotPasswordState extends State<ForgotPassword> {
   Future resetPassword({required String email}) async {
     try {
       await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
-      // return AwesomeDialog(
-      //   context: context,
-      //   dialogType: DialogType.success,
-      //   btnOkOnPress: () {
-      //     setState(() {});
-      //     Get.back();
-      //   },
-      //   desc: 'To change password an email send to your email account.',
-      // ).show();
       Get.back();
       successPopUp(context, const LoginScreen(),
-          'To change password an email send to your email account.');
+          'An email has been sent to your email address with instructions to reset password.');
     } on FirebaseAuthException catch (e) {
       Get.back();
       if (e.code == 'user-not-found') {
@@ -197,15 +188,6 @@ class _ForgotPasswordState extends State<ForgotPassword> {
           context,
           "There is no record of this email",
         );
-        // return AwesomeDialog(
-        //   context: context,
-        //   dialogType: DialogType.error,
-        //   btnOkOnPress: () {
-        //     setState(() {});
-        //     Get.back();
-        //   },
-        //   desc: 'There is no record of this email',
-        // ).show();
       }
     }
   }
