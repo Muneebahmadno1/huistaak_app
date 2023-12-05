@@ -434,6 +434,7 @@ class GroupController extends GetxController {
               'displayName': member.displayName,
               'imageUrl': member.imageUrl,
               'userID': member.userID,
+              'startTask': DateTime.parse(startTimeT),
             })
         .toList();
     String docId = ref.doc().id;
