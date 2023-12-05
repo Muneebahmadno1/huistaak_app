@@ -200,6 +200,7 @@ class _CreateNewGroupTaskState extends State<CreateNewGroupTask> {
 
                         setState(() {
                           _dataController.selectedEndDate = null;
+                          _dataController.endTime.value = "";
                           visibility = false;
                         });
                         getTimesDropDownData(
@@ -490,10 +491,6 @@ class _CreateNewGroupTaskState extends State<CreateNewGroupTask> {
                                   ),
                                 ),
                               ),
-                              // CustomDropDown(
-                              //   dateForTime: _dataController.selectedDate!,
-                              //   dropDownTitle: "End Time",
-                              // ),
                             ),
                           ],
                         ),
@@ -505,73 +502,6 @@ class _CreateNewGroupTaskState extends State<CreateNewGroupTask> {
                     ],
                   ),
                 ),
-                visibility
-                    ? timeError
-                        ? startTimeError
-                            ? Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 18.0),
-                                    child: Text(
-                                      "Start Time of task is already passed",
-                                      style: TextStyle(
-                                          color: Colors.red[800], height: 3),
-                                    ),
-                                  ),
-                                ],
-                              )
-                            : startTimeError
-                                ? Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      Padding(
-                                        padding:
-                                            const EdgeInsets.only(left: 18.0),
-                                        child: Text(
-                                          "End Time of task is already passed",
-                                          style: TextStyle(
-                                              color: Colors.red[800],
-                                              height: 3),
-                                        ),
-                                      ),
-                                    ],
-                                  )
-                                : endDateError
-                                    ? Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        children: [
-                                          Padding(
-                                            padding: const EdgeInsets.only(
-                                                left: 18.0),
-                                            child: Text(
-                                              "End time should be after start time",
-                                              style: TextStyle(
-                                                  color: Colors.red[800],
-                                                  height: 3),
-                                            ),
-                                          ),
-                                        ],
-                                      )
-                                    : Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        children: [
-                                          Padding(
-                                            padding: const EdgeInsets.only(
-                                                left: 18.0),
-                                            child: Text(
-                                              "Start and End Time can't be same",
-                                              style: TextStyle(
-                                                  color: Colors.red[800],
-                                                  height: 3),
-                                            ),
-                                          ),
-                                        ],
-                                      )
-                        : SizedBox.shrink()
-                    : SizedBox.shrink(),
                 const SizedBox(height: 20),
                 DelayedDisplay(
                   delay: Duration(milliseconds: 900),
@@ -789,7 +719,6 @@ class _CreateNewGroupTaskState extends State<CreateNewGroupTask> {
                             setState(() {
                               startTimeError =
                                   DateTime.parse(startTime).isBefore(now);
-                              print(startTimeError);
                             });
                           }
                           if (_dataController.endTime.value != "") {
@@ -803,55 +732,79 @@ class _CreateNewGroupTaskState extends State<CreateNewGroupTask> {
                         }
                       }
                       if (taskFormField.currentState!.validate()) {
-                        if (_dataController.assignTaskMember.isNotEmpty) {
-                          if (_dataController.startTime.value ==
-                                  _dataController.endTime.value ||
-                              _dataController.startTime.value == "" ||
-                              _dataController.endTime.value == "" ||
-                              endDateError ||
-                              startTimeError ||
-                              endTimeError) {
-                            setState(() {
-                              timeError = true;
-                            });
-                          } else {
-                            setState(() {
-                              timeError = false;
-                              isLoading = true;
-                            });
-                            await _groupController.addGroupTask(
-                                widget.groupID,
-                                taskNameEditingController.text,
-                                _dataController.selectedStartDate,
-                                _dataController.startTime.toString(),
-                                _dataController.endTime.toString(),
-                                points.toString(),
-                                _dataController.assignTaskMember);
-                            for (int i = 0;
-                                i < _dataController.assignTaskMember.length;
-                                i++) {
-                              await _notiController.sendNotification(
-                                  _dataController.assignTaskMember[i].userID
-                                      .toString(),
+                        if (_dataController.selectedStartDate != null &&
+                            _dataController.selectedEndDate != null &&
+                            _dataController.startTime.value != "" &&
+                            _dataController.endTime.value != "") {
+                          if (_dataController.assignTaskMember.isNotEmpty) {
+                            if (_dataController.startTime.value ==
+                                    _dataController.endTime.value ||
+                                _dataController.startTime.value == "" ||
+                                _dataController.endTime.value == "" ||
+                                endDateError ||
+                                startTimeError ||
+                                endTimeError) {
+                              setState(() {
+                                timeError = true;
+                              });
+                              errorPopUp(
+                                  context,
+                                  startTimeError
+                                      ? "Start Time of task is already passed"
+                                      : startTimeError
+                                          ? "End Time of task is already passed"
+                                          : endDateError
+                                              ? "End time should be after start time"
+                                              : "Start and End Time can't be same");
+                            } else {
+                              setState(() {
+                                timeError = false;
+                                isLoading = true;
+                              });
+                              await _groupController.addGroupTask(
+                                  widget.groupID,
+                                  taskNameEditingController.text,
+                                  _dataController.selectedStartDate,
+                                  _dataController.startTime.toString(),
                                   _dataController.endTime.toString(),
-                                  widget.groupTitle,
-                                  widget.groupID);
+                                  points.toString(),
+                                  _dataController.assignTaskMember);
+                              for (int i = 0;
+                                  i < _dataController.assignTaskMember.length;
+                                  i++) {
+                                await _notiController.sendNotification(
+                                    _dataController.assignTaskMember[i].userID
+                                        .toString(),
+                                    _dataController.endTime.toString(),
+                                    widget.groupTitle,
+                                    widget.groupID);
+                              }
+                              _dataController.assignTaskMember.clear();
+                              _dataController.selectedEndDate = null;
+                              _dataController.selectedStartDate = null;
+                              PageTransition.pageBackNavigation(
+                                  page: GroupDetail(
+                                groupTitle: widget.groupTitle,
+                                groupID: widget.groupID,
+                              ));
+                              setState(() {
+                                isLoading = false;
+                              });
                             }
-                            _dataController.assignTaskMember.clear();
-                            _dataController.selectedEndDate = null;
-                            _dataController.selectedStartDate = null;
-                            PageTransition.pageBackNavigation(
-                                page: GroupDetail(
-                              groupTitle: widget.groupTitle,
-                              groupID: widget.groupID,
-                            ));
-                            setState(() {
-                              isLoading = false;
-                            });
+                          } else {
+                            errorPopUp(context,
+                                "Can't add task without assigning it to any member");
                           }
                         } else {
-                          errorPopUp(context,
-                              "Can't add task without assigning it to any member");
+                          errorPopUp(
+                              context,
+                              _dataController.selectedStartDate == null
+                                  ? "Can't add task without selecting start date"
+                                  : _dataController.selectedEndDate == null
+                                      ? "Can't add task without selecting end date"
+                                      : _dataController.startTime.value == ""
+                                          ? "Can't add task without selecting start time"
+                                          : "Can't add task without selecting end time");
                         }
                       }
                     },
