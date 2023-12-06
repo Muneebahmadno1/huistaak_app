@@ -782,9 +782,11 @@ class _GroupSettingState extends State<GroupSetting> {
                       slidingBeginOffset: Offset(0, 0),
                       child: ZoomTapAnimation(
                         onTap: () async {
-                          openWhatsApp(_groupSettingController
-                              .groupInfo[0].groupCode
-                              .toString());
+                          openWhatsApp(
+                              "Hey, \n Will you also become a member of our household group?\n Then participate now with the code " +
+                                  _groupSettingController.groupInfo[0].groupCode
+                                      .toString() +
+                                  " in the Huistaak app!");
                         },
                         child: Container(
                           padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -814,6 +816,7 @@ class _GroupSettingState extends State<GroupSetting> {
   }
 
   void openWhatsApp(message) async {
+    print(message);
     String encodedMessage = Uri.encodeComponent(message);
     var whatsappAndroid = Uri.parse("whatsapp://send?text=$encodedMessage");
     if (await canLaunchUrl(whatsappAndroid)) {

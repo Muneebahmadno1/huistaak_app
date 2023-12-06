@@ -71,6 +71,7 @@ class HomeController extends GetxController {
   }
 
   joinGroupRequest(groupID) async {
+    print(userData.imageUrl.toString());
     String groupName = "";
     try {
       final newMap = {
@@ -109,9 +110,10 @@ class HomeController extends GetxController {
       notiID.set({
         "read": false,
         "notificationType": 1,
-        "notification": userData.displayName.toString() + " join ",
+        "notification": " is from now on a participant of  ",
         "Time": DateTime.now(),
-        "notiImage": userData.imageUrl,
+        "notiImage": userData.imageUrl.toString(),
+        "userName": userData.displayName.toString(),
         "notiID": notiID.id,
         "groupID": groupID.toString(),
         "groupName": groupName.toString(),

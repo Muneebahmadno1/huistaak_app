@@ -178,10 +178,10 @@ class GroupSettingController extends GetxController {
         notiID.set({
           "read": false,
           "notificationType": 4,
-          "notification":
-              "you have been made admin of " + groupTitle.toString() + " group",
+          "notification": "you have been made admin of ",
           "Time": DateTime.now(),
           "notiID": notiID.id,
+          "notiImage": userData.imageUrl.toString(),
           "userToJoin": FieldValue.arrayUnion([]),
           "groupID": groupID.toString(),
           "groupName": groupTitle.toString(),
@@ -310,9 +310,11 @@ class GroupSettingController extends GetxController {
     notiID.set({
       "read": false,
       "notificationType": 4,
-      "notification": "you have been made admin of " + groupTitle.toString(),
+      "notification": " has made you admin of ",
+      "userName": userData.displayName.toString(),
       "Time": DateTime.now(),
       "notiID": notiID.id,
+      "notiImage": userData.imageUrl.toString(),
       "userToJoin": FieldValue.arrayUnion([]),
       "groupID": groupID.toString(),
       "groupName": groupTitle.toString(),

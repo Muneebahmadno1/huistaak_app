@@ -183,17 +183,11 @@ class _NotificationsState extends State<Notifications> {
                                                     child: SizedBox(
                                                       height: 20 * 2,
                                                       width: 20 * 2,
-                                                      child: (_notiController.notificationList[index].notificationType == 4 ||
-                                                              _notiController
-                                                                      .notificationList[
-                                                                          index]
-                                                                      .notificationType ==
-                                                                  1 ||
-                                                              _notiController
-                                                                      .notificationList[
-                                                                          index]
-                                                                      .notificationType ==
-                                                                  3)
+                                                      child: (_notiController
+                                                                  .notificationList[
+                                                                      index]
+                                                                  .notificationType ==
+                                                              3)
                                                           ? Image.asset(
                                                               "assets/images/congratImage.png", // Replace with your asset image path
                                                               fit: BoxFit
@@ -202,7 +196,7 @@ class _NotificationsState extends State<Notifications> {
                                                           : _notiController
                                                                       .notificationList[
                                                                           index]
-                                                                      .notificationType ==
+                                                                      .notiImage ==
                                                                   null
                                                               ? Image.asset(
                                                                   "assets/images/groupIcon.png", // Replace with your asset image path
@@ -266,14 +260,17 @@ class _NotificationsState extends State<Notifications> {
                                                                 children: <TextSpan>[
                                                                   TextSpan(
                                                                     text: _notiController.notificationList[index].notificationType ==
-                                                                            4
-                                                                        ? 'Congratulations '
+                                                                            1
+                                                                        ? _notiController
+                                                                            .notificationList[
+                                                                                index]
+                                                                            .userName
                                                                         : _notiController.notificationList[index].notificationType ==
                                                                                 2
                                                                             ? _notiController.notificationList[index].userName
-                                                                            : _notiController.notificationList[index].notificationType == 3
-                                                                                ? "Congratulations "
-                                                                                : _notiController.notificationList[index].notificationType == 1
+                                                                            : _notiController.notificationList[index].notificationType == 4
+                                                                                ? _notiController.notificationList[index].userName
+                                                                                : _notiController.notificationList[index].notificationType == 3
                                                                                     ? "Congratulations "
                                                                                     : "",
                                                                     style:
@@ -304,7 +301,9 @@ class _NotificationsState extends State<Notifications> {
                                                                             ? _notiController.notificationList[index].groupName
                                                                             : _notiController.notificationList[index].notificationType == 3
                                                                                 ? _notiController.notificationList[index].groupName
-                                                                                : "",
+                                                                                : _notiController.notificationList[index].notificationType == 4
+                                                                                    ? _notiController.notificationList[index].groupName
+                                                                                    : "",
                                                                     style:
                                                                         TextStyle(
                                                                       fontWeight:
@@ -324,7 +323,7 @@ class _NotificationsState extends State<Notifications> {
                                                             .bottomRight,
                                                         child: Text(
                                                           DateFormat(
-                                                                  'yyyy-MM-dd kk:mm a')
+                                                                  'dd-MM-yyyy kk:mm')
                                                               .format(DateTime.parse(
                                                                   _notiController
                                                                       .notificationList[

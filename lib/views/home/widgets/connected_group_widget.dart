@@ -127,19 +127,19 @@ class _ConnectedGroupListState extends State<ConnectedGroupList> {
                             height: 6,
                           )
                         : Stack(
+                            alignment: Alignment.center,
                             children: [
                               Icon(
                                 Icons.circle,
-                                size: 3.h,
+                                size: 4.h,
                                 color: AppColors.buttonColor,
                               ),
-                              Positioned(
-                                  right: 6.5,
-                                  top: 4,
-                                  child: Text(
-                                    widget.unreadCount,
-                                    style: TextStyle(color: Colors.white),
-                                  )),
+                              Text(
+                                widget.unreadCount,
+                                style: TextStyle(
+                                  color: Colors.white,
+                                ),
+                              ),
                             ],
                           ),
                     Text(

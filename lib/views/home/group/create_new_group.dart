@@ -32,6 +32,7 @@ class _CreateNewGroupState extends State<CreateNewGroup> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    _groupController.imageFile = null;
     _dataController.groupAdmins.clear();
     _dataController.groupAdmins.add(MemberModel(
         displayName: userData.displayName,

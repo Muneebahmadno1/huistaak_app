@@ -129,11 +129,17 @@ class _GroupTaskListState extends State<GroupTaskList> {
                                         TaskDetailWidget(
                                             icon: "assets/icons/home/time.png",
                                             title: "Time",
-                                            data: _groupSettingController
-                                                    .taskList[index].startTime +
+                                            data: DateFormat('dd-MM-yyyy kk:mm')
+                                                    .format(DateTime.parse(
+                                                        _groupSettingController
+                                                            .taskList[index]
+                                                            .startTime)) +
                                                 " to " +
-                                                _groupSettingController
-                                                    .taskList[index].endTime),
+                                                DateFormat('dd-MM-yyyy kk:mm')
+                                                    .format(DateTime.parse(
+                                                        _groupSettingController
+                                                            .taskList[index]
+                                                            .endTime))),
                                         SizedBox(
                                           height: 10,
                                         ),

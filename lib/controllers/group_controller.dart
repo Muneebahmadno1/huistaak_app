@@ -247,7 +247,7 @@ class GroupController extends GetxController {
   }
 
   endTask(groupID, taskID, List<MemberModel> StartTime, taskDurationInMin,
-      points, groupTitle, List<MemberModel> adminList) async {
+      points, groupTitle, List<MemberModel> adminList, myPoints) async {
     final DocumentReference documentReference = await Collections.GROUPS
         .doc(groupID)
         .collection(Collections.TASKS)
@@ -327,7 +327,28 @@ class GroupController extends GetxController {
           });
           documentReference.update({
             'assignMembers': existingArray,
-          }).then((_) {
+          }).then((_) async {
+            bool achieved = await goalAchieved(groupID, myPoints.toString());
+            if (achieved) {
+              var notiID = Collections.USERS
+                  .doc(adminList[0].userID)
+                  .collection(Collections.NOTIFICATIONS)
+                  .doc();
+              notiID.set({
+                "read": false,
+                "notificationType": 3,
+                "notification": "you have earned " +
+                    userPoint.ceil().toString() +
+                    " points in ",
+                "Time": DateTime.now(),
+                "notiID": notiID.id,
+                "notiImage": userData.imageUrl,
+                "userName": userData.displayName.toString(),
+                "userToJoin": FieldValue.arrayUnion([]),
+                "groupID": groupID.toString(),
+                "groupName": groupTitle.toString(),
+              });
+            }
             var notiID = Collections.USERS
                 .doc(adminList[0].userID)
                 .collection(Collections.NOTIFICATIONS)
@@ -373,6 +394,57 @@ class GroupController extends GetxController {
     }).catchError((error) {
       print('Error fetching document: $error');
     });
+  }
+
+  Future<bool> goalAchieved(String groupId, String myGoalPoints) async {
+    try {
+      // Step 1: Check if the group exists
+      DocumentSnapshot groupSnapshot = await FirebaseFirestore.instance
+          .collection('groups')
+          .doc(groupId)
+          .get();
+
+      if (groupSnapshot.exists) {
+        // Step 2: Check if the "goals" subcollection exists
+        QuerySnapshot goalsSnapshot = await FirebaseFirestore.instance
+            .collection('groups')
+            .doc(groupId)
+            .collection('goals')
+            .get();
+
+        if (goalsSnapshot.docs.isNotEmpty) {
+          // Step 3: Filter documents in the "goals" subcollection
+          DateTime now = DateTime.now();
+
+          List<Map<String, dynamic>> filteredGoals = [];
+
+          for (QueryDocumentSnapshot goalDoc in goalsSnapshot.docs) {
+            DateTime goalDate = goalDoc['goalDate']
+                .toDate(); // Assuming 'goalDate' is a Timestamp field
+            int goalPoints = int.parse(goalDoc['goalPoints'].toString());
+
+            // Check conditions
+            if (!goalDate.isAfter(now) &&
+                goalPoints >= int.parse(myGoalPoints)) {
+              filteredGoals.add(goalDoc.data() as Map<String, dynamic>);
+            }
+          }
+
+          // Do something with filteredGoals
+          print('Filtered Goals: $filteredGoals');
+          return true;
+        } else {
+          print('No goals subcollection found for the group.');
+          return false;
+        }
+      } else {
+        print('Group with ID $groupId not found.');
+        return false;
+      }
+    } catch (error) {
+      print('Error: $error');
+      return false;
+    }
   }
 
   createGroup(

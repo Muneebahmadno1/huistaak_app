@@ -158,7 +158,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                               ));
 
                           await resetPassword(
-                              email: emailEditingController.text);
+                              email: emailEditingController.text.trim());
                         }
                       },
                     ),
