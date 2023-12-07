@@ -32,6 +32,7 @@ class _CreateNewGroupState extends State<CreateNewGroup> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    _groupController.imageFile = null;
     _dataController.groupAdmins.clear();
     _dataController.groupAdmins.add(MemberModel(
         displayName: userData.displayName,
@@ -302,25 +303,30 @@ class _CreateNewGroupState extends State<CreateNewGroup> {
                   slidingBeginOffset: Offset(0, 0),
                   child: ZoomTapAnimation(
                     onTap: () async {
-                      if (groupFormField.currentState!.validate()) {
-                        setState(() {
-                          creatingGroup = true;
-                        });
-                        var groupID = await _groupController.createGroup(
-                            groupNameEditingController.text.toString(),
-                            _groupController.imageUrl,
-                            _dataController.groupAdmins,
-                            _dataController.groupMembers);
-                        _dataController.groupAdmins.clear();
-                        _dataController.groupMembers.clear();
-                        Get.offAll(() => GroupDetail(
-                              groupID: groupID,
-                              groupTitle:
-                                  groupNameEditingController.text.toString(),
-                            ));
-                        setState(() {
-                          creatingGroup = false;
-                        });
+                      if (_groupController.imageUrl != null) {
+                        if (groupFormField.currentState!.validate()) {
+                          setState(() {
+                            creatingGroup = true;
+                          });
+                          var groupID = await _groupController.createGroup(
+                              groupNameEditingController.text.toString(),
+                              _groupController.imageUrl,
+                              _dataController.groupAdmins,
+                              _dataController.groupMembers);
+                          _dataController.groupAdmins.clear();
+                          _dataController.groupMembers.clear();
+                          _groupController.imageUrl = null;
+                          Get.offAll(() => GroupDetail(
+                                groupID: groupID,
+                                groupTitle:
+                                    groupNameEditingController.text.toString(),
+                              ));
+                          setState(() {
+                            creatingGroup = false;
+                          });
+                        }
+                      } else {
+                        errorPopUp(context, "Group photo is required");
                       }
                     },
                     child: Container(

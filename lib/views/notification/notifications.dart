@@ -144,316 +144,556 @@ class _NotificationsState extends State<Notifications> {
                                       ),
                                     ],
                                   ),
-                                  child: InkWell(
-                                    onTap: () {
+                                  child:
                                       _notiController.notificationList[index]
                                                   .notificationType ==
-                                              1
-                                          ? null
-                                          : Get.to(() => GroupDetail(
-                                                groupID: _notiController
-                                                    .notificationList[index]
-                                                    .groupID
-                                                    .toString(),
-                                                groupTitle: _notiController
-                                                    .notificationList[index]
-                                                    .groupName
-                                                    .toString(),
-                                              ));
-                                    },
-                                    child: DelayedDisplay(
-                                      delay: const Duration(milliseconds: 150),
-                                      slidingBeginOffset: const Offset(0, 1),
-                                      child: Column(
-                                        children: [
-                                          Container(
-                                            padding: const EdgeInsets.symmetric(
-                                                horizontal: 14, vertical: 10),
-                                            width: double.infinity,
-                                            height: 13.h,
-                                            color: Colors.white12,
-                                            child: Row(
-                                              children: [
-                                                CircleAvatar(
-                                                  radius:
-                                                      20, // Adjust the radius as needed
-                                                  backgroundColor: Colors
-                                                      .grey, // You can set a default background color
-                                                  child: ClipOval(
-                                                    child: SizedBox(
-                                                      height: 20 * 2,
-                                                      width: 20 * 2,
-                                                      child: (_notiController.notificationList[index].notificationType == 4 ||
-                                                              _notiController
-                                                                      .notificationList[
-                                                                          index]
-                                                                      .notificationType ==
-                                                                  1 ||
-                                                              _notiController
-                                                                      .notificationList[
-                                                                          index]
-                                                                      .notificationType ==
-                                                                  3)
-                                                          ? Image.asset(
-                                                              "assets/images/congratImage.png", // Replace with your asset image path
-                                                              fit: BoxFit
-                                                                  .fitHeight,
-                                                            )
-                                                          : _notiController
-                                                                      .notificationList[
-                                                                          index]
-                                                                      .notificationType ==
-                                                                  null
-                                                              ? Image.asset(
-                                                                  "assets/images/groupIcon.png", // Replace with your asset image path
-                                                                  fit: BoxFit
-                                                                      .fitHeight,
-                                                                )
-                                                              : CachedNetworkImage(
-                                                                  imageUrl: _notiController
-                                                                      .notificationList[
-                                                                          index]
-                                                                      .notiImage
-                                                                      .toString(),
-                                                                  placeholder: (context,
-                                                                          url) =>
-                                                                      CircularProgressIndicator(),
-                                                                  errorWidget: (context,
-                                                                          url,
-                                                                          error) =>
-                                                                      Icon(Icons
-                                                                          .error),
-                                                                  fit: BoxFit
-                                                                      .fill,
-                                                                ),
-                                                    ),
-                                                  ),
-                                                ),
-                                                Column(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.center,
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.end,
+                                              5
+                                          ? InkWell(
+                                              onTap: () {
+                                                Get.to(() => GroupDetail(
+                                                      groupID: _notiController
+                                                          .notificationList[
+                                                              index]
+                                                          .groupID
+                                                          .toString(),
+                                                      groupTitle:
+                                                          _notiController
+                                                              .notificationList[
+                                                                  index]
+                                                              .groupName
+                                                              .toString(),
+                                                    ));
+                                              },
+                                              child: DelayedDisplay(
+                                                delay: const Duration(
+                                                    milliseconds: 150),
+                                                slidingBeginOffset:
+                                                    const Offset(0, 1),
+                                                child: Column(
                                                   children: [
-                                                    Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        SizedBox(
-                                                          width: 12,
-                                                        ),
-                                                        ConstrainedBox(
-                                                          constraints:
-                                                              BoxConstraints(
-                                                                  maxWidth:
-                                                                      75.w,
-                                                                  maxHeight:
-                                                                      8.h),
-                                                          child: Align(
-                                                            alignment: Alignment
-                                                                .centerLeft,
-                                                            child: RichText(
-                                                              text: TextSpan(
-                                                                style:
-                                                                    TextStyle(
-                                                                  color: Colors
-                                                                      .black,
-                                                                  // Change color as needed
-                                                                  fontSize:
-                                                                      18.0,
-                                                                ),
-                                                                children: <TextSpan>[
-                                                                  TextSpan(
-                                                                    text: _notiController.notificationList[index].notificationType ==
-                                                                            4
-                                                                        ? 'Congratulations '
-                                                                        : _notiController.notificationList[index].notificationType ==
-                                                                                2
-                                                                            ? _notiController.notificationList[index].userName
-                                                                            : _notiController.notificationList[index].notificationType == 3
-                                                                                ? "Congratulations "
-                                                                                : _notiController.notificationList[index].notificationType == 1
-                                                                                    ? "Congratulations "
-                                                                                    : "",
-                                                                    style:
-                                                                        TextStyle(
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .bold,
-                                                                    ),
+                                                    Container(
+                                                      padding: const EdgeInsets
+                                                          .symmetric(
+                                                          horizontal: 14,
+                                                          vertical: 10),
+                                                      width: double.infinity,
+                                                      height: 13.h,
+                                                      color: Colors.white12,
+                                                      child: Row(
+                                                        children: [
+                                                          CircleAvatar(
+                                                            radius:
+                                                                20, // Adjust the radius as needed
+                                                            backgroundColor: Colors
+                                                                .grey, // You can set a default background color
+                                                            child: ClipOval(
+                                                              child: SizedBox(
+                                                                  height:
+                                                                      20 * 2,
+                                                                  width: 20 * 2,
+                                                                  child: Image
+                                                                      .asset(
+                                                                    "assets/images/congratImage.png", // Replace with your asset image path
+                                                                    fit: BoxFit
+                                                                        .fitHeight,
+                                                                    color: Colors
+                                                                            .yellow[
+                                                                        700],
+                                                                  )),
+                                                            ),
+                                                          ),
+                                                          Column(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .center,
+                                                            crossAxisAlignment:
+                                                                CrossAxisAlignment
+                                                                    .end,
+                                                            children: [
+                                                              Row(
+                                                                mainAxisAlignment:
+                                                                    MainAxisAlignment
+                                                                        .start,
+                                                                children: [
+                                                                  SizedBox(
+                                                                    width: 12,
                                                                   ),
-                                                                  TextSpan(
-                                                                    text: _notiController
-                                                                        .notificationList[
-                                                                            index]
-                                                                        .notification,
-                                                                    style: bodyNormal.copyWith(
-                                                                        fontSize:
-                                                                            14),
-                                                                  ),
-                                                                  TextSpan(
-                                                                    text: _notiController.notificationList[index].notificationType ==
-                                                                            2
-                                                                        ? _notiController
-                                                                            .notificationList[
-                                                                                index]
-                                                                            .groupName
-                                                                        : _notiController.notificationList[index].notificationType ==
-                                                                                1
-                                                                            ? _notiController.notificationList[index].groupName
-                                                                            : _notiController.notificationList[index].notificationType == 3
-                                                                                ? _notiController.notificationList[index].groupName
-                                                                                : "",
-                                                                    style:
-                                                                        TextStyle(
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .bold,
+                                                                  ConstrainedBox(
+                                                                    constraints: BoxConstraints(
+                                                                        maxWidth: 75
+                                                                            .w,
+                                                                        maxHeight:
+                                                                            8.h),
+                                                                    child:
+                                                                        Align(
+                                                                      alignment:
+                                                                          Alignment
+                                                                              .centerLeft,
+                                                                      child:
+                                                                          RichText(
+                                                                        text:
+                                                                            TextSpan(
+                                                                          style:
+                                                                              TextStyle(
+                                                                            color:
+                                                                                Colors.black,
+                                                                            // Change color as needed
+                                                                            fontSize:
+                                                                                18.0,
+                                                                          ),
+                                                                          children: <TextSpan>[
+                                                                            TextSpan(
+                                                                              text: "Congratulations ",
+                                                                              style: TextStyle(fontWeight: FontWeight.bold, color: Colors.yellow[700]),
+                                                                            ),
+                                                                            TextSpan(
+                                                                              text: _notiController.notificationList[index].notification,
+                                                                              style: bodyNormal.copyWith(fontSize: 14),
+                                                                            ),
+                                                                            TextSpan(
+                                                                              text: _notiController.notificationList[index].groupName,
+                                                                              style: TextStyle(
+                                                                                fontWeight: FontWeight.bold,
+                                                                              ),
+                                                                            ),
+                                                                            TextSpan(
+                                                                              text: _notiController.notificationList[index].userName,
+                                                                              style: bodyNormal.copyWith(fontSize: 14),
+                                                                            ),
+                                                                          ],
+                                                                        ),
+                                                                      ),
                                                                     ),
                                                                   ),
                                                                 ],
                                                               ),
-                                                            ),
+                                                              Align(
+                                                                  alignment:
+                                                                      Alignment
+                                                                          .bottomRight,
+                                                                  child: Text(
+                                                                    DateFormat(
+                                                                            'dd-MM-yyyy kk:mm')
+                                                                        .format(DateTime.parse(_notiController
+                                                                            .notificationList[index]
+                                                                            .Time
+                                                                            .toDate()
+                                                                            .toString()))
+                                                                        .toString(),
+                                                                    style: bodySmall
+                                                                        .copyWith(
+                                                                            color:
+                                                                                Colors.black45),
+                                                                  )),
+                                                            ],
                                                           ),
-                                                        ),
-                                                      ],
+                                                        ],
+                                                      ),
                                                     ),
-                                                    Align(
-                                                        alignment: Alignment
-                                                            .bottomRight,
-                                                        child: Text(
-                                                          DateFormat(
-                                                                  'yyyy-MM-dd kk:mm a')
-                                                              .format(DateTime.parse(
-                                                                  _notiController
-                                                                      .notificationList[
-                                                                          index]
-                                                                      .Time
-                                                                      .toDate()
-                                                                      .toString()))
-                                                              .toString(),
-                                                          style: bodySmall
-                                                              .copyWith(
-                                                                  color: Colors
-                                                                      .black45),
-                                                        )),
+                                                    // _notiController.notificationList[
+                                                    //                 index]
+                                                    //             ['notificationType'] ==
+                                                    //         1
+                                                    //     ? Row(
+                                                    //         mainAxisAlignment:
+                                                    //             MainAxisAlignment.center,
+                                                    //         children: [
+                                                    //           InkWell(
+                                                    //             onTap: () async {
+                                                    //               await _dataController.joinGroup(
+                                                    //                   _notiController
+                                                    //                       .notificationList[
+                                                    //                           index][
+                                                    //                           'groupToJoinID']
+                                                    //                       .toString(),
+                                                    //                   _notiController
+                                                    //                               .notificationList[
+                                                    //                           index][
+                                                    //                       'userToJoin'][0]);
+                                                    //               await _notiController
+                                                    //                   .deleteNotification(
+                                                    //                       _notiController
+                                                    //                           .notificationList[
+                                                    //                               index][
+                                                    //                               'notiID']
+                                                    //                           .toString());
+                                                    //               Get.find<
+                                                    //                       GeneralController>()
+                                                    //                   .onBottomBarTapped(
+                                                    //                       0);
+                                                    //               PageTransition
+                                                    //                   .pageProperNavigation(
+                                                    //                       page:
+                                                    //                           CustomBottomNavBar());
+                                                    //             },
+                                                    //             child: Container(
+                                                    //                 padding:
+                                                    //                     EdgeInsets.all(8),
+                                                    //                 decoration:
+                                                    //                     BoxDecoration(
+                                                    //                   color: AppColors
+                                                    //                       .buttonColor,
+                                                    //                   borderRadius:
+                                                    //                       BorderRadius
+                                                    //                           .circular(
+                                                    //                               5),
+                                                    //                 ),
+                                                    //                 width: 20.w,
+                                                    //                 child: Center(
+                                                    //                     child: Text(
+                                                    //                   "Accept",
+                                                    //                   style: bodyNormal
+                                                    //                       .copyWith(
+                                                    //                           color: Colors
+                                                    //                               .white),
+                                                    //                 ))),
+                                                    //           ),
+                                                    //           Padding(
+                                                    //             padding:
+                                                    //                 const EdgeInsets.only(
+                                                    //                     left: 8.0),
+                                                    //             child: InkWell(
+                                                    //               onTap: () async {
+                                                    //                 await _notiController
+                                                    //                     .deleteNotification(
+                                                    //                         _notiController
+                                                    //                             .notificationList[
+                                                    //                                 index]
+                                                    //                                 [
+                                                    //                                 'notiID']
+                                                    //                             .toString());
+                                                    //                 Get.find<
+                                                    //                         GeneralController>()
+                                                    //                     .onBottomBarTapped(
+                                                    //                         0);
+                                                    //                 PageTransition
+                                                    //                     .pageProperNavigation(
+                                                    //                         page:
+                                                    //                             CustomBottomNavBar());
+                                                    //               },
+                                                    //               child: Container(
+                                                    //                   padding:
+                                                    //                       EdgeInsets.all(
+                                                    //                           8),
+                                                    //                   decoration:
+                                                    //                       BoxDecoration(
+                                                    //                     color: Colors.red,
+                                                    //                     borderRadius:
+                                                    //                         BorderRadius
+                                                    //                             .circular(
+                                                    //                                 5),
+                                                    //                   ),
+                                                    //                   width: 20.w,
+                                                    //                   child: Center(
+                                                    //                       child: Text(
+                                                    //                     "Reject",
+                                                    //                     style: bodyNormal
+                                                    //                         .copyWith(
+                                                    //                             color: Colors
+                                                    //                                 .white),
+                                                    //                   ))),
+                                                    //             ),
+                                                    //           )
+                                                    //         ],
+                                                    //       )
+                                                    //     : SizedBox.shrink()
                                                   ],
                                                 ),
-                                              ],
+                                              ),
+                                            )
+                                          : InkWell(
+                                              onTap: () {
+                                                _notiController
+                                                            .notificationList[
+                                                                index]
+                                                            .notificationType ==
+                                                        1
+                                                    ? null
+                                                    : Get.to(() => GroupDetail(
+                                                          groupID: _notiController
+                                                              .notificationList[
+                                                                  index]
+                                                              .groupID
+                                                              .toString(),
+                                                          groupTitle:
+                                                              _notiController
+                                                                  .notificationList[
+                                                                      index]
+                                                                  .groupName
+                                                                  .toString(),
+                                                        ));
+                                              },
+                                              child: DelayedDisplay(
+                                                delay: const Duration(
+                                                    milliseconds: 150),
+                                                slidingBeginOffset:
+                                                    const Offset(0, 1),
+                                                child: Column(
+                                                  children: [
+                                                    Container(
+                                                      padding: const EdgeInsets
+                                                          .symmetric(
+                                                          horizontal: 14,
+                                                          vertical: 10),
+                                                      width: double.infinity,
+                                                      height: 13.h,
+                                                      color: Colors.white12,
+                                                      child: Row(
+                                                        children: [
+                                                          CircleAvatar(
+                                                            radius:
+                                                                20, // Adjust the radius as needed
+                                                            backgroundColor: Colors
+                                                                .grey, // You can set a default background color
+                                                            child: ClipOval(
+                                                              child: SizedBox(
+                                                                height: 20 * 2,
+                                                                width: 20 * 2,
+                                                                child: (_notiController
+                                                                            .notificationList[
+                                                                                index]
+                                                                            .notificationType ==
+                                                                        3)
+                                                                    ? Image
+                                                                        .asset(
+                                                                        "assets/images/congratImage.png", // Replace with your asset image path
+                                                                        fit: BoxFit
+                                                                            .fitHeight,
+                                                                      )
+                                                                    : _notiController.notificationList[index].notiImage ==
+                                                                            null
+                                                                        ? Image
+                                                                            .asset(
+                                                                            "assets/images/groupIcon.png", // Replace with your asset image path
+                                                                            fit:
+                                                                                BoxFit.fitHeight,
+                                                                          )
+                                                                        : CachedNetworkImage(
+                                                                            imageUrl:
+                                                                                _notiController.notificationList[index].notiImage.toString(),
+                                                                            placeholder: (context, url) =>
+                                                                                CircularProgressIndicator(),
+                                                                            errorWidget: (context, url, error) =>
+                                                                                Icon(Icons.error),
+                                                                            fit:
+                                                                                BoxFit.fill,
+                                                                          ),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                          Column(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .center,
+                                                            crossAxisAlignment:
+                                                                CrossAxisAlignment
+                                                                    .end,
+                                                            children: [
+                                                              Row(
+                                                                mainAxisAlignment:
+                                                                    MainAxisAlignment
+                                                                        .start,
+                                                                children: [
+                                                                  SizedBox(
+                                                                    width: 12,
+                                                                  ),
+                                                                  ConstrainedBox(
+                                                                    constraints: BoxConstraints(
+                                                                        maxWidth: 75
+                                                                            .w,
+                                                                        maxHeight:
+                                                                            8.h),
+                                                                    child:
+                                                                        Align(
+                                                                      alignment:
+                                                                          Alignment
+                                                                              .centerLeft,
+                                                                      child:
+                                                                          RichText(
+                                                                        text:
+                                                                            TextSpan(
+                                                                          style:
+                                                                              TextStyle(
+                                                                            color:
+                                                                                Colors.black,
+                                                                            // Change color as needed
+                                                                            fontSize:
+                                                                                18.0,
+                                                                          ),
+                                                                          children: <TextSpan>[
+                                                                            TextSpan(
+                                                                              text: _notiController.notificationList[index].notificationType == 1
+                                                                                  ? _notiController.notificationList[index].userName
+                                                                                  : _notiController.notificationList[index].notificationType == 2
+                                                                                      ? _notiController.notificationList[index].userName
+                                                                                      : _notiController.notificationList[index].notificationType == 4
+                                                                                          ? _notiController.notificationList[index].userName
+                                                                                          : _notiController.notificationList[index].notificationType == 3
+                                                                                              ? "Congratulations "
+                                                                                              : "",
+                                                                              style: TextStyle(
+                                                                                fontWeight: FontWeight.bold,
+                                                                              ),
+                                                                            ),
+                                                                            TextSpan(
+                                                                              text: _notiController.notificationList[index].notification,
+                                                                              style: bodyNormal.copyWith(fontSize: 14),
+                                                                            ),
+                                                                            TextSpan(
+                                                                              text: _notiController.notificationList[index].notificationType == 2
+                                                                                  ? _notiController.notificationList[index].groupName
+                                                                                  : _notiController.notificationList[index].notificationType == 1
+                                                                                      ? _notiController.notificationList[index].groupName
+                                                                                      : _notiController.notificationList[index].notificationType == 3
+                                                                                          ? _notiController.notificationList[index].groupName
+                                                                                          : _notiController.notificationList[index].notificationType == 4
+                                                                                              ? _notiController.notificationList[index].groupName
+                                                                                              : "",
+                                                                              style: TextStyle(
+                                                                                fontWeight: FontWeight.bold,
+                                                                              ),
+                                                                            ),
+                                                                          ],
+                                                                        ),
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                              Align(
+                                                                  alignment:
+                                                                      Alignment
+                                                                          .bottomRight,
+                                                                  child: Text(
+                                                                    DateFormat(
+                                                                            'dd-MM-yyyy kk:mm')
+                                                                        .format(DateTime.parse(_notiController
+                                                                            .notificationList[index]
+                                                                            .Time
+                                                                            .toDate()
+                                                                            .toString()))
+                                                                        .toString(),
+                                                                    style: bodySmall
+                                                                        .copyWith(
+                                                                            color:
+                                                                                Colors.black45),
+                                                                  )),
+                                                            ],
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                    // _notiController.notificationList[
+                                                    //                 index]
+                                                    //             ['notificationType'] ==
+                                                    //         1
+                                                    //     ? Row(
+                                                    //         mainAxisAlignment:
+                                                    //             MainAxisAlignment.center,
+                                                    //         children: [
+                                                    //           InkWell(
+                                                    //             onTap: () async {
+                                                    //               await _dataController.joinGroup(
+                                                    //                   _notiController
+                                                    //                       .notificationList[
+                                                    //                           index][
+                                                    //                           'groupToJoinID']
+                                                    //                       .toString(),
+                                                    //                   _notiController
+                                                    //                               .notificationList[
+                                                    //                           index][
+                                                    //                       'userToJoin'][0]);
+                                                    //               await _notiController
+                                                    //                   .deleteNotification(
+                                                    //                       _notiController
+                                                    //                           .notificationList[
+                                                    //                               index][
+                                                    //                               'notiID']
+                                                    //                           .toString());
+                                                    //               Get.find<
+                                                    //                       GeneralController>()
+                                                    //                   .onBottomBarTapped(
+                                                    //                       0);
+                                                    //               PageTransition
+                                                    //                   .pageProperNavigation(
+                                                    //                       page:
+                                                    //                           CustomBottomNavBar());
+                                                    //             },
+                                                    //             child: Container(
+                                                    //                 padding:
+                                                    //                     EdgeInsets.all(8),
+                                                    //                 decoration:
+                                                    //                     BoxDecoration(
+                                                    //                   color: AppColors
+                                                    //                       .buttonColor,
+                                                    //                   borderRadius:
+                                                    //                       BorderRadius
+                                                    //                           .circular(
+                                                    //                               5),
+                                                    //                 ),
+                                                    //                 width: 20.w,
+                                                    //                 child: Center(
+                                                    //                     child: Text(
+                                                    //                   "Accept",
+                                                    //                   style: bodyNormal
+                                                    //                       .copyWith(
+                                                    //                           color: Colors
+                                                    //                               .white),
+                                                    //                 ))),
+                                                    //           ),
+                                                    //           Padding(
+                                                    //             padding:
+                                                    //                 const EdgeInsets.only(
+                                                    //                     left: 8.0),
+                                                    //             child: InkWell(
+                                                    //               onTap: () async {
+                                                    //                 await _notiController
+                                                    //                     .deleteNotification(
+                                                    //                         _notiController
+                                                    //                             .notificationList[
+                                                    //                                 index]
+                                                    //                                 [
+                                                    //                                 'notiID']
+                                                    //                             .toString());
+                                                    //                 Get.find<
+                                                    //                         GeneralController>()
+                                                    //                     .onBottomBarTapped(
+                                                    //                         0);
+                                                    //                 PageTransition
+                                                    //                     .pageProperNavigation(
+                                                    //                         page:
+                                                    //                             CustomBottomNavBar());
+                                                    //               },
+                                                    //               child: Container(
+                                                    //                   padding:
+                                                    //                       EdgeInsets.all(
+                                                    //                           8),
+                                                    //                   decoration:
+                                                    //                       BoxDecoration(
+                                                    //                     color: Colors.red,
+                                                    //                     borderRadius:
+                                                    //                         BorderRadius
+                                                    //                             .circular(
+                                                    //                                 5),
+                                                    //                   ),
+                                                    //                   width: 20.w,
+                                                    //                   child: Center(
+                                                    //                       child: Text(
+                                                    //                     "Reject",
+                                                    //                     style: bodyNormal
+                                                    //                         .copyWith(
+                                                    //                             color: Colors
+                                                    //                                 .white),
+                                                    //                   ))),
+                                                    //             ),
+                                                    //           )
+                                                    //         ],
+                                                    //       )
+                                                    //     : SizedBox.shrink()
+                                                  ],
+                                                ),
+                                              ),
                                             ),
-                                          ),
-                                          // _notiController.notificationList[
-                                          //                 index]
-                                          //             ['notificationType'] ==
-                                          //         1
-                                          //     ? Row(
-                                          //         mainAxisAlignment:
-                                          //             MainAxisAlignment.center,
-                                          //         children: [
-                                          //           InkWell(
-                                          //             onTap: () async {
-                                          //               await _dataController.joinGroup(
-                                          //                   _notiController
-                                          //                       .notificationList[
-                                          //                           index][
-                                          //                           'groupToJoinID']
-                                          //                       .toString(),
-                                          //                   _notiController
-                                          //                               .notificationList[
-                                          //                           index][
-                                          //                       'userToJoin'][0]);
-                                          //               await _notiController
-                                          //                   .deleteNotification(
-                                          //                       _notiController
-                                          //                           .notificationList[
-                                          //                               index][
-                                          //                               'notiID']
-                                          //                           .toString());
-                                          //               Get.find<
-                                          //                       GeneralController>()
-                                          //                   .onBottomBarTapped(
-                                          //                       0);
-                                          //               PageTransition
-                                          //                   .pageProperNavigation(
-                                          //                       page:
-                                          //                           CustomBottomNavBar());
-                                          //             },
-                                          //             child: Container(
-                                          //                 padding:
-                                          //                     EdgeInsets.all(8),
-                                          //                 decoration:
-                                          //                     BoxDecoration(
-                                          //                   color: AppColors
-                                          //                       .buttonColor,
-                                          //                   borderRadius:
-                                          //                       BorderRadius
-                                          //                           .circular(
-                                          //                               5),
-                                          //                 ),
-                                          //                 width: 20.w,
-                                          //                 child: Center(
-                                          //                     child: Text(
-                                          //                   "Accept",
-                                          //                   style: bodyNormal
-                                          //                       .copyWith(
-                                          //                           color: Colors
-                                          //                               .white),
-                                          //                 ))),
-                                          //           ),
-                                          //           Padding(
-                                          //             padding:
-                                          //                 const EdgeInsets.only(
-                                          //                     left: 8.0),
-                                          //             child: InkWell(
-                                          //               onTap: () async {
-                                          //                 await _notiController
-                                          //                     .deleteNotification(
-                                          //                         _notiController
-                                          //                             .notificationList[
-                                          //                                 index]
-                                          //                                 [
-                                          //                                 'notiID']
-                                          //                             .toString());
-                                          //                 Get.find<
-                                          //                         GeneralController>()
-                                          //                     .onBottomBarTapped(
-                                          //                         0);
-                                          //                 PageTransition
-                                          //                     .pageProperNavigation(
-                                          //                         page:
-                                          //                             CustomBottomNavBar());
-                                          //               },
-                                          //               child: Container(
-                                          //                   padding:
-                                          //                       EdgeInsets.all(
-                                          //                           8),
-                                          //                   decoration:
-                                          //                       BoxDecoration(
-                                          //                     color: Colors.red,
-                                          //                     borderRadius:
-                                          //                         BorderRadius
-                                          //                             .circular(
-                                          //                                 5),
-                                          //                   ),
-                                          //                   width: 20.w,
-                                          //                   child: Center(
-                                          //                       child: Text(
-                                          //                     "Reject",
-                                          //                     style: bodyNormal
-                                          //                         .copyWith(
-                                          //                             color: Colors
-                                          //                                 .white),
-                                          //                   ))),
-                                          //             ),
-                                          //           )
-                                          //         ],
-                                          //       )
-                                          //     : SizedBox.shrink()
-                                        ],
-                                      ),
-                                    ),
-                                  ),
                                 ),
                                 Divider()
                               ],

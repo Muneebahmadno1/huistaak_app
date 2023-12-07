@@ -404,6 +404,12 @@ class _GroupDetailState extends State<GroupDetail> {
                                                               child: Container(
                                                                 width: 60.w,
                                                                 child: Tooltip(
+                                                                  margin: EdgeInsets
+                                                                      .only(
+                                                                          left:
+                                                                              30,
+                                                                          right:
+                                                                              30),
                                                                   message: _groupController
                                                                       .toBeCompletedTaskList[
                                                                           index]
@@ -455,6 +461,9 @@ class _GroupDetailState extends State<GroupDetail> {
                                                                       )
                                                                     : SizedBox
                                                                         .shrink(),
+                                                                SizedBox(
+                                                                  width: 1.w,
+                                                                ),
                                                                 _groupController
                                                                         .groupInfo[
                                                                             0]
@@ -500,7 +509,7 @@ class _GroupDetailState extends State<GroupDetail> {
                                                                 "assets/icons/home/date.png",
                                                             title: "Date",
                                                             data: DateFormat(
-                                                                    'yyyy-MM-dd')
+                                                                    'dd-MM-yyyy')
                                                                 .format(_groupController
                                                                     .toBeCompletedTaskList[
                                                                         index]
@@ -513,15 +522,19 @@ class _GroupDetailState extends State<GroupDetail> {
                                                             icon:
                                                                 "assets/icons/home/time.png",
                                                             title: "Time",
-                                                            data: _groupController
-                                                                    .toBeCompletedTaskList[
-                                                                        index]
-                                                                    .startTime +
+                                                            data: DateFormat(
+                                                                        'dd-MM-yyyy kk:mm')
+                                                                    .format(DateTime.parse(_groupController
+                                                                        .toBeCompletedTaskList[
+                                                                            index]
+                                                                        .startTime)) +
                                                                 " to " +
-                                                                _groupController
-                                                                    .toBeCompletedTaskList[
-                                                                        index]
-                                                                    .endTime),
+                                                                DateFormat(
+                                                                        'dd-MM-yyyy kk:mm')
+                                                                    .format(DateTime.parse(_groupController
+                                                                        .toBeCompletedTaskList[
+                                                                            index]
+                                                                        .endTime))),
                                                         SizedBox(
                                                           height: 10,
                                                         ),
@@ -703,47 +716,47 @@ class _GroupDetailState extends State<GroupDetail> {
                                                                             null)
                                                                 ? Row(
                                                                     children: [
-                                                                      _groupController.toBeCompletedTaskList[index].assignMembers.any((map) =>
-                                                                              map.userID.toString() == userData.userID.toString() &&
-                                                                              map.startTask !=
-                                                                                  null)
-                                                                          ? SizedBox
-                                                                              .shrink()
-                                                                          : Expanded(
-                                                                              child: Padding(
-                                                                                padding: const EdgeInsets.symmetric(vertical: 8),
-                                                                                child: ZoomTapAnimation(
-                                                                                  onTap: () async {
-                                                                                    await _groupController.startTask(widget.groupID.toString(), _groupController.toBeCompletedTaskList[index].id.toString(), widget.groupTitle);
-                                                                                    getData();
-                                                                                  },
-                                                                                  onLongTap: () {},
-                                                                                  enableLongTapRepeatEvent: false,
-                                                                                  longTapRepeatDuration: const Duration(milliseconds: 100),
-                                                                                  begin: 1.0,
-                                                                                  end: 0.93,
-                                                                                  beginDuration: const Duration(milliseconds: 20),
-                                                                                  endDuration: const Duration(milliseconds: 120),
-                                                                                  beginCurve: Curves.decelerate,
-                                                                                  endCurve: Curves.fastOutSlowIn,
-                                                                                  child: Container(
-                                                                                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                                                                                      width: double.infinity,
-                                                                                      height: 50,
-                                                                                      decoration: BoxDecoration(
-                                                                                        color: Colors.white,
-                                                                                        borderRadius: BorderRadius.circular(50),
-                                                                                      ),
-                                                                                      child: Center(
-                                                                                        child: Text("Start", style: bodyLarge.copyWith(color: AppColors.buttonColor, fontWeight: FontWeight.bold)),
-                                                                                      )),
-                                                                                ),
-                                                                              ),
-                                                                            ),
-                                                                      SizedBox(
-                                                                        width:
-                                                                            10,
-                                                                      ),
+                                                                      // _groupController.toBeCompletedTaskList[index].assignMembers.any((map) =>
+                                                                      //         map.userID.toString() == userData.userID.toString() &&
+                                                                      //         map.startTask !=
+                                                                      //             null)
+                                                                      //     ? SizedBox
+                                                                      //         .shrink()
+                                                                      //     : Expanded(
+                                                                      //         child: Padding(
+                                                                      //           padding: const EdgeInsets.symmetric(vertical: 8),
+                                                                      //           child: ZoomTapAnimation(
+                                                                      //             onTap: () async {
+                                                                      //               await _groupController.startTask(widget.groupID.toString(), _groupController.toBeCompletedTaskList[index].id.toString(), widget.groupTitle);
+                                                                      //               getData();
+                                                                      //             },
+                                                                      //             onLongTap: () {},
+                                                                      //             enableLongTapRepeatEvent: false,
+                                                                      //             longTapRepeatDuration: const Duration(milliseconds: 100),
+                                                                      //             begin: 1.0,
+                                                                      //             end: 0.93,
+                                                                      //             beginDuration: const Duration(milliseconds: 20),
+                                                                      //             endDuration: const Duration(milliseconds: 120),
+                                                                      //             beginCurve: Curves.decelerate,
+                                                                      //             endCurve: Curves.fastOutSlowIn,
+                                                                      //             child: Container(
+                                                                      //                 padding: const EdgeInsets.symmetric(horizontal: 20),
+                                                                      //                 width: double.infinity,
+                                                                      //                 height: 50,
+                                                                      //                 decoration: BoxDecoration(
+                                                                      //                   color: Colors.white,
+                                                                      //                   borderRadius: BorderRadius.circular(50),
+                                                                      //                 ),
+                                                                      //                 child: Center(
+                                                                      //                   child: Text("Start", style: bodyLarge.copyWith(color: AppColors.buttonColor, fontWeight: FontWeight.bold)),
+                                                                      //                 )),
+                                                                      //           ),
+                                                                      //         ),
+                                                                      //       ),
+                                                                      // SizedBox(
+                                                                      //   width:
+                                                                      //       10,
+                                                                      // ),
                                                                       _groupController.toBeCompletedTaskList[index].assignMembers.any((map) =>
                                                                               map.userID.toString() == userData.userID.toString() &&
                                                                               map.startTask ==
@@ -758,7 +771,7 @@ class _GroupDetailState extends State<GroupDetail> {
                                                                                     setState(() {
                                                                                       isLoading = true;
                                                                                     });
-                                                                                    await _groupController.endTask(widget.groupID.toString(), _groupController.toBeCompletedTaskList[index].id.toString(), _groupController.toBeCompletedTaskList[index].assignMembers, double.parse(_groupController.toBeCompletedTaskList[index].duration.toString()) * 60, _groupController.toBeCompletedTaskList[index].taskScore, widget.groupTitle, _groupController.groupInfo[0].adminsList);
+                                                                                    await _groupController.endTask(widget.groupID.toString(), _groupController.toBeCompletedTaskList[index].id.toString(), _groupController.toBeCompletedTaskList[index].assignMembers, double.parse(_groupController.toBeCompletedTaskList[index].duration.toString()) * 60, _groupController.toBeCompletedTaskList[index].taskScore, widget.groupTitle, _groupController.groupInfo[0].adminsList, achievedPoints.toString());
                                                                                     Future.delayed(const Duration(milliseconds: 1000), () {
                                                                                       setState(() {
                                                                                         isFinish = false;
@@ -950,7 +963,7 @@ class _GroupDetailState extends State<GroupDetail> {
                                                                     "assets/icons/home/date.png",
                                                                 title: "Date",
                                                                 data: DateFormat(
-                                                                        'yyyy-MM-dd')
+                                                                        'dd-MM-yyyy')
                                                                     .format(_groupController
                                                                         .completedTaskList[
                                                                             index]
@@ -963,15 +976,15 @@ class _GroupDetailState extends State<GroupDetail> {
                                                                 icon:
                                                                     "assets/icons/home/time.png",
                                                                 title: "Time",
-                                                                data: _groupController
+                                                                data: DateFormat('dd-MM-yyyy kk:mm').format(DateTime.parse(_groupController
                                                                         .completedTaskList[
                                                                             index]
-                                                                        .startTime +
+                                                                        .startTime)) +
                                                                     " to " +
-                                                                    _groupController
+                                                                    DateFormat('dd-MM-yyyy kk:mm').format(DateTime.parse(_groupController
                                                                         .completedTaskList[
                                                                             index]
-                                                                        .endTime),
+                                                                        .endTime))),
                                                             SizedBox(
                                                               height: 10,
                                                             ),
@@ -1156,7 +1169,7 @@ class _GroupDetailState extends State<GroupDetail> {
                                                                                     setState(() {
                                                                                       isLoading = true;
                                                                                     });
-                                                                                    await _groupController.endTask(widget.groupID.toString(), _groupController.completedTaskList[index].id.toString(), _groupController.completedTaskList[index].assignMembers, double.parse(_groupController.completedTaskList[index].duration.toString()) * 60, _groupController.completedTaskList[index].taskScore, widget.groupTitle, _groupController.groupInfo[0].adminsList);
+                                                                                    await _groupController.endTask(widget.groupID.toString(), _groupController.completedTaskList[index].id.toString(), _groupController.completedTaskList[index].assignMembers, double.parse(_groupController.completedTaskList[index].duration.toString()) * 60, _groupController.completedTaskList[index].taskScore, widget.groupTitle, _groupController.groupInfo[0].adminsList, achievedPoints.toString());
                                                                                     Future.delayed(const Duration(milliseconds: 1000), () {
                                                                                       print(_groupController.completedTaskList[index].assignMembers.any((map) => map.startTask == null));
                                                                                       print(widget.groupTitle.toString());
@@ -1349,7 +1362,7 @@ class _GroupDetailState extends State<GroupDetail> {
                                                                     "assets/icons/home/date.png",
                                                                 title: "Date",
                                                                 data: DateFormat(
-                                                                        'yyyy-MM-dd')
+                                                                        'dd-MM-yyyy')
                                                                     .format(_groupController
                                                                         .notCompletedTaskList[
                                                                             index]
@@ -1362,15 +1375,15 @@ class _GroupDetailState extends State<GroupDetail> {
                                                                 icon:
                                                                     "assets/icons/home/time.png",
                                                                 title: "Time",
-                                                                data: _groupController
+                                                                data: DateFormat('dd-MM-yyyy kk:mm').format(DateTime.parse(_groupController
                                                                         .notCompletedTaskList[
                                                                             index]
-                                                                        .startTime +
+                                                                        .startTime)) +
                                                                     " to " +
-                                                                    _groupController
+                                                                    DateFormat('dd-MM-yyyy kk:mm').format(DateTime.parse(_groupController
                                                                         .notCompletedTaskList[
                                                                             index]
-                                                                        .endTime),
+                                                                        .endTime))),
                                                             SizedBox(
                                                               height: 10,
                                                             ),

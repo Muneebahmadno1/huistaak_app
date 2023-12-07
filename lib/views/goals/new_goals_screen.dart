@@ -232,6 +232,9 @@ class _NewGoalsScreenState extends State<NewGoalsScreen> {
                                                     ),
                                                   )
                                                 : SizedBox.shrink(),
+                                            SizedBox(
+                                              width: 1.w,
+                                            ),
                                             _goalController.groupList.isNotEmpty
                                                 ? InkWell(
                                                     onTap: () {
@@ -294,10 +297,14 @@ class _NewGoalsScreenState extends State<NewGoalsScreen> {
                                             ? SizedBox.shrink()
                                             : GoalDetailWidget(
                                                 icon: "assets/icons/coin1.png",
-                                                title:
-                                                    "Days remaining for achieving goal",
-                                                data:
-                                                    daysLeft.inDays.toString()),
+                                                title: daysLeft.inDays < 1
+                                                    ? "Hours remaining for achieving goal"
+                                                    : "Days remaining for achieving goal",
+                                                data: daysLeft.inDays < 1
+                                                    ? daysLeft.inHours
+                                                        .toString()
+                                                    : daysLeft.inDays
+                                                        .toString()),
                                         expired
                                             ? SizedBox.shrink()
                                             : SizedBox(

@@ -247,7 +247,7 @@ class GroupController extends GetxController {
   }
 
   endTask(groupID, taskID, List<MemberModel> StartTime, taskDurationInMin,
-      points, groupTitle, List<MemberModel> adminList) async {
+      points, groupTitle, List<MemberModel> adminList, myPoints) async {
     final DocumentReference documentReference = await Collections.GROUPS
         .doc(groupID)
         .collection(Collections.TASKS)
@@ -327,9 +327,47 @@ class GroupController extends GetxController {
           });
           documentReference.update({
             'assignMembers': existingArray,
-          }).then((_) {
+          }).then((_) async {
+            int totalPoints = (int.parse(myPoints.toString()) +
+                int.parse(userPoint.ceil().toString()));
+            bool achieved = await goalAchieved(groupID, totalPoints.toString());
+            print("achieved");
+            print(achieved);
+            if (achieved) {
+              var notiID = Collections.USERS
+                  .doc(userData.userID)
+                  .collection(Collections.NOTIFICATIONS)
+                  .doc();
+              notiID.set({
+                "read": false,
+                "notificationType": 5,
+                "notification": " the goal of ",
+                "Time": DateTime.now(),
+                "notiID": notiID.id,
+                "userName": " has been achieved!",
+                "userToJoin": FieldValue.arrayUnion([]),
+                "groupID": groupID.toString(),
+                "groupName": groupTitle.toString(),
+              });
+              Collections.USERS
+                  .doc(userData.userID.toString())
+                  .get()
+                  .then((value) async {
+                UserModel notiUserData = UserModel.fromDocument(value.data());
+                var data = {
+                  'type': "request",
+                  'end_time': DateTime.now().toString(),
+                };
+                _notiController.sendNotifications(
+                    notiUserData.fcmToken.toString(),
+                    "The goal of  " +
+                        groupTitle.toString() +
+                        " has been achieved",
+                    data);
+              });
+            }
             var notiID = Collections.USERS
-                .doc(adminList[0].userID)
+                .doc(userData.userID)
                 .collection(Collections.NOTIFICATIONS)
                 .doc();
             notiID.set({
@@ -347,7 +385,7 @@ class GroupController extends GetxController {
               "groupName": groupTitle.toString(),
             });
             Collections.USERS
-                .doc(adminList[0].userID.toString())
+                .doc(userData.userID.toString())
                 .get()
                 .then((value) async {
               UserModel notiUserData = UserModel.fromDocument(value.data());
@@ -373,6 +411,61 @@ class GroupController extends GetxController {
     }).catchError((error) {
       print('Error fetching document: $error');
     });
+  }
+
+  Future<bool> goalAchieved(String groupId, String myGoalPoints) async {
+    print("inside goal achieved");
+    print(myGoalPoints);
+    print(groupId);
+    try {
+      // Step 1: Check if the group exists
+      DocumentSnapshot groupSnapshot = await FirebaseFirestore.instance
+          .collection('groups')
+          .doc(groupId)
+          .get();
+
+      if (groupSnapshot.exists) {
+        // Step 2: Check if the "goals" subcollection exists
+        QuerySnapshot goalsSnapshot = await FirebaseFirestore.instance
+            .collection('groups')
+            .doc(groupId)
+            .collection('goals')
+            .get();
+
+        if (goalsSnapshot.docs.isNotEmpty) {
+          // Step 3: Filter documents in the "goals" subcollection
+          DateTime now = DateTime.now();
+
+          List<Map<String, dynamic>> filteredGoals = [];
+
+          for (QueryDocumentSnapshot goalDoc in goalsSnapshot.docs) {
+            DateTime goalDate = goalDoc['goalDate']
+                .toDate(); // Assuming 'goalDate' is a Timestamp field
+            int goalPoints = int.parse(goalDoc['goalPoints'].toString());
+
+            // Check conditions
+            if (goalDate.isAfter(now) &&
+                goalPoints <= int.parse(myGoalPoints)) {
+              filteredGoals.add(goalDoc.data() as Map<String, dynamic>);
+              return true;
+            }
+          }
+
+          // Do something with filteredGoals
+          print('Filtered Goals: $filteredGoals');
+          return false;
+        } else {
+          print('No goals sub-collection found for the group.');
+          return false;
+        }
+      } else {
+        print('Group with ID $groupId not found.');
+        return false;
+      }
+    } catch (error) {
+      print('Error: $error');
+      return false;
+    }
   }
 
   createGroup(

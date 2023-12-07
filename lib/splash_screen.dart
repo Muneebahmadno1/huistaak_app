@@ -72,25 +72,29 @@ class _SplashScreenState extends State<SplashScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.buttonColor,
-      body: Padding(
-        padding: const EdgeInsets.all(80.0),
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Image.asset(
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            SizedBox(
+              height: 20.h,
+            ),
+            Container(
+              width: 100.w,
+              height: 150,
+              child: Image.asset(
                 AppImages.logo,
-                height: 45.h,
+                fit: BoxFit.fill,
               ),
-              SizedBox(
-                height: 25.h,
-              ),
-              SpinKitFadingCircle(
-                color: Colors.white,
-                size: 50.0,
-              ),
-            ],
-          ),
+            ),
+            SizedBox(
+              height: 30.h,
+            ),
+            SpinKitFadingCircle(
+              color: Colors.white,
+              size: 50.0,
+            ),
+          ],
         ),
       ),
     );

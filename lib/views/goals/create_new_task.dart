@@ -38,7 +38,6 @@ class _CreateNewTaskState extends State<CreateNewTask> {
       isLoading = true;
     });
     groupList = await _goalController.getGroupsWithEmptyGoals(userData.userID);
-    print("groupListlll");
     print(groupList);
     setState(() {
       if (groupList.isNotEmpty) {
