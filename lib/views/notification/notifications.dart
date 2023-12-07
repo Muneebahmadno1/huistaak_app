@@ -193,12 +193,9 @@ class _NotificationsState extends State<Notifications> {
                                                                   width: 20 * 2,
                                                                   child: Image
                                                                       .asset(
-                                                                    "assets/images/congratImage.png", // Replace with your asset image path
+                                                                    "assets/images/congratImageGolden.png", // Replace with your asset image path
                                                                     fit: BoxFit
                                                                         .fitHeight,
-                                                                    color: Colors
-                                                                            .yellow[
-                                                                        700],
                                                                   )),
                                                             ),
                                                           ),
@@ -244,7 +241,7 @@ class _NotificationsState extends State<Notifications> {
                                                                           children: <TextSpan>[
                                                                             TextSpan(
                                                                               text: "Congratulations ",
-                                                                              style: TextStyle(fontWeight: FontWeight.bold, color: Colors.yellow[700]),
+                                                                              style: TextStyle(fontWeight: FontWeight.bold, color: Colors.yellow[800]),
                                                                             ),
                                                                             TextSpan(
                                                                               text: _notiController.notificationList[index].notification,

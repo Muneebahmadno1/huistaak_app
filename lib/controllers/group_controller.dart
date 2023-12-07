@@ -482,6 +482,7 @@ class GroupController extends GetxController {
     int groupCode = 10000 + random.nextInt(90000);
     var groupID = Collections.GROUPS.doc().id;
     await Collections.GROUPS.doc(groupID).set({
+      "createdAt": DateTime.now(),
       "groupCode": groupCode.toString(),
       "groupName": groupName,
       "groupImage": groupImage,
@@ -545,6 +546,7 @@ class GroupController extends GetxController {
       "assignMembers": assignMembersData,
       "id": docId,
     });
+    await Collections.GROUPS.doc(groupID).update({"createdAt": DateTime.now()});
     for (int a = 0; a < assignMembers.length; a++) {
       updateCounter(assignMembers[a].userID, groupID);
     }
