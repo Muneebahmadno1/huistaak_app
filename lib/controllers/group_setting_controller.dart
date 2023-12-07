@@ -314,7 +314,7 @@ class GroupSettingController extends GetxController {
       "userName": userData.displayName.toString(),
       "Time": DateTime.now(),
       "notiID": notiID.id,
-      "notiImage": userData.imageUrl.toString(),
+      "notiImage": groupImage.toString(),
       "userToJoin": FieldValue.arrayUnion([]),
       "groupID": groupID.toString(),
       "groupName": groupTitle.toString(),

@@ -73,6 +73,7 @@ class HomeController extends GetxController {
   joinGroupRequest(groupID) async {
     print(userData.imageUrl.toString());
     String groupName = "";
+    String groupImage = "";
     try {
       final newMap = {
         'displayName': userData.displayName.toString(),
@@ -86,6 +87,7 @@ class HomeController extends GetxController {
         // Get the first document (assuming there's only one match)
         var documentSnapshot = querySnapshot2.docs.first;
         groupName = documentSnapshot['groupName'];
+        groupImage = documentSnapshot['groupImage'];
         // Retrieve data and add it to the adminList
         adminList.add({
           "adminsList": List.from(documentSnapshot['adminsList']),
@@ -112,7 +114,7 @@ class HomeController extends GetxController {
         "notificationType": 1,
         "notification": " is from now on a participant of  ",
         "Time": DateTime.now(),
-        "notiImage": userData.imageUrl.toString(),
+        "notiImage": groupImage.toString(),
         "userName": userData.displayName.toString(),
         "notiID": notiID.id,
         "groupID": groupID.toString(),
