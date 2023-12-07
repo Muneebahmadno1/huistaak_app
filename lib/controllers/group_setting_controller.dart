@@ -133,7 +133,7 @@ class GroupSettingController extends GetxController {
         Collections.GROUPS
             .doc(groupID.toString())
             .update({'adminsList': adminListData});
-      } else if (groupInfo[0].adminsList.isNotEmpty) {
+      } else if (groupInfo[0].adminsList.isEmpty) {
         // Remove the first element from membersList and store it in a variable.
         MemberModel removedMember = groupInfo[0].membersList.removeAt(0);
 
@@ -181,7 +181,7 @@ class GroupSettingController extends GetxController {
           "notification": "you have been made admin of ",
           "Time": DateTime.now(),
           "notiID": notiID.id,
-          "notiImage": userData.imageUrl.toString(),
+          "notiImage": groupImage.toString(),
           "userToJoin": FieldValue.arrayUnion([]),
           "groupID": groupID.toString(),
           "groupName": groupTitle.toString(),
@@ -200,7 +200,7 @@ class GroupSettingController extends GetxController {
               "You have been made admin of " + groupTitle.toString() + " group",
               data);
         });
-      } else if (groupInfo[0].adminsList.isEmpty) {
+      } else if (groupInfo[0].adminsList.isNotEmpty) {
         Collections.GROUPS
             .doc(groupID.toString())
             .update({'adminsList': groupInfo[0].adminsList});

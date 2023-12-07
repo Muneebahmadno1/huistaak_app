@@ -26,7 +26,8 @@ class HomeController extends GetxController {
 
   getAllUserGroups() async {
     chatUsers.clear();
-    QuerySnapshot querySnapshot = await Collections.GROUPS.get();
+    QuerySnapshot querySnapshot =
+        await Collections.GROUPS.orderBy("createdAt", descending: true).get();
     for (QueryDocumentSnapshot documentSnapshot in querySnapshot.docs) {
       Map<String, dynamic> groupsData =
           documentSnapshot.data() as Map<String, dynamic>;
