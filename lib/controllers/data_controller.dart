@@ -39,6 +39,7 @@ class HomeController extends GetxController {
             groupImage: groupsData['groupImage'],
             groupName: groupsData['groupName'],
             date: groupsData['date'],
+            createdAt: groupsData['createdAt'],
             id: documentSnapshot.id,
           ));
         }
@@ -48,6 +49,7 @@ class HomeController extends GetxController {
             groupImage: groupsData['groupImage'],
             groupName: groupsData['groupName'],
             date: groupsData['date'],
+            createdAt: groupsData['createdAt'],
             id: documentSnapshot.id,
           ));
         }
@@ -115,7 +117,7 @@ class HomeController extends GetxController {
         "notificationType": 1,
         "notification": " is from now on a participant of  ",
         "Time": DateTime.now(),
-        "notiImage": groupImage.toString(),
+        "notiImage": userData.imageUrl.toString(),
         "userName": userData.displayName.toString(),
         "notiID": notiID.id,
         "groupID": groupID.toString(),

@@ -75,6 +75,8 @@ class _CreateNewGroupTaskState extends State<CreateNewGroupTask> {
     for (int i = 0; i < 24; i++)
       endTimeItems.add(
           DateFormat('yyyy-MM-dd HH:mm').format(date.add(Duration(hours: i))));
+    print("moimoi");
+    print(endTimeItems);
   }
 
   getData() async {
@@ -494,10 +496,6 @@ class _CreateNewGroupTaskState extends State<CreateNewGroupTask> {
                             ),
                           ],
                         ),
-                        // TimePickerWidget(
-                        //   index: 2,
-                        //   title: 'End Time',
-                        // ),
                       ),
                     ],
                   ),

@@ -206,7 +206,7 @@ class _GroupDetailState extends State<GroupDetail> {
                                             errorWidget:
                                                 (context, url, error) =>
                                                     Icon(Icons.error),
-                                            fit: BoxFit.fill,
+                                            fit: BoxFit.fitHeight,
                                           ),
                                   ),
                                 ),

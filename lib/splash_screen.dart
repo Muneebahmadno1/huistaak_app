@@ -79,12 +79,15 @@ class _SplashScreenState extends State<SplashScreen>
             SizedBox(
               height: 20.h,
             ),
-            Container(
-              width: 100.w,
-              height: 150,
-              child: Image.asset(
-                AppImages.logo,
-                fit: BoxFit.fill,
+            Padding(
+              padding: const EdgeInsets.only(left: 18.0),
+              child: Container(
+                width: 90.w,
+                height: 35.w,
+                child: Image.asset(
+                  AppImages.logo,
+                  fit: BoxFit.fill,
+                ),
               ),
             ),
             SizedBox(

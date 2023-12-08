@@ -349,7 +349,7 @@ class _NewGoalsScreenState extends State<NewGoalsScreen> {
                             anyGroupWithNoGoal
                                 ? Get.to(() => CreateNewTask())
                                 : errorPopUp(context,
-                                    "Goals are created against groups or you do not have any group yet.");
+                                    "Goals are created for all current groups. To create a new goal, you have to create a new group first.");
                           },
                           buttonText: "Set Goal for your Group",
                         ),
@@ -373,7 +373,7 @@ class _NewGoalsScreenState extends State<NewGoalsScreen> {
                         anyGroupWithNoGoal
                             ? Get.to(() => CreateNewTask())
                             : errorPopUp(context,
-                                "Goals are created against groups or You do not have any group yet.");
+                                "Goals are created for all current groups. To create a new goal, you have to create a new group first.");
                       },
                       child: Icon(Icons.add),
                     )

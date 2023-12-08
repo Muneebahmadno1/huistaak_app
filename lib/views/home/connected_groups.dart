@@ -231,11 +231,11 @@ class _ConnectedGroupScreenState extends State<ConnectedGroupScreen> {
                                                 "assets/images/groupIcon.png",
                                             time: _dataController
                                                         .chatUsers[index]
-                                                        .date ==
+                                                        .createdAt ==
                                                     null
                                                 ? DateTime.now()
                                                 : _dataController
-                                                    .chatUsers[index].date
+                                                    .chatUsers[index].createdAt
                                                     .toDate(),
                                             groupID: _dataController
                                                 .chatUsers[index].id,

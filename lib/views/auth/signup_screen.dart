@@ -172,15 +172,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       itemBuilder: (context, a) {
                         return InkWell(
                           onTap: () async {
-                            print("asd");
                             setState(() {
                               imageLoading = true;
                             });
-                            print("11asd");
                             await _authController.upload(
                                 _authController.localDp[a].toString(),
+                                name: a.toString() + "dp",
                                 fromLocal: true);
-                            print("asd44");
                             setState(() {
                               imageLoading = false;
                             });
