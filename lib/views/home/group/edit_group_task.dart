@@ -47,6 +47,10 @@ class _EditGroupTaskState extends State<EditGroupTask> {
   TextEditingController taskNameEditingController = TextEditingController();
   int points = 1;
   bool timeError = false;
+  bool visibility = false;
+  bool endDateError = false;
+  bool startTimeError = false;
+  bool endTimeError = false;
   bool isLoading = false;
   List<UserModel> memberList = [];
   final GlobalKey<FormState> taskFormField = GlobalKey();
@@ -85,7 +89,7 @@ class _EditGroupTaskState extends State<EditGroupTask> {
       taskNameEditingController.text = widget.taskDetails.taskTitle.toString();
       _dataController.selectedStartDate = widget.taskDetails.taskDate.toDate();
       _dataController.selectedEndDate =
-          DateFormat('yyyy-MM-dd HH:mm').parse(widget.taskDetails.endTime);
+          DateFormat('yyyy-MM-dd').parse(widget.taskDetails.endTime);
       points = int.parse(widget.taskDetails.taskScore);
 
       _dataController.startTime.value = widget.taskDetails.startTime.toString();
@@ -94,7 +98,8 @@ class _EditGroupTaskState extends State<EditGroupTask> {
         _dataController.assignTaskMember
             .addAll({widget.taskDetails.assignMembers[i]});
     });
-    getTimesDropDownData(DateTime.now());
+    getTimesDropDownData(_dataController.selectedStartDate!);
+    getEndTimesDropDownData(_dataController.selectedEndDate!);
     await _dataController.getTaskMember(widget.groupID);
     for (int i = 0; i < _dataController.userList.length; i++) {
       memberList.add(await _groupSettingController
@@ -206,10 +211,11 @@ class _EditGroupTaskState extends State<EditGroupTask> {
                           Icon(Icons.arrow_drop_down, color: Colors.black),
                       onTap: () async {
                         await _showDatePicker(context, "StartDate");
-                        // setState(() {
-                        //   selectedValueStart = DateFormat('yyyy-MM-dd HH:mm')
-                        //       .format(_dataController.selectedStartDate!);
-                        // });
+                        setState(() {
+                          _dataController.selectedEndDate = null;
+                          _dataController.endTime.value = "";
+                          visibility = false;
+                        });
                         getTimesDropDownData(
                             _dataController.selectedStartDate!);
                       },
@@ -299,11 +305,12 @@ class _EditGroupTaskState extends State<EditGroupTask> {
                       trailing:
                           Icon(Icons.arrow_drop_down, color: Colors.black),
                       onTap: () async {
-                        await _showDatePicker(context, "EndDate");
-                        // setState(() {
-                        //   selectedValueEnd = DateFormat('yyyy-MM-dd HH:mm')
-                        //       .format(_dataController.selectedEndDate!);
-                        // });
+                        _dataController.selectedStartDate == null
+                            ? errorPopUp(context, "Select start date first")
+                            : await _showDatePicker(context, "EndDate");
+                        setState(() {
+                          visibility = false;
+                        });
                         getEndTimesDropDownData(
                             _dataController.selectedEndDate!);
                       },
@@ -338,12 +345,19 @@ class _EditGroupTaskState extends State<EditGroupTask> {
                                     isExpanded: true,
                                     hint: Row(
                                       children: [
+                                        Icon(Icons.access_time_outlined),
+                                        // : SizedBox.shrink(),
+                                        // (widget.dropDownTitle == 'Start Time' ||
+                                        //     widget.dropDownTitle == 'End Time')
+                                        //     ?
+                                        SizedBox(
+                                          width: 8,
+                                        ),
                                         Text(
                                             widget.taskDetails.startTime
-                                                .toString(),
-                                            style: bodyNormal.copyWith(
-                                                fontSize: 12,
-                                                color: Colors.grey[700])),
+                                                .toString()
+                                                .split(' ')[1],
+                                            style: bodyNormal),
                                       ],
                                     ),
                                     items: timeItems
@@ -351,7 +365,7 @@ class _EditGroupTaskState extends State<EditGroupTask> {
                                               value: item,
                                               child: Center(
                                                 child: Text(
-                                                  item,
+                                                  item.split(' ')[1],
                                                   style: bodyNormal,
                                                   overflow:
                                                       TextOverflow.ellipsis,
@@ -369,6 +383,7 @@ class _EditGroupTaskState extends State<EditGroupTask> {
                                         //   _dataController.endTime.value = value!;
                                         // }
                                         selectedValueStart = value as String;
+                                        visibility = false;
                                       });
                                     },
                                     iconStyleData: IconStyleData(
@@ -467,29 +482,27 @@ class _EditGroupTaskState extends State<EditGroupTask> {
                                         // (widget.dropDownTitle == 'Start Time' ||
                                         //     widget.dropDownTitle == 'End Time')
                                         //     ?
-                                        // Icon(Icons.access_time_outlined),
+                                        Icon(Icons.access_time_outlined),
                                         // : SizedBox.shrink(),
                                         // (widget.dropDownTitle == 'Start Time' ||
                                         //     widget.dropDownTitle == 'End Time')
                                         //     ?
-                                        // SizedBox(
-                                        //   width: 8,
-                                        // ),
-                                        // : SizedBox.shrink(),
+                                        SizedBox(
+                                          width: 8,
+                                        ),
                                         Text(
                                             widget.taskDetails.endTime
-                                                .toString(),
-                                            style: bodyNormal.copyWith(
-                                                fontSize: 12,
-                                                color: Colors.grey[700])),
+                                                .toString()
+                                                .split(' ')[1],
+                                            style: bodyNormal),
                                       ],
                                     ),
-                                    items: timeItems
+                                    items: endTimeItems
                                         .map((item) => DropdownMenuItem<String>(
                                               value: item,
                                               child: Center(
                                                 child: Text(
-                                                  item,
+                                                  item.split(' ')[1],
                                                   style: bodyNormal,
                                                   overflow:
                                                       TextOverflow.ellipsis,
@@ -568,22 +581,7 @@ class _EditGroupTaskState extends State<EditGroupTask> {
                     ],
                   ),
                 ),
-                timeError
-                    ? Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(left: 18.0),
-                            child: Text(
-                              "Start and End Time can't be same",
-                              style:
-                                  TextStyle(color: Colors.red[800], height: 3),
-                            ),
-                          ),
-                        ],
-                      )
-                    : SizedBox.shrink(),
-                const SizedBox(height: 10),
+
                 DelayedDisplay(
                   delay: Duration(milliseconds: 900),
                   slidingBeginOffset: Offset(0, -1),
@@ -781,61 +779,170 @@ class _EditGroupTaskState extends State<EditGroupTask> {
                   slidingBeginOffset: Offset(0, 0),
                   child: ZoomTapAnimation(
                     onTap: () async {
-                      String startTime = _dataController.startTime.value;
-                      String endTime = _dataController.endTime.value;
-                      bool pastTime = DateTime.parse(startTime)
-                          .isAfter(DateTime.parse(endTime));
-                      print(_dataController.startTime.value);
-                      print(_dataController.endTime.value);
-                      print(pastTime);
-                      if (taskFormField.currentState!.validate()) {
-                        if (_dataController.assignTaskMember.isNotEmpty) {
-                          if (_dataController.startTime.value ==
-                                  _dataController.endTime.value ||
-                              _dataController.startTime.value == "" ||
-                              _dataController.endTime.value == "" ||
-                              pastTime) {
-                            setState(() {
-                              timeError = true;
-                            });
-                          } else {
-                            setState(() {
-                              timeError = false;
-                              isLoading = true;
-                            });
-                            await _groupController.editGroupTask(
-                                widget.taskDetails.id.toString(),
-                                widget.groupID,
-                                taskNameEditingController.text,
-                                _dataController.selectedStartDate,
-                                _dataController.startTime.toString(),
-                                _dataController.endTime.toString(),
-                                points.toString(),
-                                _dataController.assignTaskMember);
-                            // for (int i = 0;
-                            //     i < _dataController.assignTaskMember.length;
-                            //     i++) {
-                            //   await _notiController.sendNotification(
-                            //       _dataController.assignTaskMember[i]['userID']
-                            //           .toString(),
-                            //       _dataController.endTime.toString(),
-                            //       widget.groupTitle,
-                            //       widget.groupID);
-                            // }
+                      // String startTime = _dataController.startTime.value;
+                      // String endTime = _dataController.endTime.value;
+                      // bool pastTime = DateTime.parse(startTime)
+                      //     .isAfter(DateTime.parse(endTime));
+                      // print(_dataController.startTime.value);
+                      // print(_dataController.endTime.value);
+                      // print(pastTime);
+                      // if (taskFormField.currentState!.validate()) {
+                      //   if (_dataController.assignTaskMember.isNotEmpty) {
+                      //     if (_dataController.startTime.value ==
+                      //             _dataController.endTime.value ||
+                      //         _dataController.startTime.value == "" ||
+                      //         _dataController.endTime.value == "" ||
+                      //         pastTime) {
+                      //       setState(() {
+                      //         timeError = true;
+                      //       });
+                      //     } else {
+                      //       setState(() {
+                      //         timeError = false;
+                      //         isLoading = true;
+                      //       });
+                      //       await _groupController.editGroupTask(
+                      //           widget.taskDetails.id.toString(),
+                      //           widget.groupID,
+                      //           taskNameEditingController.text,
+                      //           _dataController.selectedStartDate,
+                      //           _dataController.startTime.toString(),
+                      //           _dataController.endTime.toString(),
+                      //           points.toString(),
+                      //           _dataController.assignTaskMember);
+                      //
+                      //       _dataController.assignTaskMember.clear();
+                      //       PageTransition.pageBackNavigation(
+                      //           page: GroupDetail(
+                      //         groupTitle: widget.groupTitle,
+                      //         groupID: widget.groupID,
+                      //       ));
+                      //       setState(() {
+                      //         isLoading = false;
+                      //       });
+                      //     }
+                      //   } else {
+                      //     errorPopUp(context,
+                      //         "Can't add task without assigning it to any member");
+                      //   }
+                      // }
 
-                            _dataController.assignTaskMember.clear();
-                            PageTransition.pageBackNavigation(
-                                page: GroupDetail(
-                              groupTitle: widget.groupTitle,
-                              groupID: widget.groupID,
-                            ));
+                      setState(() {
+                        visibility = true;
+                      });
+                      if (_dataController.startTime.value != "" &&
+                          _dataController.endTime.value != "") {
+                        String startTime = _dataController.startTime.value;
+                        String endTime = _dataController.endTime.value;
+
+                        setState(() {
+                          endDateError = DateTime.parse(startTime)
+                              .isAfter(DateTime.parse(endTime));
+                          startTimeError = false;
+                          endTimeError = false;
+                        });
+                        if (endDateError == false) {
+                          if (_dataController.startTime.value != "") {
+                            final now = DateTime.now();
+                            String startTime = _dataController.startTime.value;
                             setState(() {
-                              isLoading = false;
+                              startTimeError =
+                                  DateTime.parse(startTime).isBefore(now);
                             });
                           }
+                          if (_dataController.endTime.value != "") {
+                            final now = DateTime.now();
+                            String endTime = _dataController.endTime.value;
+                            setState(() {
+                              endTimeError =
+                                  DateTime.parse(endTime).isBefore(now);
+                            });
+                          }
+                        }
+                      }
+                      if (taskFormField.currentState!.validate()) {
+                        if (_dataController.selectedStartDate != null &&
+                            _dataController.selectedEndDate != null &&
+                            _dataController.startTime.value != "" &&
+                            _dataController.endTime.value != "") {
+                          if (_dataController.assignTaskMember.isNotEmpty) {
+                            if (_dataController.startTime.value ==
+                                    _dataController.endTime.value ||
+                                _dataController.startTime.value == "" ||
+                                _dataController.endTime.value == "" ||
+                                endDateError ||
+                                startTimeError ||
+                                endTimeError) {
+                              setState(() {
+                                timeError = true;
+                              });
+                              errorPopUp(
+                                  context,
+                                  startTimeError
+                                      ? "Start Time of task is already passed"
+                                      : startTimeError
+                                          ? "End Time of task is already passed"
+                                          : endDateError
+                                              ? "End time should be after start time"
+                                              : "Start and End Time can't be same");
+                            } else {
+                              setState(() {
+                                timeError = false;
+                                isLoading = true;
+                              });
+                              // await _groupController.addGroupTask(
+                              //     widget.groupID,
+                              //     taskNameEditingController.text,
+                              //     _dataController.selectedStartDate,
+                              //     _dataController.startTime.toString(),
+                              //     _dataController.endTime.toString(),
+                              //     points.toString(),
+                              //     _dataController.assignTaskMember);
+                              await _groupController.editGroupTask(
+                                  widget.taskDetails.id.toString(),
+                                  widget.groupID,
+                                  taskNameEditingController.text,
+                                  _dataController.selectedStartDate,
+                                  _dataController.startTime.toString(),
+                                  _dataController.endTime.toString(),
+                                  points.toString(),
+                                  _dataController.assignTaskMember);
+                              for (int i = 0;
+                                  i < _dataController.assignTaskMember.length;
+                                  i++) {
+                                await _notiController.sendNotification(
+                                    _dataController.assignTaskMember[i].userID
+                                        .toString(),
+                                    _dataController.endTime.toString(),
+                                    widget.groupTitle,
+                                    widget.groupID);
+                              }
+                              _dataController.assignTaskMember.clear();
+                              _dataController.selectedEndDate = null;
+                              _dataController.selectedStartDate = null;
+                              PageTransition.pageBackNavigation(
+                                  page: GroupDetail(
+                                groupTitle: widget.groupTitle,
+                                groupID: widget.groupID,
+                              ));
+                              setState(() {
+                                isLoading = false;
+                              });
+                            }
+                          } else {
+                            errorPopUp(context,
+                                "Can't add task without assigning it to any member");
+                          }
                         } else {
-                          errorPopUp(context,
-                              "Can't add task without assigning it to any member");
+                          errorPopUp(
+                              context,
+                              _dataController.selectedStartDate == null
+                                  ? "Can't add task without selecting start date"
+                                  : _dataController.selectedEndDate == null
+                                      ? "Can't add task without selecting end date"
+                                      : _dataController.startTime.value == ""
+                                          ? "Can't add task without selecting start time"
+                                          : "Can't add task without selecting end time");
                         }
                       }
                     },
@@ -875,8 +982,12 @@ class _EditGroupTaskState extends State<EditGroupTask> {
     final DateTime? pickedDate = await showDatePicker(
       context: context,
       initialEntryMode: DatePickerEntryMode.calendarOnly,
-      initialDate: DateTime.now(),
-      firstDate: DateTime.now(),
+      initialDate: from == "EndDate"
+          ? _dataController.selectedStartDate!
+          : DateTime.now(),
+      firstDate: from == "EndDate"
+          ? _dataController.selectedStartDate!
+          : DateTime.now(),
       lastDate: DateTime(2101),
       builder: (BuildContext context, Widget? child) {
         return Theme(

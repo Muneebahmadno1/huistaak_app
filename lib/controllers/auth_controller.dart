@@ -302,6 +302,7 @@ class AuthController extends GetxController {
       user.updatePassword(newPassword).then((_) {
         //Success, do something
         Get.back();
+        Get.find<GeneralController>().onBottomBarTapped(0);
         successPopUp(
             context, CustomBottomNavBar(), 'Password Changed Successfully');
       }).catchError((error) {
@@ -334,19 +335,17 @@ class AuthController extends GetxController {
     return file;
   }
 
-  Future<bool> upload(String inputSource, {fromLocal = false}) async {
+  Future<bool> upload(String inputSource,
+      {fromLocal = false, name = "55dp"}) async {
     if (fromLocal == true) {
-      File tempImage = await copyAssetToFile(inputSource, "profileImage");
+      File tempImage = await copyAssetToFile(inputSource, name);
       try {
         processingStatus = true;
         try {
           // Uploading the selected image with some custom meta data
           {
             imageFile = File(tempImage.path);
-            await storage
-                .ref("profileImage")
-                .putFile(tempImage)
-                .then((p0) async {
+            await storage.ref(name).putFile(tempImage).then((p0) async {
               imageUrl = await p0.ref.getDownloadURL();
               if (p0.state == TaskState.success) {
                 processingStatus = false;
@@ -376,8 +375,6 @@ class AuthController extends GetxController {
             maxWidth: 1920);
 
         processingStatus = true;
-        print("pickedImage!.path");
-        print(pickedImage!.path);
         final String fileName = path.basename(pickedImage!.path);
         try {
           // Uploading the selected image with some custom meta data

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_otp_text_field/flutter_otp_text_field.dart';
 
 import '../constants/global_variables.dart';
@@ -38,7 +39,9 @@ class _AuthTextFieldState extends State<AuthTextField> {
   Widget build(BuildContext context) {
     return Center(
       child: TextFormField(
-        keyboardType: widget.isNumber ? TextInputType.number : null,
+        // keyboardType: widget.isNumber ? TextInputType.number : null,
+        inputFormatters:
+            widget.isNumber ? [FilteringTextInputFormatter.digitsOnly] : null,
         validator: widget.validator,
         obscureText: widget.isObscure ?? false,
         controller: widget.controller,
