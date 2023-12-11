@@ -40,8 +40,12 @@ class _AuthTextFieldState extends State<AuthTextField> {
     return Center(
       child: TextFormField(
         // keyboardType: widget.isNumber ? TextInputType.number : null,
-        inputFormatters:
-            widget.isNumber ? [FilteringTextInputFormatter.digitsOnly] : null,
+        inputFormatters: widget.isNumber
+            ? [
+                FilteringTextInputFormatter.digitsOnly,
+                FilteringTextInputFormatter.deny(RegExp('^0+'))
+              ]
+            : null,
         validator: widget.validator,
         obscureText: widget.isObscure ?? false,
         controller: widget.controller,

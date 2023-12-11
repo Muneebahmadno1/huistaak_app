@@ -79,7 +79,7 @@ class _ConnectedGroupListState extends State<ConnectedGroupList> {
                                           CircularProgressIndicator(),
                                       errorWidget: (context, url, error) =>
                                           Icon(Icons.error),
-                                      fit: BoxFit.fill,
+                                      fit: BoxFit.fitHeight,
                                     ),
                         ),
                       ),

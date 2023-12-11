@@ -907,16 +907,6 @@ class _EditGroupTaskState extends State<EditGroupTask> {
                                   _dataController.endTime.toString(),
                                   points.toString(),
                                   _dataController.assignTaskMember);
-                              for (int i = 0;
-                                  i < _dataController.assignTaskMember.length;
-                                  i++) {
-                                await _notiController.sendNotification(
-                                    _dataController.assignTaskMember[i].userID
-                                        .toString(),
-                                    _dataController.endTime.toString(),
-                                    widget.groupTitle,
-                                    widget.groupID);
-                              }
                               _dataController.assignTaskMember.clear();
                               _dataController.selectedEndDate = null;
                               _dataController.selectedStartDate = null;

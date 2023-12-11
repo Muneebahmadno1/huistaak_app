@@ -47,6 +47,7 @@ class _GroupDetailState extends State<GroupDetail> {
     setState(() {
       isLoading = true;
     });
+    _progressValue.clear();
     await _groupController.getGroupDetails(
         widget.groupID.toString(), widget.groupTitle.toString());
     for (int index = 0; index < userData.points.length; index++) {
@@ -108,10 +109,10 @@ class _GroupDetailState extends State<GroupDetail> {
 
   late Timer _timer;
 
-  void _updateProgress(index) {
+  void _updateProgress(index, startTimeList, endTimeList) {
     DateTime now = DateTime.now();
-    double progress = now.difference(_startTime[index]).inMilliseconds /
-        _endTime[index].difference(_startTime[index]).inMilliseconds;
+    double progress = now.difference(startTimeList[index]).inMilliseconds /
+        endTimeList[index].difference(startTimeList[index]).inMilliseconds;
 
     // Ensure progress is between 0.0 and 1.0
     if (progress > 1.0) {
@@ -365,7 +366,8 @@ class _GroupDetailState extends State<GroupDetail> {
                                               _timer = Timer.periodic(
                                                   Duration(seconds: 5),
                                                   (Timer _timer) {
-                                                _updateProgress(index);
+                                                _updateProgress(index,
+                                                    _startTime, _endTime);
                                               });
                                             }
                                             return Padding(

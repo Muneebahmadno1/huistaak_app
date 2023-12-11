@@ -46,6 +46,8 @@ class _NewGoalsScreenState extends State<NewGoalsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    _goalController.goalList
+        .sort((a, b) => b.goalAddedTime.compareTo(a.goalAddedTime));
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -184,7 +186,7 @@ class _NewGoalsScreenState extends State<NewGoalsScreen> {
                                                           errorWidget: (context,
                                                                   url, error) =>
                                                               Icon(Icons.error),
-                                                          fit: BoxFit.fill,
+                                                          fit: BoxFit.fitHeight,
                                                         ),
                                                 ),
                                               ),
