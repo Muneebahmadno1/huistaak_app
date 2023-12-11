@@ -62,15 +62,15 @@ class GoalController extends GetxController {
 
         goalList.add(
           GoalDetailsModel(
-            goalGroupName: groupWithUserList[i].groupName,
-            goalGroupImage: groupWithUserList[i].groupImage,
-            goalGroup: a['goalGroup'],
-            goalTitle: a['goalTitle'],
-            goalDate: a['goalDate'],
-            goalTime: a['goalTime'],
-            goalPoints: a['goalPoints'],
-            goalID: a['goalID'],
-          ),
+              goalGroupName: groupWithUserList[i].groupName,
+              goalGroupImage: groupWithUserList[i].groupImage,
+              goalGroup: a['goalGroup'],
+              goalTitle: a['goalTitle'],
+              goalDate: a['goalDate'],
+              goalTime: a['goalTime'],
+              goalPoints: a['goalPoints'],
+              goalID: a['goalID'],
+              goalAddedTime: a['goalAddedTime']),
         );
       }
     }
@@ -97,7 +97,8 @@ class GoalController extends GetxController {
       "goalDate": goalDate,
       "goalTime": time,
       "goalMembers": goalMembers,
-      "goalPoints": goalPoints
+      "goalPoints": goalPoints,
+      "goalAddedTime": DateTime.now()
     });
     return;
   }

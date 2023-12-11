@@ -58,7 +58,7 @@ class AuthController extends GetxController {
       Get.back();
       //setState(() {});
       successPopUp(context, const LoginScreen(),
-          'Successfully registered,\n Verification link sent to your email.');
+          'Please click the link sent to your registered email, to verify your account.');
     } catch (error) {
       Get.back();
       //setState(() {});
