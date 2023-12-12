@@ -302,11 +302,18 @@ class _NewGoalsScreenState extends State<NewGoalsScreen> {
                                                 title: daysLeft.inDays < 1
                                                     ? "Hours remaining for achieving goal"
                                                     : "Days remaining for achieving goal",
-                                                data: daysLeft.inDays < 1
-                                                    ? daysLeft.inHours
-                                                        .toString()
-                                                    : daysLeft.inDays
-                                                        .toString()),
+                                                data: calculateDaysAndHours(
+                                                    daysLeft)
+                                                // daysLeft.inDays < 1
+                                                //     ? daysLeft.inHours
+                                                //         .toString()
+                                                //     : daysLeft.inDays
+                                                //             .toString() +
+                                                //         " day " +
+                                                //         daysLeft.inHours
+                                                //             .toString() +
+                                                //         " hours"
+                                                ),
                                         expired
                                             ? SizedBox.shrink()
                                             : SizedBox(
@@ -382,4 +389,26 @@ class _NewGoalsScreenState extends State<NewGoalsScreen> {
               : null,
     );
   }
+}
+
+String calculateDaysAndHours(Duration duration) {
+  int days = duration.inDays;
+  int hours = duration.inHours.remainder(24);
+
+  String result = '';
+
+  if (days > 0) {
+    result += '$days day${days > 1 ? 's' : ''}';
+    if (hours > 0) {
+      result += ' and ';
+    }
+  }
+
+  if (hours > 0) {
+    result += '$hours hour${hours > 1 ? 's' : ''}';
+  }
+
+  return result.isNotEmpty
+      ? result
+      : 'Less than an hour'; // If duration is less than an hour
 }

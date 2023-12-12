@@ -83,6 +83,8 @@ class _CreateNewGroupTaskState extends State<CreateNewGroupTask> {
     setState(() {
       _dataController.startTime.value = "";
       _dataController.endTime.value = "";
+      _dataController.selectedStartDate = null;
+      _dataController.selectedEndDate = null;
       // _dataController.selectedStartDate = DateTime.now();
       loading = true;
     });

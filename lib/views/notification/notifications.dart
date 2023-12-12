@@ -39,18 +39,18 @@ class _NotificationsState extends State<Notifications> {
     setState(() {
       isLoading = false;
     });
-    CollectionReference collectionReference = Collections.USERS
-        .doc(userData.userID.toString())
-        .collection(Collections.NOTIFICATIONS);
-
-    QuerySnapshot querySnapshot = await collectionReference.get();
-
-    querySnapshot.docs.forEach((doc) {
-      collectionReference.doc(doc.id).update({
-        'read':
-            true, // Change 'fieldNameToUpdate' to the field you want to update
-      });
-    });
+    // CollectionReference collectionReference = Collections.USERS
+    //     .doc(userData.userID.toString())
+    //     .collection(Collections.NOTIFICATIONS);
+    //
+    // QuerySnapshot querySnapshot = await collectionReference.get();
+    //
+    // querySnapshot.docs.forEach((doc) {
+    //   collectionReference.doc(doc.id).update({
+    //     'read':
+    //         true, // Change 'fieldNameToUpdate' to the field you want to update
+    //   });
+    // });
   }
 
   @override
@@ -155,7 +155,7 @@ class _NotificationsState extends State<Notifications> {
                                                     .notificationType ==
                                                 5
                                             ? InkWell(
-                                                onTap: () {
+                                                onTap: () async {
                                                   Get.to(() => GroupDetail(
                                                         groupID: _notiController
                                                             .notificationList[
@@ -169,6 +169,22 @@ class _NotificationsState extends State<Notifications> {
                                                                 .groupName
                                                                 .toString(),
                                                       ));
+                                                  CollectionReference
+                                                      collectionReference =
+                                                      Collections.USERS
+                                                          .doc(userData.userID
+                                                              .toString())
+                                                          .collection(Collections
+                                                              .NOTIFICATIONS);
+
+                                                  collectionReference
+                                                      .doc(_notiController
+                                                          .notificationList[
+                                                              index]
+                                                          .notiID)
+                                                      .update({
+                                                    'read': true,
+                                                  });
                                                 },
                                                 child: DelayedDisplay(
                                                   delay: const Duration(
@@ -295,113 +311,7 @@ class _NotificationsState extends State<Notifications> {
                                                           ],
                                                         ),
                                                       ),
-                                                      // _notiController.notificationList[
-                                                      //                 index]
-                                                      //             ['notificationType'] ==
-                                                      //         1
-                                                      //     ? Row(
-                                                      //         mainAxisAlignment:
-                                                      //             MainAxisAlignment.center,
-                                                      //         children: [
-                                                      //           InkWell(
-                                                      //             onTap: () async {
-                                                      //               await _dataController.joinGroup(
-                                                      //                   _notiController
-                                                      //                       .notificationList[
-                                                      //                           index][
-                                                      //                           'groupToJoinID']
-                                                      //                       .toString(),
-                                                      //                   _notiController
-                                                      //                               .notificationList[
-                                                      //                           index][
-                                                      //                       'userToJoin'][0]);
-                                                      //               await _notiController
-                                                      //                   .deleteNotification(
-                                                      //                       _notiController
-                                                      //                           .notificationList[
-                                                      //                               index][
-                                                      //                               'notiID']
-                                                      //                           .toString());
-                                                      //               Get.find<
-                                                      //                       GeneralController>()
-                                                      //                   .onBottomBarTapped(
-                                                      //                       0);
-                                                      //               PageTransition
-                                                      //                   .pageProperNavigation(
-                                                      //                       page:
-                                                      //                           CustomBottomNavBar());
-                                                      //             },
-                                                      //             child: Container(
-                                                      //                 padding:
-                                                      //                     EdgeInsets.all(8),
-                                                      //                 decoration:
-                                                      //                     BoxDecoration(
-                                                      //                   color: AppColors
-                                                      //                       .buttonColor,
-                                                      //                   borderRadius:
-                                                      //                       BorderRadius
-                                                      //                           .circular(
-                                                      //                               5),
-                                                      //                 ),
-                                                      //                 width: 20.w,
-                                                      //                 child: Center(
-                                                      //                     child: Text(
-                                                      //                   "Accept",
-                                                      //                   style: bodyNormal
-                                                      //                       .copyWith(
-                                                      //                           color: Colors
-                                                      //                               .white),
-                                                      //                 ))),
-                                                      //           ),
-                                                      //           Padding(
-                                                      //             padding:
-                                                      //                 const EdgeInsets.only(
-                                                      //                     left: 8.0),
-                                                      //             child: InkWell(
-                                                      //               onTap: () async {
-                                                      //                 await _notiController
-                                                      //                     .deleteNotification(
-                                                      //                         _notiController
-                                                      //                             .notificationList[
-                                                      //                                 index]
-                                                      //                                 [
-                                                      //                                 'notiID']
-                                                      //                             .toString());
-                                                      //                 Get.find<
-                                                      //                         GeneralController>()
-                                                      //                     .onBottomBarTapped(
-                                                      //                         0);
-                                                      //                 PageTransition
-                                                      //                     .pageProperNavigation(
-                                                      //                         page:
-                                                      //                             CustomBottomNavBar());
-                                                      //               },
-                                                      //               child: Container(
-                                                      //                   padding:
-                                                      //                       EdgeInsets.all(
-                                                      //                           8),
-                                                      //                   decoration:
-                                                      //                       BoxDecoration(
-                                                      //                     color: Colors.red,
-                                                      //                     borderRadius:
-                                                      //                         BorderRadius
-                                                      //                             .circular(
-                                                      //                                 5),
-                                                      //                   ),
-                                                      //                   width: 20.w,
-                                                      //                   child: Center(
-                                                      //                       child: Text(
-                                                      //                     "Reject",
-                                                      //                     style: bodyNormal
-                                                      //                         .copyWith(
-                                                      //                             color: Colors
-                                                      //                                 .white),
-                                                      //                   ))),
-                                                      //             ),
-                                                      //           )
-                                                      //         ],
-                                                      //       )
-                                                      //     : SizedBox.shrink()
+                                                      Divider()
                                                     ],
                                                   ),
                                                 ),
@@ -427,6 +337,22 @@ class _NotificationsState extends State<Notifications> {
                                                                     .groupName
                                                                     .toString(),
                                                               ));
+                                                  CollectionReference
+                                                      collectionReference =
+                                                      Collections.USERS
+                                                          .doc(userData.userID
+                                                              .toString())
+                                                          .collection(Collections
+                                                              .NOTIFICATIONS);
+
+                                                  collectionReference
+                                                      .doc(_notiController
+                                                          .notificationList[
+                                                              index]
+                                                          .notiID)
+                                                      .update({
+                                                    'read': true,
+                                                  });
                                                 },
                                                 child: DelayedDisplay(
                                                   delay: const Duration(
@@ -582,113 +508,7 @@ class _NotificationsState extends State<Notifications> {
                                                           ],
                                                         ),
                                                       ),
-                                                      // _notiController.notificationList[
-                                                      //                 index]
-                                                      //             ['notificationType'] ==
-                                                      //         1
-                                                      //     ? Row(
-                                                      //         mainAxisAlignment:
-                                                      //             MainAxisAlignment.center,
-                                                      //         children: [
-                                                      //           InkWell(
-                                                      //             onTap: () async {
-                                                      //               await _dataController.joinGroup(
-                                                      //                   _notiController
-                                                      //                       .notificationList[
-                                                      //                           index][
-                                                      //                           'groupToJoinID']
-                                                      //                       .toString(),
-                                                      //                   _notiController
-                                                      //                               .notificationList[
-                                                      //                           index][
-                                                      //                       'userToJoin'][0]);
-                                                      //               await _notiController
-                                                      //                   .deleteNotification(
-                                                      //                       _notiController
-                                                      //                           .notificationList[
-                                                      //                               index][
-                                                      //                               'notiID']
-                                                      //                           .toString());
-                                                      //               Get.find<
-                                                      //                       GeneralController>()
-                                                      //                   .onBottomBarTapped(
-                                                      //                       0);
-                                                      //               PageTransition
-                                                      //                   .pageProperNavigation(
-                                                      //                       page:
-                                                      //                           CustomBottomNavBar());
-                                                      //             },
-                                                      //             child: Container(
-                                                      //                 padding:
-                                                      //                     EdgeInsets.all(8),
-                                                      //                 decoration:
-                                                      //                     BoxDecoration(
-                                                      //                   color: AppColors
-                                                      //                       .buttonColor,
-                                                      //                   borderRadius:
-                                                      //                       BorderRadius
-                                                      //                           .circular(
-                                                      //                               5),
-                                                      //                 ),
-                                                      //                 width: 20.w,
-                                                      //                 child: Center(
-                                                      //                     child: Text(
-                                                      //                   "Accept",
-                                                      //                   style: bodyNormal
-                                                      //                       .copyWith(
-                                                      //                           color: Colors
-                                                      //                               .white),
-                                                      //                 ))),
-                                                      //           ),
-                                                      //           Padding(
-                                                      //             padding:
-                                                      //                 const EdgeInsets.only(
-                                                      //                     left: 8.0),
-                                                      //             child: InkWell(
-                                                      //               onTap: () async {
-                                                      //                 await _notiController
-                                                      //                     .deleteNotification(
-                                                      //                         _notiController
-                                                      //                             .notificationList[
-                                                      //                                 index]
-                                                      //                                 [
-                                                      //                                 'notiID']
-                                                      //                             .toString());
-                                                      //                 Get.find<
-                                                      //                         GeneralController>()
-                                                      //                     .onBottomBarTapped(
-                                                      //                         0);
-                                                      //                 PageTransition
-                                                      //                     .pageProperNavigation(
-                                                      //                         page:
-                                                      //                             CustomBottomNavBar());
-                                                      //               },
-                                                      //               child: Container(
-                                                      //                   padding:
-                                                      //                       EdgeInsets.all(
-                                                      //                           8),
-                                                      //                   decoration:
-                                                      //                       BoxDecoration(
-                                                      //                     color: Colors.red,
-                                                      //                     borderRadius:
-                                                      //                         BorderRadius
-                                                      //                             .circular(
-                                                      //                                 5),
-                                                      //                   ),
-                                                      //                   width: 20.w,
-                                                      //                   child: Center(
-                                                      //                       child: Text(
-                                                      //                     "Reject",
-                                                      //                     style: bodyNormal
-                                                      //                         .copyWith(
-                                                      //                             color: Colors
-                                                      //                                 .white),
-                                                      //                   ))),
-                                                      //             ),
-                                                      //           )
-                                                      //         ],
-                                                      //       )
-                                                      //     : SizedBox.shrink()
+                                                      Divider()
                                                     ],
                                                   ),
                                                 ),
