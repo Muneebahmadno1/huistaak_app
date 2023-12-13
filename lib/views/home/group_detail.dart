@@ -485,9 +485,12 @@ class _GroupDetailState extends State<GroupDetail> {
                                                                               widget.groupID.toString(),
                                                                               _groupController.toBeCompletedTaskList[index].id.toString(),
                                                                             );
+                                                                            _progressValue.clear();
                                                                             getData();
                                                                             Navigator.pop(context);
                                                                           });
+                                                                          setState(
+                                                                              () {});
                                                                         },
                                                                         child:
                                                                             Icon(
@@ -525,14 +528,14 @@ class _GroupDetailState extends State<GroupDetail> {
                                                                 "assets/icons/home/time.png",
                                                             title: "Time",
                                                             data: DateFormat(
-                                                                        'dd-MM-yyyy kk:mm')
+                                                                        'dd-MM-yyyy HH:mm')
                                                                     .format(DateTime.parse(_groupController
                                                                         .toBeCompletedTaskList[
                                                                             index]
                                                                         .startTime)) +
                                                                 " to " +
                                                                 DateFormat(
-                                                                        'dd-MM-yyyy kk:mm')
+                                                                        'dd-MM-yyyy HH:mm')
                                                                     .format(DateTime.parse(_groupController
                                                                         .toBeCompletedTaskList[
                                                                             index]
@@ -978,12 +981,12 @@ class _GroupDetailState extends State<GroupDetail> {
                                                                 icon:
                                                                     "assets/icons/home/time.png",
                                                                 title: "Time",
-                                                                data: DateFormat('dd-MM-yyyy kk:mm').format(DateTime.parse(_groupController
+                                                                data: DateFormat('dd-MM-yyyy HH:mm').format(DateTime.parse(_groupController
                                                                         .completedTaskList[
                                                                             index]
                                                                         .startTime)) +
                                                                     " to " +
-                                                                    DateFormat('dd-MM-yyyy kk:mm').format(DateTime.parse(_groupController
+                                                                    DateFormat('dd-MM-yyyy HH:mm').format(DateTime.parse(_groupController
                                                                         .completedTaskList[
                                                                             index]
                                                                         .endTime))),
@@ -1377,12 +1380,12 @@ class _GroupDetailState extends State<GroupDetail> {
                                                                 icon:
                                                                     "assets/icons/home/time.png",
                                                                 title: "Time",
-                                                                data: DateFormat('dd-MM-yyyy kk:mm').format(DateTime.parse(_groupController
+                                                                data: DateFormat('dd-MM-yyyy HH:mm').format(DateTime.parse(_groupController
                                                                         .notCompletedTaskList[
                                                                             index]
                                                                         .startTime)) +
                                                                     " to " +
-                                                                    DateFormat('dd-MM-yyyy kk:mm').format(DateTime.parse(_groupController
+                                                                    DateFormat('dd-MM-yyyy HH:mm').format(DateTime.parse(_groupController
                                                                         .notCompletedTaskList[
                                                                             index]
                                                                         .endTime))),

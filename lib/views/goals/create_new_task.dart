@@ -1,4 +1,5 @@
 import 'package:delayed_display/delayed_display.dart';
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:huistaak/widgets/custom_widgets.dart';
@@ -181,17 +182,28 @@ class _CreateNewTaskState extends State<CreateNewTask> {
                           child: Padding(
                             padding: const EdgeInsets.only(
                                 left: 20.0, right: 20.0, top: 3),
-                            child: DropdownButton(
-                              borderRadius: BorderRadius.circular(20),
+                            child: DropdownButton2<String>(
                               underline: SizedBox(),
+                              value: _dropDownValue,
+                              isExpanded: true,
+                              style: bodyNormal,
                               hint: Text(
                                 _dropDownValue,
                                 style: bodyNormal,
                               ),
-                              value: _dropDownValue,
-                              isExpanded: true,
-                              iconSize: 30.0,
-                              style: bodyNormal,
+                              dropdownStyleData: DropdownStyleData(
+                                maxHeight: 20.h,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                              ),
+                              onChanged: (String? newValue) {
+                                setState(() {
+                                  _dropDownValue = newValue!;
+                                  print(newValue);
+                                  print(_dropDownValue);
+                                });
+                              },
                               items: groupList.map(
                                 (val) {
                                   return DropdownMenuItem<String>(
@@ -200,16 +212,37 @@ class _CreateNewTaskState extends State<CreateNewTask> {
                                   );
                                 },
                               ).toList(),
-                              onChanged: (val) async {
-                                setState(
-                                  () {
-                                    _dropDownValue = val!;
-                                    print(val);
-                                    print(_dropDownValue);
-                                  },
-                                );
-                              },
                             ),
+
+                            // DropdownButton(
+                            //   borderRadius: BorderRadius.circular(20),
+                            //   underline: SizedBox(),
+                            //   hint: Text(
+                            //     _dropDownValue,
+                            //     style: bodyNormal,
+                            //   ),
+                            //   value: _dropDownValue,
+                            //   isExpanded: true,
+                            //   iconSize: 30.0,
+                            //   style: bodyNormal,
+                            //   items: groupList.map(
+                            //     (val) {
+                            //       return DropdownMenuItem<String>(
+                            //         value: val['groupID'],
+                            //         child: Text(val['groupName']),
+                            //       );
+                            //     },
+                            //   ).toList(),
+                            //   onChanged: (val) async {
+                            //     setState(
+                            //       () {
+                            //         _dropDownValue = val!;
+                            //         print(val);
+                            //         print(_dropDownValue);
+                            //       },
+                            //     );
+                            //   },
+                            // ),
                           ),
                         ),
                       ),

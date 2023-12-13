@@ -62,9 +62,29 @@ class _CreateNewGroupTaskState extends State<CreateNewGroupTask> {
       timeItems.clear();
       selectedValueStart = null;
     });
-    for (int i = 0; i < 24; i++)
-      timeItems.add(
-          DateFormat('yyyy-MM-dd HH:mm').format(date.add(Duration(hours: i))));
+    print(date);
+    DateTime now = DateTime.now();
+
+    // Check if the provided date is the current day
+    if (date.year == now.year &&
+        date.month == now.month &&
+        date.day == now.day) {
+      // Calculate the next quarter-hour from the current time
+      int nextQuarter = ((now.minute / 15).ceil() * 15) % 60;
+      DateTime startTime =
+          DateTime(now.year, now.month, now.day, now.hour, nextQuarter);
+
+      // Add times to the list until the end of the day
+      while (startTime.day == now.day &&
+          (startTime.hour < 23 || startTime.minute < 45)) {
+        timeItems.add(DateFormat('yyyy-MM-dd HH:mm').format(startTime));
+        startTime = startTime.add(Duration(minutes: 15));
+      }
+    } else {
+      for (int i = 0; i < 1440; i += 15)
+        timeItems.add(DateFormat('yyyy-MM-dd HH:mm')
+            .format(date.add(Duration(minutes: i))));
+    }
   }
 
   getEndTimesDropDownData(DateTime date) {
@@ -72,17 +92,37 @@ class _CreateNewGroupTaskState extends State<CreateNewGroupTask> {
       endTimeItems.clear();
       selectedValueEnd = null;
     });
-    for (int i = 0; i < 24; i++)
-      endTimeItems.add(
-          DateFormat('yyyy-MM-dd HH:mm').format(date.add(Duration(hours: i))));
-    print("moimoi");
-    print(endTimeItems);
+    print(date);
+    DateTime now = DateTime.now();
+
+    // Check if the provided date is the current day
+    if (date.year == now.year &&
+        date.month == now.month &&
+        date.day == now.day) {
+      // Calculate the next quarter-hour from the current time
+      int nextQuarter = ((now.minute / 15).ceil() * 15) % 60;
+      DateTime startTime =
+          DateTime(now.year, now.month, now.day, now.hour, nextQuarter);
+
+      // Add times to the list until the end of the day
+      while (startTime.day == now.day &&
+          (startTime.hour < 23 || startTime.minute < 45)) {
+        endTimeItems.add(DateFormat('yyyy-MM-dd HH:mm').format(startTime));
+        startTime = startTime.add(Duration(minutes: 15));
+      }
+    } else {
+      for (int i = 0; i < 1440; i += 15)
+        endTimeItems.add(DateFormat('yyyy-MM-dd HH:mm')
+            .format(date.add(Duration(minutes: i))));
+    }
   }
 
   getData() async {
     setState(() {
       _dataController.startTime.value = "";
       _dataController.endTime.value = "";
+      _dataController.selectedStartDate = null;
+      _dataController.selectedEndDate = null;
       // _dataController.selectedStartDate = DateTime.now();
       loading = true;
     });
@@ -199,12 +239,13 @@ class _CreateNewGroupTaskState extends State<CreateNewGroupTask> {
                           Icon(Icons.arrow_drop_down, color: Colors.black),
                       onTap: () async {
                         await _showDatePicker(context, "StartDate");
-
+                        print("xzz");
                         setState(() {
                           _dataController.selectedEndDate = null;
                           _dataController.endTime.value = "";
                           visibility = false;
                         });
+                        print("xzz1");
                         getTimesDropDownData(
                             _dataController.selectedStartDate!);
                       },
