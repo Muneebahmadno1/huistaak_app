@@ -331,8 +331,6 @@ class GroupController extends GetxController {
             int totalPoints = (int.parse(myPoints.toString()) +
                 int.parse(userPoint.ceil().toString()));
             bool achieved = await goalAchieved(groupID, totalPoints.toString());
-            print("achieved");
-            print(achieved);
             if (achieved) {
               var notiID = Collections.USERS
                   .doc(userData.userID)
@@ -520,7 +518,7 @@ class GroupController extends GetxController {
     // Calculate the time difference in hours
     Duration difference = endTime.difference(startTime);
     double hours = difference.inMinutes / 60;
-
+    print(difference.toString());
     CollectionReference ref =
         await Collections.GROUPS.doc(groupID).collection(Collections.TASKS);
     List<Map<String, dynamic>> assignMembersData = assignMembers

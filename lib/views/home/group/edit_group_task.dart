@@ -68,9 +68,29 @@ class _EditGroupTaskState extends State<EditGroupTask> {
       timeItems.clear();
       selectedValueStart = null;
     });
-    for (int i = 0; i < 24; i++)
-      timeItems.add(
-          DateFormat('yyyy-MM-dd HH:mm').format(date.add(Duration(hours: i))));
+    print(date);
+    DateTime now = DateTime.now();
+
+    // Check if the provided date is the current day
+    if (date.year == now.year &&
+        date.month == now.month &&
+        date.day == now.day) {
+      // Calculate the next quarter-hour from the current time
+      int nextQuarter = ((now.minute / 15).ceil() * 15) % 60;
+      DateTime startTime =
+          DateTime(now.year, now.month, now.day, now.hour, nextQuarter);
+
+      // Add times to the list until the end of the day
+      while (startTime.day == now.day &&
+          (startTime.hour < 23 || startTime.minute < 45)) {
+        timeItems.add(DateFormat('yyyy-MM-dd HH:mm').format(startTime));
+        startTime = startTime.add(Duration(minutes: 15));
+      }
+    } else {
+      for (int i = 0; i < 1440; i += 15)
+        timeItems.add(DateFormat('yyyy-MM-dd HH:mm')
+            .format(date.add(Duration(minutes: i))));
+    }
   }
 
   getEndTimesDropDownData(DateTime date) {
@@ -78,9 +98,29 @@ class _EditGroupTaskState extends State<EditGroupTask> {
       endTimeItems.clear();
       selectedValueEnd = null;
     });
-    for (int i = 0; i < 24; i++)
-      endTimeItems.add(
-          DateFormat('yyyy-MM-dd HH:mm').format(date.add(Duration(hours: i))));
+    print(date);
+    DateTime now = DateTime.now();
+
+    // Check if the provided date is the current day
+    if (date.year == now.year &&
+        date.month == now.month &&
+        date.day == now.day) {
+      // Calculate the next quarter-hour from the current time
+      int nextQuarter = ((now.minute / 15).ceil() * 15) % 60;
+      DateTime startTime =
+          DateTime(now.year, now.month, now.day, now.hour, nextQuarter);
+
+      // Add times to the list until the end of the day
+      while (startTime.day == now.day &&
+          (startTime.hour < 23 || startTime.minute < 45)) {
+        endTimeItems.add(DateFormat('yyyy-MM-dd HH:mm').format(startTime));
+        startTime = startTime.add(Duration(minutes: 15));
+      }
+    } else {
+      for (int i = 0; i < 1440; i += 15)
+        endTimeItems.add(DateFormat('yyyy-MM-dd HH:mm')
+            .format(date.add(Duration(minutes: i))));
+    }
   }
 
   getData() async {
@@ -222,48 +262,6 @@ class _EditGroupTaskState extends State<EditGroupTask> {
                     ),
                   ),
                 ),
-                // DelayedDisplay(
-                //   delay: Duration(milliseconds: 600),
-                //   slidingBeginOffset: Offset(0, 0),
-                //   child: Container(
-                //     decoration: BoxDecoration(
-                //       color: AppColors.buttonColor.withOpacity(0.2),
-                //       borderRadius: BorderRadius.circular(30.0),
-                //     ),
-                //     child: ListTile(
-                //       horizontalTitleGap: 0,
-                //       contentPadding: EdgeInsets.symmetric(
-                //           horizontal: 16.0), // Adjust padding
-                //       leading: Icon(
-                //         Icons.calendar_month_outlined,
-                //         color: AppColors.buttonColor,
-                //       ), // Add a calendar icon in the leading position
-                //       title: Text(
-                //         (_dataController.selectedStartDate) == null
-                //             ? 'Select Date'
-                //             : '${DateFormat.yMMMd().format((_dataController.selectedStartDate)!)}',
-                //         style: bodyNormal,
-                //       ), // Format the date
-                //       trailing:
-                //           Icon(Icons.arrow_drop_down, color: Colors.black),
-                //       onTap: () async {
-                //         await _showDatePicker(context);
-                //         setState(() {
-                //           selectedValueStart = DateFormat('yyyy-MM-dd HH:mm')
-                //               .format(_dataController.selectedStartDate!);
-                //           selectedValueEnd = DateFormat('yyyy-MM-dd HH:mm')
-                //               .format(_dataController.selectedStartDate!
-                //                   .add(Duration(hours: 1)));
-                //         });
-                //         getTimesDropDownData(
-                //             _dataController.selectedStartDate!);
-                //       },
-                //     ),
-                //   ),
-                //   // DatePickerWidget(
-                //   //   from: 'task',
-                //   // )
-                // ),
                 const SizedBox(height: 20),
                 DelayedDisplay(
                   delay: Duration(milliseconds: 500),
@@ -355,8 +353,13 @@ class _EditGroupTaskState extends State<EditGroupTask> {
                                         ),
                                         Text(
                                             widget.taskDetails.startTime
-                                                .toString()
-                                                .split(' ')[1],
+                                                        .toString()
+                                                        .split(' ')[1] ==
+                                                    ""
+                                                ? "End Time"
+                                                : widget.taskDetails.startTime
+                                                    .toString()
+                                                    .split(' ')[1],
                                             style: bodyNormal),
                                       ],
                                     ),
@@ -430,29 +433,9 @@ class _EditGroupTaskState extends State<EditGroupTask> {
                                   ),
                                 ),
                               ),
-                              // CustomDropDown(
-                              //   dateForTime: _dataController.selectedStartDate!,
-                              //   dropDownTitle: "Start Time",
-                              // ),
                             ),
-                            // Container(
-                            //   height: 56,
-                            //   decoration: BoxDecoration(
-                            //     color: AppColors.buttonColor.withOpacity(0.2),
-                            //     borderRadius: BorderRadius.circular(40),
-                            //   ),
-                            //   child: CustomDropDown(
-                            //     dateForTime: _dataController.selectedStartDate!,
-                            //     dropDownTitle:
-                            //         widget.taskDetails['startTime'].toString(),
-                            //   ),
-                            // ),
                           ],
                         ),
-                        // TimePickerWidget(
-                        //   index: 1,
-                        //   title: 'Start Time',
-                        // ),
                       ),
                       SizedBox(
                         width: 10,
@@ -492,8 +475,13 @@ class _EditGroupTaskState extends State<EditGroupTask> {
                                         ),
                                         Text(
                                             widget.taskDetails.endTime
-                                                .toString()
-                                                .split(' ')[1],
+                                                        .toString()
+                                                        .split(' ')[1] ==
+                                                    ""
+                                                ? "End Time"
+                                                : widget.taskDetails.endTime
+                                                    .toString()
+                                                    .split(' ')[1],
                                             style: bodyNormal),
                                       ],
                                     ),
@@ -581,7 +569,6 @@ class _EditGroupTaskState extends State<EditGroupTask> {
                     ],
                   ),
                 ),
-
                 DelayedDisplay(
                   delay: Duration(milliseconds: 900),
                   slidingBeginOffset: Offset(0, -1),

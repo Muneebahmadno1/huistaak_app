@@ -485,9 +485,12 @@ class _GroupDetailState extends State<GroupDetail> {
                                                                               widget.groupID.toString(),
                                                                               _groupController.toBeCompletedTaskList[index].id.toString(),
                                                                             );
+                                                                            _progressValue.clear();
                                                                             getData();
                                                                             Navigator.pop(context);
                                                                           });
+                                                                          setState(
+                                                                              () {});
                                                                         },
                                                                         child:
                                                                             Icon(
