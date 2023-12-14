@@ -194,6 +194,34 @@ class GoalController extends GetxController {
   }
 
   resetGroupPoints(String groupId) async {
+    DocumentReference groupDocRef =
+        FirebaseFirestore.instance.collection("groups").doc(groupId.toString());
+
+    // Check if the "tasks" collection exists
+    bool tasksCollectionExists = await groupDocRef
+        .collection("tasks")
+        .get()
+        .then((snapshot) => snapshot.docs.isNotEmpty);
+
+    if (tasksCollectionExists) {
+      // Get the current date and time
+      DateTime currentDate = DateTime.now();
+      String formattedDate =
+          "${currentDate.year}-${currentDate.month}-${currentDate.day} ${currentDate.hour}:${currentDate.minute}";
+
+      // Reference to the tasks collection
+      CollectionReference tasksCollection = groupDocRef.collection("tasks");
+
+      // Query tasks with "startTime" less than or equal to the current date
+      QuerySnapshot querySnapshot = await tasksCollection
+          .where("startTime", isLessThanOrEqualTo: formattedDate)
+          .get();
+
+      // Iterate through the documents and delete them
+      querySnapshot.docs.forEach((doc) async {
+        await tasksCollection.doc(doc.id).delete();
+      });
+    }
     // Get a reference to the users collection
     CollectionReference usersCollection =
         FirebaseFirestore.instance.collection('users');
@@ -231,9 +259,6 @@ class GoalController extends GetxController {
   }
 
   markCompleted(String groupId, userID, goalID) async {
-    print(groupId);
-    print(userID);
-    print(goalID);
     DocumentReference goalDocRef = Collections.GROUPS
         .doc(groupId.toString())
         .collection(Collections.GOALS)

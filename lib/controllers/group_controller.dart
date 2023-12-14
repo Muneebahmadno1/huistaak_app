@@ -92,7 +92,7 @@ class GroupController extends GetxController {
     QuerySnapshot querySnapshot = await Collections.GROUPS
         .doc(groupID)
         .collection(Collections.TASKS)
-        .orderBy('endTime', descending: false)
+        .orderBy('startTime', descending: false)
         .get();
     //
     // for (int i = 0; i < querySnapshot.docs.length; i++) {

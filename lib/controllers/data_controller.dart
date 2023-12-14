@@ -130,8 +130,12 @@ class HomeController extends GetxController {
           'type': "request",
           'end_time': DateTime.now().toString(),
         };
-        _notiController.sendNotifications(notiUserData.fcmToken.toString(),
-            userData.displayName.toString() + " join group ", data);
+        _notiController.sendNotifications(
+            notiUserData.fcmToken.toString(),
+            userData.displayName.toString() +
+                " join the group " +
+                groupName.toString(),
+            data);
       });
       return true;
     } catch (e) {
