@@ -96,8 +96,6 @@ class NotificationController extends GetxController {
       print('RESPONSE.BODY: ${response.body}');
       if (response.statusCode == 200) {
         final result = jsonDecode(response.body);
-        print("result545");
-        print(result);
         if (result['success'] == 1) {
           return 'true';
         } else {
