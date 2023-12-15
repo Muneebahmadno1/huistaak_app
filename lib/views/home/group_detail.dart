@@ -132,7 +132,6 @@ class _GroupDetailState extends State<GroupDetail> {
     // Cancel the timer when the page is disposed (popped or navigated away)
     if (_timer != null && _timer!.isActive) {
       _timer!.cancel();
-      print("spllmp");
     }
   }
 
@@ -570,10 +569,27 @@ class _GroupDetailState extends State<GroupDetail> {
                                                             "assets/icons/home/duration.png",
                                                         title: "Task Duration",
                                                         data: _groupController
-                                                                .toBeCompletedTaskList[
-                                                                    index]
-                                                                .duration +
-                                                            " hours"),
+                                                                    .toBeCompletedTaskList[
+                                                                        index]
+                                                                    .duration ==
+                                                                "0.25"
+                                                            ? "15 minutes"
+                                                            : _groupController
+                                                                        .toBeCompletedTaskList[
+                                                                            index]
+                                                                        .duration ==
+                                                                    "0.50"
+                                                                ? "30 minutes"
+                                                                : _groupController
+                                                                            .toBeCompletedTaskList[
+                                                                                index]
+                                                                            .duration ==
+                                                                        "0.75"
+                                                                    ? "45 minutes"
+                                                                    : _groupController
+                                                                            .toBeCompletedTaskList[index]
+                                                                            .duration +
+                                                                        " hours"),
                                                     SizedBox(
                                                       height: 10,
                                                     ),
@@ -804,6 +820,7 @@ class _GroupDetailState extends State<GroupDetail> {
                                                                                   isFinish = true;
                                                                                 });
                                                                                 await _groupController.endTask(widget.groupID.toString(), _groupController.toBeCompletedTaskList[index].id.toString(), _groupController.toBeCompletedTaskList[index].assignMembers, double.parse(_groupController.toBeCompletedTaskList[index].duration.toString()) * 60, _groupController.toBeCompletedTaskList[index].taskScore, widget.groupTitle, _groupController.groupInfo[0].adminsList, achievedPoints.toString());
+                                                                                // await _groupController.updateUserCollPoints(widget.groupID.toString(), _groupController.toBeCompletedTaskList[index].id.toString());
                                                                                 Future.delayed(const Duration(milliseconds: 4000), () async {
                                                                                   Get.off(
                                                                                       () => GroupDetail(
@@ -1026,10 +1043,22 @@ class _GroupDetailState extends State<GroupDetail> {
                                                             title:
                                                                 "Task Duration",
                                                             data: _groupController
-                                                                    .completedTaskList[
-                                                                        index]
-                                                                    .duration +
-                                                                " hours"),
+                                                                        .completedTaskList[
+                                                                            index]
+                                                                        .duration ==
+                                                                    "0.25"
+                                                                ? "15 minutes"
+                                                                : _groupController
+                                                                            .completedTaskList[
+                                                                                index]
+                                                                            .duration ==
+                                                                        "0.50"
+                                                                    ? "30 minutes"
+                                                                    : _groupController.completedTaskList[index].duration ==
+                                                                            "0.75"
+                                                                        ? "45 minutes"
+                                                                        : _groupController.completedTaskList[index].duration +
+                                                                            " hours"),
                                                         SizedBox(
                                                           height: 10,
                                                         ),
@@ -1449,10 +1478,22 @@ class _GroupDetailState extends State<GroupDetail> {
                                                             title:
                                                                 "Task Duration",
                                                             data: _groupController
-                                                                    .notCompletedTaskList[
-                                                                        index]
-                                                                    .duration +
-                                                                " hours"),
+                                                                        .notCompletedTaskList[
+                                                                            index]
+                                                                        .duration ==
+                                                                    "0.25"
+                                                                ? "15 minutes"
+                                                                : _groupController
+                                                                            .notCompletedTaskList[
+                                                                                index]
+                                                                            .duration ==
+                                                                        "0.50"
+                                                                    ? "30 minutes"
+                                                                    : _groupController.notCompletedTaskList[index].duration ==
+                                                                            "0.75"
+                                                                        ? "45 minutes"
+                                                                        : _groupController.notCompletedTaskList[index].duration +
+                                                                            " hours"),
                                                         SizedBox(
                                                           height: 10,
                                                         ),
@@ -1615,5 +1656,24 @@ class _GroupDetailState extends State<GroupDetail> {
                   : SizedBox.shrink()
               : SizedBox.shrink(),
     );
+  }
+}
+
+formatDuration(int duration) {
+  if (duration >= 1.0) {
+    // If duration is greater than or equal to 1.0, convert to hours
+    return "${duration} hours";
+  } else {
+    // If duration is less than 1.0, convert to minutes (15, 30, or 45 minutes)
+    if (duration == 0.25) {
+      return '15 minutes';
+    } else if (duration == 0.50) {
+      return '30 minutes';
+    } else if (duration == 0.75) {
+      return '45 minutes';
+    } else {
+      // Handle other cases if needed
+      return 'Invalid duration';
+    }
   }
 }

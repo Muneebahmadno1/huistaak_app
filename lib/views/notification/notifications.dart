@@ -580,6 +580,8 @@ class _NotificationsState extends State<Notifications> {
 
 Future<bool> checkUserPermission(String groupId, String myUserID) async {
   // Initialize Firebase
+  print(groupId);
+  print(myUserID);
 
   // Reference to the group document
   DocumentReference groupDocRef =

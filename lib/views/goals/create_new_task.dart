@@ -34,12 +34,22 @@ class _CreateNewTaskState extends State<CreateNewTask> {
   bool isLoading = false;
 
   getDataGoal() async {
+    DateTime currentDate = DateTime.now();
+
+    // Set the time to midnight (00:00:00)
+    DateTime currentDateMidnight = DateTime(
+      currentDate.year,
+      currentDate.month,
+      currentDate.day,
+    );
     setState(() {
-      _dataController.goalSelectedDate = DateTime.now().add(Duration(days: 1));
+      _dataController.goalSelectedDate =
+          currentDateMidnight.add(Duration(days: 1));
       isLoading = true;
     });
     groupList = await _goalController.getGroupsWithEmptyGoals(userData.userID);
     print(groupList);
+    print(_dataController.goalSelectedDate);
     setState(() {
       if (groupList.isNotEmpty) {
         _dropDownValue = groupList[0]['groupID'];
