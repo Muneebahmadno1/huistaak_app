@@ -13,7 +13,7 @@ class HomeController extends GetxController {
       Get.find<NotificationController>();
   DateTime? selectedStartDate = null;
   DateTime? selectedEndDate = null;
-  DateTime? goalSelectedDate = DateTime.now().add(Duration(days: 1));
+  DateTime? goalSelectedDate = null;
   RxString startTime = ''.obs;
   RxString endTime = ''.obs;
   List<ChatUserModel> chatUsers = [];
@@ -76,6 +76,7 @@ class HomeController extends GetxController {
   joinGroupRequest(groupID) async {
     print(userData.imageUrl.toString());
     String groupName = "";
+    String groupActualID = "";
     try {
       final newMap = {
         'displayName': userData.displayName.toString(),
@@ -89,6 +90,7 @@ class HomeController extends GetxController {
         // Get the first document (assuming there's only one match)
         var documentSnapshot = querySnapshot2.docs.first;
         groupName = documentSnapshot['groupName'];
+        groupActualID = documentSnapshot['groupID'];
         // Retrieve data and add it to the adminList
         adminList.add({
           "adminsList": List.from(documentSnapshot['adminsList']),
@@ -118,7 +120,7 @@ class HomeController extends GetxController {
         "notiImage": userData.imageUrl.toString(),
         "userName": userData.displayName.toString(),
         "notiID": notiID.id,
-        "groupID": groupID.toString(),
+        "groupID": groupActualID.toString(),
         "groupName": groupName.toString(),
       });
       Collections.USERS
@@ -133,7 +135,7 @@ class HomeController extends GetxController {
         _notiController.sendNotifications(
             notiUserData.fcmToken.toString(),
             userData.displayName.toString() +
-                " join the group " +
+                " joined the group " +
                 groupName.toString(),
             data);
       });

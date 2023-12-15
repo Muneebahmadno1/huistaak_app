@@ -245,89 +245,227 @@ class GroupController extends GetxController {
       return user;
     }
   }
+//first code
+//   endTask(groupID, taskID, List<MemberModel> StartTime, taskDurationInMin,
+//       points, groupTitle, List<MemberModel> adminList, myPoints) async {
+//     final DocumentReference documentReference = await Collections.GROUPS
+//         .doc(groupID)
+//         .collection(Collections.TASKS)
+//         .doc(taskID);
+// // Fetch the existing data from the document
+//     documentReference.get().then((documentSnapshot) async {
+//       if (documentSnapshot.exists) {
+//         dynamic data = documentSnapshot.data();
+//         List<Map<String, dynamic>> existingArray =
+//             List<Map<String, dynamic>>.from(data['assignMembers'] ?? []);
+//         // Find the index of the map with a matching userID
+//         int index = existingArray
+//             .indexWhere((map) => map['userID'] == userData.userID.toString());
+//         bool containsStartTask =
+//             existingArray.any((map) => map['startTask'] != null);
+//         if (index != -1 && containsStartTask == true) {
+//           // If a match is found, add the new variable to that map
+//
+//           int differenceInMinutes = DateTime.now()
+//               .difference(StartTime[index].startTask.toDate())
+//               .inMinutes;
+//
+//           var pointPerMinute = taskDurationInMin / double.parse(points);
+//           var userPoint;
+//           for (int i = 0; i < int.parse(points); i++) {
+//             if (differenceInMinutes < pointPerMinute * (i + 1)) {
+//               userPoint = double.parse(points) - double.parse(i.toString());
+//               break;
+//             }
+//           }
+//           Map<String, dynamic> newVariable = {
+//             'endTask': DateTime.now(),
+//             'pointsEarned':
+//                 userPoint.ceil().toString(), // Add the 4th variable here
+//           };
+//           existingArray[index]['endTask'] = newVariable['endTask'];
+//           existingArray[index]['pointsEarned'] = newVariable['pointsEarned'];
+//           // Update the document with the modified array
+//           final newMap = {
+//             'point': userPoint.ceil().toString(),
+//             'groupID': groupID.toString(),
+//           };
+//
+//           final userDocRef = Collections.USERS.doc(userData.userID.toString());
+//           final userDoc = await userDocRef.get();
+//           if (userDoc.exists) {
+//             List<dynamic> pointsList =
+//                 userDoc.get('points') ?? <Map<String, dynamic>>[];
+//             // Check if the 'points' array is empty, and add newMap in that case.
+//             if (pointsList.isEmpty) {
+//               pointsList.add(newMap);
+//             } else {
+//               bool groupIDMatch = false;
+//               for (var i = 0; i < pointsList.length; i++) {
+//                 if (pointsList[i]['groupID'] == newMap['groupID']) {
+//                   // If 'groupID' already exists in the array, add 'point' to the existing value.
+//                   pointsList[i]['point'] =
+//                       (int.parse(userPoint.ceil().toString()) +
+//                           int.parse(pointsList[i]['point'].toString()));
+//                   groupIDMatch = true;
+//                   break;
+//                 }
+//               }
+//
+//               // If 'groupID' doesn't match with any existing entry, add newMap to the list.
+//               if (!groupIDMatch) {
+//                 pointsList.add(newMap);
+//               }
+//             }
+//             await userDocRef.update({'points': pointsList});
+//           }
+//           await Collections.USERS
+//               .doc(userData.userID.toString())
+//               .get()
+//               .then((value) async {
+//             userData = UserModel.fromDocument(value.data());
+//           });
+//           documentReference.update({
+//             'assignMembers': existingArray,
+//           }).then((_) async {
+//             int totalPoints = (int.parse(myPoints.toString()) +
+//                 int.parse(userPoint.ceil().toString()));
+//             bool achieved = await goalAchieved(groupID, totalPoints.toString());
+//             if (achieved) {
+//               var notiID = Collections.USERS
+//                   .doc(userData.userID)
+//                   .collection(Collections.NOTIFICATIONS)
+//                   .doc();
+//               notiID.set({
+//                 "read": false,
+//                 "notificationType": 5,
+//                 "notification": " the goal of ",
+//                 "Time": DateTime.now(),
+//                 "notiID": notiID.id,
+//                 "userName": " has been achieved!",
+//                 "userToJoin": FieldValue.arrayUnion([]),
+//                 "groupID": groupID.toString(),
+//                 "groupName": groupTitle.toString(),
+//               });
+//               Collections.USERS
+//                   .doc(userData.userID.toString())
+//                   .get()
+//                   .then((value) async {
+//                 UserModel notiUserData = UserModel.fromDocument(value.data());
+//                 var data = {
+//                   'type': "request",
+//                   'end_time': DateTime.now().toString(),
+//                 };
+//                 _notiController.sendNotifications(
+//                     notiUserData.fcmToken.toString(),
+//                     "The goal of  " +
+//                         groupTitle.toString() +
+//                         " has been achieved",
+//                     data);
+//               });
+//             }
+//             var notiID = Collections.USERS
+//                 .doc(userData.userID)
+//                 .collection(Collections.NOTIFICATIONS)
+//                 .doc();
+//             notiID.set({
+//               "read": false,
+//               "notificationType": 3,
+//               "notification": "you have earned " +
+//                   userPoint.ceil().toString() +
+//                   " points in ",
+//               "Time": DateTime.now(),
+//               "notiID": notiID.id,
+//               "notiImage": userData.imageUrl,
+//               "userName": userData.displayName.toString(),
+//               "userToJoin": FieldValue.arrayUnion([]),
+//               "groupID": groupID.toString(),
+//               "groupName": groupTitle.toString(),
+//             });
+//             Collections.USERS
+//                 .doc(userData.userID.toString())
+//                 .get()
+//                 .then((value) async {
+//               UserModel notiUserData = UserModel.fromDocument(value.data());
+//               var data = {
+//                 'type': "request",
+//                 'end_time': DateTime.now().toString(),
+//               };
+//               _notiController.sendNotifications(
+//                   notiUserData.fcmToken.toString(),
+//                   userData.displayName.toString() +
+//                       " has completed the task in " +
+//                       groupTitle.toString(),
+//                   data);
+//             });
+//             print('Document updated successfully');
+//           }).catchError((error) {
+//             print('Error updating document: $error');
+//           });
+//         } else {
+//           print("Task haven't started yet");
+//         }
+//       }
+//     }).catchError((error) {
+//       print('Error fetching document: $error');
+//     });
+//   }
 
-  endTask(groupID, taskID, List<MemberModel> StartTime, taskDurationInMin,
-      points, groupTitle, List<MemberModel> adminList, myPoints) async {
-    final DocumentReference documentReference = await Collections.GROUPS
+  // second code
+  Future<void> endTask(
+      groupID,
+      taskID,
+      List<MemberModel> StartTime,
+      taskDurationInMin,
+      points,
+      groupTitle,
+      List<MemberModel> adminList,
+      myPoints) async {
+    final DocumentReference documentReference = Collections.GROUPS
         .doc(groupID)
         .collection(Collections.TASKS)
         .doc(taskID);
-// Fetch the existing data from the document
-    documentReference.get().then((documentSnapshot) async {
-      if (documentSnapshot.exists) {
-        dynamic data = documentSnapshot.data();
-        List<Map<String, dynamic>> existingArray =
-            List<Map<String, dynamic>>.from(data['assignMembers'] ?? []);
-        // Find the index of the map with a matching userID
-        int index = existingArray
-            .indexWhere((map) => map['userID'] == userData.userID.toString());
-        bool containsStartTask =
-            existingArray.any((map) => map['startTask'] != null);
-        if (index != -1 && containsStartTask == true) {
-          // If a match is found, add the new variable to that map
 
-          int differenceInMinutes = DateTime.now()
-              .difference(StartTime[index].startTask.toDate())
-              .inMinutes;
+    try {
+      await FirebaseFirestore.instance.runTransaction((transaction) async {
+        DocumentSnapshot documentSnapshot =
+            await transaction.get(documentReference);
+        if (documentSnapshot.exists) {
+          dynamic data = documentSnapshot.data();
+          List<Map<String, dynamic>> existingArray =
+              List<Map<String, dynamic>>.from(data['assignMembers'] ?? []);
+          int index = existingArray
+              .indexWhere((map) => map['userID'] == userData.userID.toString());
+          bool containsStartTask =
+              existingArray.any((map) => map['startTask'] != null);
 
-          var pointPerMinute = taskDurationInMin / double.parse(points);
-          var userPoint;
-          for (int i = 0; i < int.parse(points); i++) {
-            if (differenceInMinutes < pointPerMinute * (i + 1)) {
-              userPoint = double.parse(points) - double.parse(i.toString());
-              break;
-            }
-          }
-          Map<String, dynamic> newVariable = {
-            'endTask': DateTime.now(),
-            'pointsEarned':
-                userPoint.ceil().toString(), // Add the 4th variable here
-          };
-          existingArray[index]['endTask'] = newVariable['endTask'];
-          existingArray[index]['pointsEarned'] = newVariable['pointsEarned'];
-          // Update the document with the modified array
-          final newMap = {
-            'point': userPoint.ceil().toString(),
-            'groupID': groupID.toString(),
-          };
+          if (index != -1 && containsStartTask == true) {
+            int differenceInMinutes = DateTime.now()
+                .difference(StartTime[index].startTask.toDate())
+                .inMinutes;
 
-          final userDocRef = Collections.USERS.doc(userData.userID.toString());
-          final userDoc = await userDocRef.get();
-          if (userDoc.exists) {
-            List<dynamic> pointsList =
-                userDoc.get('points') ?? <Map<String, dynamic>>[];
-            // Check if the 'points' array is empty, and add newMap in that case.
-            if (pointsList.isEmpty) {
-              pointsList.add(newMap);
-            } else {
-              bool groupIDMatch = false;
-              for (var i = 0; i < pointsList.length; i++) {
-                if (pointsList[i]['groupID'] == newMap['groupID']) {
-                  // If 'groupID' already exists in the array, add 'point' to the existing value.
-                  pointsList[i]['point'] =
-                      (int.parse(userPoint.ceil().toString()) +
-                          int.parse(pointsList[i]['point'].toString()));
-                  groupIDMatch = true;
-                  break;
-                }
-              }
+            var pointPerMinute = taskDurationInMin / double.parse(points);
+            var userPoint;
 
-              // If 'groupID' doesn't match with any existing entry, add newMap to the list.
-              if (!groupIDMatch) {
-                pointsList.add(newMap);
+            for (int i = 0; i < int.parse(points); i++) {
+              if (differenceInMinutes < pointPerMinute * (i + 1)) {
+                userPoint = double.parse(points) - double.parse(i.toString());
+                break;
               }
             }
-            await userDocRef.update({'points': pointsList});
-          }
-          await Collections.USERS
-              .doc(userData.userID.toString())
-              .get()
-              .then((value) async {
-            userData = UserModel.fromDocument(value.data());
-          });
-          documentReference.update({
-            'assignMembers': existingArray,
-          }).then((_) async {
+
+            Map<String, dynamic> newVariable = {
+              'endTask': DateTime.now(),
+              'pointsEarned': userPoint.ceil().toString(),
+            };
+
+            existingArray[index]['endTask'] = newVariable['endTask'];
+            existingArray[index]['pointsEarned'] = newVariable['pointsEarned'];
+
+            transaction.update(documentReference, {
+              'assignMembers': existingArray,
+            });
+
             int totalPoints = (int.parse(myPoints.toString()) +
                 int.parse(userPoint.ceil().toString()));
             bool achieved = await goalAchieved(groupID, totalPoints.toString());
@@ -336,6 +474,7 @@ class GroupController extends GetxController {
                   .doc(userData.userID)
                   .collection(Collections.NOTIFICATIONS)
                   .doc();
+
               notiID.set({
                 "read": false,
                 "notificationType": 5,
@@ -347,6 +486,7 @@ class GroupController extends GetxController {
                 "groupID": groupID.toString(),
                 "groupName": groupTitle.toString(),
               });
+
               Collections.USERS
                   .doc(userData.userID.toString())
                   .get()
@@ -364,10 +504,12 @@ class GroupController extends GetxController {
                     data);
               });
             }
+
             var notiID = Collections.USERS
                 .doc(userData.userID)
                 .collection(Collections.NOTIFICATIONS)
                 .doc();
+
             notiID.set({
               "read": false,
               "notificationType": 3,
@@ -382,6 +524,7 @@ class GroupController extends GetxController {
               "groupID": groupID.toString(),
               "groupName": groupTitle.toString(),
             });
+
             Collections.USERS
                 .doc(userData.userID.toString())
                 .get()
@@ -398,22 +541,78 @@ class GroupController extends GetxController {
                       groupTitle.toString(),
                   data);
             });
+
             print('Document updated successfully');
-          }).catchError((error) {
-            print('Error updating document: $error');
-          });
-        } else {
-          print("Task haven't started yet");
+          } else {
+            print("Task haven't started yet");
+          }
+        }
+      });
+      await updateUserCollPoints(groupID, taskID);
+    } catch (error) {
+      print('Transaction failed: $error');
+    }
+  }
+
+  updateUserCollPoints(groupID, taskID) async {
+    final DocumentReference documentReference = Collections.GROUPS
+        .doc(groupID)
+        .collection(Collections.TASKS)
+        .doc(taskID);
+
+    await documentReference.get().then((documentSnapshot) async {
+      if (documentSnapshot.exists) {
+        dynamic data = documentSnapshot.data();
+        List<Map<String, dynamic>> existingArray =
+            List<Map<String, dynamic>>.from(data['assignMembers'] ?? []);
+
+        int index = existingArray
+            .indexWhere((map) => map['userID'] == userData.userID.toString());
+        if (index != -1) {
+          String pointsEarned = existingArray[index]['pointsEarned'];
+
+          final userDocRef = Collections.USERS.doc(userData.userID.toString());
+          final userDoc = await userDocRef.get();
+
+          if (userDoc.exists) {
+            List<dynamic> pointsList =
+                userDoc.get('points') ?? <Map<String, dynamic>>[];
+
+            bool groupIDMatch = false;
+
+            for (var i = 0; i < pointsList.length; i++) {
+              if (pointsList[i]['groupID'] == groupID.toString()) {
+                pointsList[i]['point'] =
+                    (int.parse(int.parse(pointsEarned).ceil().toString()) +
+                        int.parse(pointsList[i]['point'].toString()));
+                groupIDMatch = true;
+                break;
+              }
+            }
+
+            if (!groupIDMatch) {
+              Map<String, dynamic> newMap = {
+                'groupID': groupID.toString(),
+                'point': pointsEarned,
+              };
+              pointsList.add(newMap);
+            }
+
+            await userDocRef.update({
+              'points': pointsList,
+            });
+
+            // Update userData after the operation is complete
+            final updatedUserDoc =
+                await Collections.USERS.doc(userData.userID.toString()).get();
+            userData = UserModel.fromDocument(updatedUserDoc.data());
+          }
         }
       }
-    }).catchError((error) {
-      print('Error fetching document: $error');
     });
   }
 
   Future<bool> goalAchieved(String groupId, String myGoalPoints) async {
-    print("inside goal achieved");
-    print(myGoalPoints);
     print(groupId);
     try {
       // Step 1: Check if the group exists
